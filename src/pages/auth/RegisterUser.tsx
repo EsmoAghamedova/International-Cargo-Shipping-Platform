@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import type { User } from "../../types";
 import { v4 as uuid } from "uuid";
 
-export default function RegisterUserPage() {
+export function RegisterUserPage() {
   const setCurrent = useAuthStore(s => s.setCurrent); 
   const navigate = useNavigate(); 
 

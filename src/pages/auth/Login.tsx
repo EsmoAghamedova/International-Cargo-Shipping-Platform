@@ -1,7 +1,7 @@
 import { useAuthStore } from '../../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 
-function LoginPage() {
+export function LoginPage() {
 
     const login = useAuthStore(s => s.login);
     const navigate = useNavigate();
@@ -30,4 +30,3 @@ function LoginPage() {
     );
 };
 
-export default LoginPage;

@@ -4,7 +4,7 @@ import type { Company } from "../../types";
 import { v4 as uuid } from "uuid";
 
 export function RegisterCompanyPage() {
-  const setCurrent = useAuthStore(s => s.setCurrent);
+  const setCurrent = useAuthStore((s) => s.setCurrent);
   const navigate = useNavigate();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -46,7 +46,9 @@ export function RegisterCompanyPage() {
       <h2 className="text-xl font-bold">Register Company</h2>
       <input name="name" placeholder="Company Name" className="border p-2 rounded" />
       <input name="email" placeholder="Contact Email" className="border p-2 rounded" />
-      <button type="submit" className="bg-purple-500 text-white rounded p-2">Register</button>
+      <button type="submit" className="bg-purple-500 text-white rounded p-2">
+        Register
+      </button>
     </form>
   );
 }

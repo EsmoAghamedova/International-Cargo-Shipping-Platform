@@ -1,11 +1,11 @@
 import { useAuthStore } from "../../store/useAuthStore";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import type { User } from "../../types";
 import { v4 as uuid } from "uuid";
 
 export function RegisterUserPage() {
-  const setCurrent = useAuthStore(s => s.setCurrent); 
-  const navigate = useNavigate(); 
+  const setCurrent = useAuthStore((s) => s.setCurrent);
+  const navigate = useNavigate();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -21,8 +21,8 @@ export function RegisterUserPage() {
       role: "USER",
     };
 
-    setCurrent(newUser); 
-    navigate("/client/dashboard");   
+    setCurrent(newUser);
+    navigate("/client/dashboard");
   }
 
   return (
@@ -30,7 +30,9 @@ export function RegisterUserPage() {
       <h2 className="text-xl font-bold">Register User</h2>
       <input name="fullName" placeholder="Full Name" className="border p-2 rounded" />
       <input name="email" placeholder="Email" className="border p-2 rounded" />
-      <button type="submit" className="bg-green-500 text-white rounded p-2">Register</button>
+      <button type="submit" className="bg-green-500 text-white rounded p-2">
+        Register
+      </button>
     </form>
   );
 }

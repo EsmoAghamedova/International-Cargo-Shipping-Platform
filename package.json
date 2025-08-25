@@ -10,7 +10,9 @@
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ci": "vitest --run --reporter=dot"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.0.0",

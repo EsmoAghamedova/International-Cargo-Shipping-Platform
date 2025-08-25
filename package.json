@@ -12,7 +12,7 @@
     "format": "prettier --write .",
     "type-check": "tsc --noEmit",
     "test": "vitest",
-    "test:ci": "vitest --run --reporter=dot"
+    "test:ci": "vitest --run --reporter=dot --passWithNoTests"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.0.0",

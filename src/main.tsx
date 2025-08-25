@@ -1,10 +1,13 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App.tsx";
+import { HashRouter, Routes, Route } from 'react-router-dom';
+import App from './App';
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+const Root = () => (
+  <HashRouter>
+    <Routes>
+      <Route path="/" element={<App />} />
+      {/* სხვა routes */}
+    </Routes>
+  </HashRouter>
 );
+
+export default Root;

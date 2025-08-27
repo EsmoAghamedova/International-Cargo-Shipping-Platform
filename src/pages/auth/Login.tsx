@@ -1,3 +1,4 @@
+import { Button } from "../../components/common/Button";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 
@@ -21,12 +22,20 @@ export function LoginPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 p-6 max-w-sm mx-auto">
-      <h2 className="text-xl font-bold">Login</h2>
-      <input name="email" placeholder="Enter email" className="border p-2 rounded" />
-      <button type="submit" className="bg-blue-500 text-white rounded p-2">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-3 p-6 max-w-sm mx-auto bg-slate-800 rounded-xl shadow"
+    >
+      <h2 className="text-xl font-bold text-blue-500">Login</h2>
+      <input
+        name="email"
+        placeholder="Enter email"
+        className="border border-slate-600 bg-slate-900 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      {/* აქ Button კომპონენტი */}
+      <Button type="submit" variant="primary">
         Login
-      </button>
+      </Button>
     </form>
   );
 }

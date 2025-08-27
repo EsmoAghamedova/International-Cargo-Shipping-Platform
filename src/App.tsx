@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { RegisterCompanyPage } from "./pages/auth/RegisterCompany";
 import { RegisterUserPage } from "./pages/auth/RegisterUser";
 import { LoginPage } from "./pages/auth/Login";
@@ -10,8 +10,10 @@ import { protectedRoute as ProtectedRoute } from "./components/ProtectedRoute";
 function App() {
   return (
     <>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
+          <Route path="/"></Route>
+
           {/* შესვლა & რეგისტრაცია */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register/user" element={<RegisterUserPage />} />
@@ -37,7 +39,7 @@ function App() {
             }
           />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </>
   );
 }

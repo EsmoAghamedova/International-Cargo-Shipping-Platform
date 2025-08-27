@@ -3,9 +3,12 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Base colors */
+  color-scheme: dark;
+  color: #f1f5f9;
+  /* text-gray-100 */
+  background-color: #0f172a;
+  /* slate-900 */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,28 +16,41 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Links */
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  color: #60a5fa;
+  /* blue-400 */
+  text-decoration: none;
 }
 
+a:hover {
+  color: #93c5fd;
+  /* blue-300 */
+}
+
+/* Body */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: #0f172a;
+  /* slate-900 */
+  color: #f1f5f9;
+  /* text-gray-100 */
+  display: flex;
+  place-items: center;
 }
 
+/* Headings */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  color: #e2e8f0;
+  /* gray-200 */
 }
 
+/* Buttons */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -42,27 +58,50 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #2563eb;
+  /* blue-600 */
+  color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: all 0.25s;
 }
 
+button:hover {
+  background-color: #1d4ed8;
+  /* blue-700 */
+}
+
+button:focus,
+button:focus-visible {
+  outline: 3px solid #60a5fa;
+  /* focus ring - blue-400 */
+}
+
+/* Light mode */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
+    color: #1e293b;
+    /* slate-800 */
     background-color: #ffffff;
   }
-  a:hover {
-    color: #747bff;
+
+  a {
+    color: #2563eb;
+    /* blue-600 */
   }
+
+  a:hover {
+    color: #1d4ed8;
+    /* blue-700 */
+  }
+
   button {
-    background-color: #f9f9f9;
+    background-color: #3b82f6;
+    /* blue-500 */
+    color: white;
+  }
+
+  button:hover {
+    background-color: #2563eb;
+    /* blue-600 */
   }
 }

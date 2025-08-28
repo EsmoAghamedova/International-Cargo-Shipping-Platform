@@ -6,6 +6,8 @@ import { LoginPage } from "./pages/auth/Login";
 import { UserDashboard } from "./pages/client/Dashboard";
 import { CompanyDashboard } from "./pages/company/Dashboard";
 import { ProtectedRoute as ProtectedRoute } from "./components/ProtectedRoute";
+import HomePage from "./pages/HomePage";
+
 // import { StyleguidePage } from "./pages/dev-only/StyleguidePage";
 
 function App() {
@@ -13,10 +15,9 @@ function App() {
     <>
       <HashRouter>
         <Routes>
-          <Route path="/">
-            <h1 className="text-3xl font-bold underline">Hello world!</h1>
-          </Route>
           {/* <Route path="/style-guide" element={<StyleguidePage />}></Route> */}
+
+          <Route path="/" element={<HomePage />} />
 
           {/* შესვლა & რეგისტრაცია */}
           <Route path="/login" element={<LoginPage />} />

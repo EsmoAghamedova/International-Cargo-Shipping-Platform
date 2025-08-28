@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Testing
-/src/pages/dev-only
+src/pages/dev-only

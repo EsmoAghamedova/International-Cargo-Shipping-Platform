@@ -6,7 +6,7 @@ interface ProtectedRouterProps {
   role?: "USER" | "COMPANY_ADMIN";
 }
 
-export function protectedRoute({ children, role }: ProtectedRouterProps) {
+export function ProtectedRoute({ children, role }: ProtectedRouterProps) {
   const currentUser = useAuthStore((s) => s.currentUser);
 
   if (!currentUser) {

@@ -5,14 +5,18 @@ import { RegisterUserPage } from "./pages/auth/RegisterUser";
 import { LoginPage } from "./pages/auth/Login";
 import { UserDashboard } from "./pages/client/Dashboard";
 import { CompanyDashboard } from "./pages/company/Dashboard";
-import { protectedRoute as ProtectedRoute } from "./components/ProtectedRoute";
+import { ProtectedRoute as ProtectedRoute } from "./components/ProtectedRoute";
+import { StyleguidePage } from "./pages/dev-only/StyleguidePage";
 
 function App() {
   return (
     <>
       <HashRouter>
         <Routes>
-          <Route path="/"></Route>
+          <Route path="/">
+            <h1 className="text-3xl font-bold underline">Hello world!</h1>
+          </Route>
+          <Route path="/style-guide" element={<StyleguidePage />}></Route>
 
           {/* შესვლა & რეგისტრაცია */}
           <Route path="/login" element={<LoginPage />} />

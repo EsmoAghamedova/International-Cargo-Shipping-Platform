@@ -1,5 +1,5 @@
-import { mockCompanies, mockUsers } from "../mock/auth.mock-data";
-import type { User, Company } from "../types";
+import { mockCompanies, mockUsers } from '../mock/auth.mock-data';
+import type { User, Company } from '../types';
 
 type AuthEntity = User | Company;
 

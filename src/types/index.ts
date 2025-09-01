@@ -1,13 +1,13 @@
-export type Role = "USER" | "COMPANY_ADMIN";
-export type ShippingType = "SEA" | "RAILWAY" | "ROAD" | "AIR";
+export type Role = 'USER' | 'COMPANY_ADMIN';
+export type ShippingType = 'SEA' | 'RAILWAY' | 'ROAD' | 'AIR';
 export type RequestStatus =
-  | "PENDING_REVIEW"
-  | "AWAITING_COMPANY_CONFIRMATION"
-  | "ACCEPTED"
-  | "IN_TRANSIT"
-  | "OUT_FOR_DELIVERY"
-  | "DELIVERED"
-  | "REJECTED";
+  | 'PENDING_REVIEW'
+  | 'AWAITING_COMPANY_CONFIRMATION'
+  | 'ACCEPTED'
+  | 'IN_TRANSIT'
+  | 'OUT_FOR_DELIVERY'
+  | 'DELIVERED'
+  | 'REJECTED';
 
 export interface Address {
   id: string;
@@ -23,7 +23,7 @@ export interface User {
   fullName: string;
   phone?: string;
   addresses: Address[];
-  role: "USER";
+  role: 'USER';
 }
 
 export interface Company {
@@ -35,7 +35,7 @@ export interface Company {
   regions: string[];
   supportedTypes: ShippingType[];
   pricing: CompanyPricing;
-  role: "COMPANY_ADMIN";
+  role: 'COMPANY_ADMIN';
   logoUrl?: string;
 }
 
@@ -58,7 +58,7 @@ export interface ParcelRequest {
     lengthCm: number;
     widthCm: number;
     heightCm: number;
-    kind: "DOCUMENTS" | "GOODS";
+    kind: 'DOCUMENTS' | 'GOODS';
     declaredValue: number;
     fragile?: boolean;
   };
@@ -72,5 +72,5 @@ export interface ParcelRequest {
   status: RequestStatus;
   timeline: { status: RequestStatus; at: string; note?: string }[];
   trackingId?: string;
-  messages: { from: "USER" | "COMPANY"; text: string; at: string }[];
+  messages: { from: 'USER' | 'COMPANY'; text: string; at: string }[];
 }

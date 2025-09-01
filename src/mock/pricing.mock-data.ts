@@ -1,4 +1,4 @@
-import type { CompanyPricing, ShippingType } from "../types";
+import type { CompanyPricing, ShippingType } from '../types';
 
 export const defaultTypeMultipliers: Record<ShippingType, number> = {
   SEA: 0.7,

@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { User, Company } from "../types";
-import { AuthService } from "../services/AuthService";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { User, Company } from '../types';
+import { AuthService } from '../services/AuthService';
 
 type AuthEntity = User | Company;
 
@@ -31,7 +31,7 @@ export const useAuthStore = create<AuthState>()(
       setCurrent: (entity) => set({ currentUser: entity }), // 👈 აქ დაამატე
     }),
     {
-      name: "auth-storage",
+      name: 'auth-storage',
     },
   ),
 );

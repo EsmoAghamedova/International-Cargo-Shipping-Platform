@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 export function DashboardLayout({
   role,
   children,
 }: {
-  role: "USER" | "COMPANY_ADMIN";
+  role: 'USER' | 'COMPANY_ADMIN';
   children: React.ReactNode;
 }) {
   return (
@@ -12,7 +12,7 @@ export function DashboardLayout({
       {/* Sidebar */}
       <aside className="w-60 bg-gray-800 p-6 flex flex-col gap-4">
         <h2 className="text-lg font-bold mb-4">Cargo Platform</h2>
-        {role === "USER" ? (
+        {role === 'USER' ? (
           <>
             <Link to="/client/dashboard" className="hover:text-green-400">
               Dashboard

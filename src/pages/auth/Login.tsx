@@ -1,6 +1,6 @@
-import { Button } from "../../components/common/Button";
-import { useAuthStore } from "../../store/useAuthStore";
-import { useNavigate } from "react-router-dom";
+import { Button } from '../../components/common/Button';
+import { useAuthStore } from '../../store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
 
 export function LoginPage() {
   const login = useAuthStore((s) => s.login);
@@ -9,16 +9,16 @@ export function LoginPage() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
-    const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
 
     const entity = login(email);
     if (!entity) {
-      alert("Email not found 🤧");
+      alert('Email not found 🤧');
       return;
     }
 
-    if (entity.role === "USER") navigate("/client/dashboard");
-    if (entity.role === "COMPANY_ADMIN") navigate("/company/dashboard");
+    if (entity.role === 'USER') navigate('/client/dashboard');
+    if (entity.role === 'COMPANY_ADMIN') navigate('/company/dashboard');
   }
 
   return (

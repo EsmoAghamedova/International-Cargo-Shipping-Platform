@@ -1,9 +1,9 @@
-import { Navigate } from "react-router-dom";
-import { useAuthStore } from "../store/useAuthStore";
+import { Navigate } from 'react-router-dom';
+import { useAuthStore } from '../store/useAuthStore';
 
 interface ProtectedRouterProps {
   children: React.ReactNode;
-  role?: "USER" | "COMPANY_ADMIN";
+  role?: 'USER' | 'COMPANY_ADMIN';
 }
 
 export function ProtectedRoute({ children, role }: ProtectedRouterProps) {

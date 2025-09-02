@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRequestsStore } from '../../store/useRequestsStore';
 import { Badge } from '../../components/common/Badge';
-import { Card } from '../../components/common/card';
+import { Card } from '../../components/common/Card';
 
 export function TrackRequest() {
   const [trackingId, setTrackingId] = useState('');

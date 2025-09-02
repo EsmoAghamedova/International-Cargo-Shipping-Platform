@@ -6,7 +6,7 @@ import { Stepper } from '../../components/common/Stepper';
 import { useAuthStore } from '../../store/useAuthStore';
 import { v4 as uuid } from 'uuid';
 import { useRequestsStore } from '../../store/useRequestsStore';
-import { Card } from '../../components/common/card.tsx';
+import { Card } from '../../components/common/Card.tsx';
 
 export function CreateRequestPage() {
   const [step, setStep] = useState(0);

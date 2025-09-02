@@ -6,7 +6,7 @@ import { Stepper } from '../../components/common/Stepper';
 import { useAuthStore } from '../../store/useAuthStore';
 import { v4 as uuid } from 'uuid';
 import { useRequestsStore } from '../../store/useRequestsStore';
-import Card from '../../components/common/Card';
+// import Card from '../../components/common/Card';
 
 export function CreateRequestPage() {
   const [step, setStep] = useState(0);
@@ -69,7 +69,7 @@ export function CreateRequestPage() {
 
   return (
     <div className="max-w-2xl mx-auto p-6">
-      <Card>
+      {/* <Card> */}
         <Stepper
           steps={['Parcel Details', 'Route Info', 'Shipping Type', 'Summary']}
           currentStep={step}
@@ -270,7 +270,7 @@ export function CreateRequestPage() {
             </div>
           </div>
         )}
-      </Card>
+      {/* </Card> */}
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { useRequestsStore } from '../../store/useRequestsStore';
 import { Badge } from '../../components/common/Badge';
 import { Link } from 'react-router-dom';
-import { Card } from '../../components/common/Card';
+import { Card } from '../../components/common/CardComponent';
 
 export function UserDashboard() {
   const currentUser = useAuthStore((s) => s.currentUser);

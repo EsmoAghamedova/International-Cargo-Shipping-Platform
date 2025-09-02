@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useRequestsStore } from '../../store/useRequestsStore';
 import { Badge } from '../../components/common/Badge';
-import { Card } from '../../components/common/Card';
+import { Card } from '../../components/common/card';
 
 const STATUS_FLOW = [
   'PENDING_REVIEW',

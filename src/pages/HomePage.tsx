@@ -1,28 +1,29 @@
-import React from 'react';
-// import { Header } from '../components/header';
-import { Button } from '../components/common/Button';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-const HomePage: React.FC = () => {
+export default function HomePage() {
   return (
-    // Main content of the home page
-    <div style={{ padding: '2rem' }}>
-      <Button variant="primary">
-        <Link to="/login">Login</Link>
-      </Button>
-      <h1>Welcome to the International Cargo Shipping Platform</h1>
-      <p>
-        Manage your shipments, track cargo, and connect with global logistics
-        partners all in one place.
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b">
+      <h1 className="text-4xl font-bold text-blue-700 mb-4">
+        International Cargo Shipping 🌍
+      </h1>
+      <p className="mb-8">
+        Fast. Reliable. Trackable. Manage your shipments easily.
       </p>
-      <ul>
-        <li>Book new shipments</li>
-        <li>Track existing cargo</li>
-        <li>View shipment history</li>
-        <li>Contact support</li>
-      </ul>
+
+      <div className="flex gap-4">
+        <Link
+          to="/login"
+          className="px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
+        >
+          Login
+        </Link>
+        <Link
+          to="/register/user"
+          className="px-6 py-3 rounded-lg bg-gray-200 text-gray-800 font-medium hover:bg-gray-300 transition"
+        >
+          Register
+        </Link>
+      </div>
     </div>
   );
-};
-
-export default HomePage;
+}

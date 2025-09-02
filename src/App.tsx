@@ -64,14 +64,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/company/requests"
-          element={
-            <ProtectedRoute role="COMPANY_ADMIN">
-              <CreateRequestPage />
-            </ProtectedRoute>
-          }
-        />
 
         <Route path="*" element={<p>Page not found</p>} />
       </Routes>

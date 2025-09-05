@@ -1,32 +1,40 @@
-import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useRequestsStore } from '../../store/useRequestsStore';
-import { Badge } from '../../components/common/Badge';
 import { Card } from '../../components/common/CardComponent';
+import { Badge } from '../../components/common/Badge';
 
 export function TrackRequest() {
-  const [trackingId, setTrackingId] = useState('');
-  const request = useRequestsStore((s) =>
-    s.requests.find((r) => r.id === trackingId),
-  );
+  const { id } = useParams();
+  const request = useRequestsStore((s) => s.requests.find((r) => r.id === id));
+
+  if (!request) {
+    return <p className="text-center text-red-500">Request not found</p>;
+  }
 
   return (
-    <div className="max-w-md mx-auto p-6">
+    <div className="max-w-2xl mx-auto p-6">
       <Card>
-        <h1 className="text-lg font-bold mb-2">Track Request</h1>
-        <input
-          className="border rounded p-2 w-full"
-          placeholder="Enter Tracking ID"
-          value={trackingId}
-          onChange={(e) => setTrackingId(e.target.value)}
-        />
+        <h1 className="text-xl font-bold mb-2">
+          Tracking #{request.trackingId}
+        </h1>
+        <Badge status={request.status} />
 
-        {request && (
-          <div className="mt-4">
-            <p>
-              {request.route.origin} → {request.route.destination}
-            </p>
-            <Badge status={request.status} />
-          </div>
+        <div className="mt-4">
+          <p className="text-gray-600">
+            From: {request.route.origin.city}, {request.route.origin.country}
+          </p>
+          <p className="text-gray-600">
+            To: {request.route.destination.city},{' '}
+            {request.route.destination.country}
+          </p>
+          <p className="text-gray-600">
+            Parcel: {request.parcel.weightKg}kg • {request.parcel.kind} • Value:
+            ${request.parcel.declaredValue}
+          </p>
+        </div>
+
+        {request.parcel.fragile && (
+          <p className="mt-2 text-red-500">⚠️ Fragile parcel</p>
         )}
       </Card>
     </div>

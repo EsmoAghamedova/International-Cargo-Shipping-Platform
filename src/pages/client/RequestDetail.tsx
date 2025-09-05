@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useRequestsStore } from '../../store/useRequestsStore';
-import { Badge } from '../../components/common/Badge';
 import { Card } from '../../components/common/CardComponent';
+import { Badge } from '../../components/common/Badge';
 
 const STATUS_FLOW = [
   'PENDING_REVIEW',
@@ -23,7 +23,8 @@ export function RequestDetail() {
     <div className="max-w-2xl mx-auto p-6">
       <Card>
         <h1 className="text-xl font-bold mb-2">
-          {request.route.origin} → {request.route.destination}
+          {request.route.origin.city}, {request.route.origin.country} →{' '}
+          {request.route.destination.city}, {request.route.destination.country}
         </h1>
         <Badge status={request.status} />
 
@@ -41,6 +42,14 @@ export function RequestDetail() {
             </li>
           ))}
         </ul>
+
+        <div className="mt-4 text-sm text-gray-600">
+          <p>
+            Parcel: {request.parcel.weightKg}kg • {request.parcel.kind} •
+            Declared Value: ${request.parcel.declaredValue}
+          </p>
+          {request.parcel.fragile && <p className="text-red-500">⚠️ Fragile</p>}
+        </div>
       </Card>
     </div>
   );

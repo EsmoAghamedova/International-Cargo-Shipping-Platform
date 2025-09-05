@@ -1,64 +1,57 @@
-export type Role = 'USER' | 'COMPANY_ADMIN';
-export type ShippingType = 'SEA' | 'RAILWAY' | 'ROAD' | 'AIR';
-export type RequestStatus =
-  | 'PENDING_REVIEW'
-  | 'AWAITING_COMPANY_CONFIRMATION'
-  | 'ACCEPTED'
-  | 'IN_TRANSIT'
-  | 'OUT_FOR_DELIVERY'
-  | 'DELIVERED'
-  | 'REJECTED';
+// src/types/index.ts
 
-export interface Address {
-  id: string;
-  country: string;
-  city: string;
-  line1: string;
-  postalCode: string;
-}
-
+// მომხმარებელი
 export interface User {
   id: string;
-  email: string;
   fullName: string;
-  phone?: string;
+  email: string;
   addresses: Address[];
   role: 'USER';
 }
 
+// კომპანიის ადმინი
 export interface Company {
   id: string;
   name: string;
-  contactEmail: string;
-  phone?: string;
-  hqAddress: Address;
-  regions: string[];
-  supportedTypes: ShippingType[];
-  pricing: CompanyPricing;
+  email: string;
   role: 'COMPANY_ADMIN';
-  logoUrl?: string;
 }
 
-export interface CompanyPricing {
-  basePrice: number;
-  pricePerKg: number;
-  fuelPct: number;
-  insurancePct: number;
-  typeMultipliers: Record<ShippingType, number>;
-  remoteAreaPct: number;
+// ორივე ერთად
+export type AuthEntity = User | Company;
+
+// მისამართი
+export interface Address {
+  city: string;
+  country: string;
+  street?: string;
+  postalCode?: string;
 }
 
+// ამანათის ტიპი
+export type ParcelKind = 'DOCUMENTS' | 'GOODS';
+
+// ტრანსპორტირების ტიპი
+export type ShippingType = 'STANDARD' | 'EXPRESS';
+
+// სტატუსი
+export type RequestStatus =
+  | 'PENDING_REVIEW'
+  | 'ACCEPTED'
+  | 'IN_TRANSIT'
+  | 'OUT_FOR_DELIVERY'
+  | 'DELIVERED';
+
+// ამანათის request
 export interface ParcelRequest {
   id: string;
   userId: string;
-  companyId?: string;
-  shippingType: ShippingType;
   parcel: {
     weightKg: number;
     lengthCm: number;
     widthCm: number;
     heightCm: number;
-    kind: 'DOCUMENTS' | 'GOODS';
+    kind: ParcelKind;
     declaredValue: number;
     fragile?: boolean;
   };
@@ -68,9 +61,8 @@ export interface ParcelRequest {
     pickupAddress: Address;
     deliveryAddress: Address;
   };
-  priceEstimate: number;
+  shippingType: ShippingType;
   status: RequestStatus;
-  timeline: { status: RequestStatus; at: string; note?: string }[];
+  createdAt: string;
   trackingId?: string;
-  messages: { from: 'USER' | 'COMPANY'; text: string; at: string }[];
 }

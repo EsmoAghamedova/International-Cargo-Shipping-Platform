@@ -2,40 +2,29 @@ import type { User } from '../types';
 
 export const mockUsers: User[] = [
   {
-    id: 'u1',
-    email: 'user1@test.com',
-    fullName: 'Nino Beridze',
-    phone: '+995500111222',
+    id: 'user-1',
+    fullName: 'Esmira Aghamedova',
+    email: 'esmira@example.com',
     addresses: [
       {
-        id: 'a1',
-        country: 'GE',
         city: 'Tbilisi',
-        line1: 'Rustaveli Ave 15',
+        country: 'Georgia',
+        street: 'Rustaveli Ave 10',
         postalCode: '0108',
-      },
-      {
-        id: 'a2',
-        country: 'GE',
-        city: 'Batumi',
-        line1: 'Chavchavadze St 5',
-        postalCode: '6000',
       },
     ],
     role: 'USER',
   },
   {
-    id: 'u2',
-    email: 'user2@test.com',
-    fullName: 'Giorgi Lomidze',
-    phone: '+995500222333',
+    id: 'user-2',
+    fullName: 'Levan Giorgadze',
+    email: 'levan@example.com',
     addresses: [
       {
-        id: 'a3',
-        country: 'GE',
-        city: 'Kutaisi',
-        line1: 'Main Square 12',
-        postalCode: '4600',
+        city: 'Batumi',
+        country: 'Georgia',
+        street: 'Chavchavadze St 15',
+        postalCode: '6000',
       },
     ],
     role: 'USER',

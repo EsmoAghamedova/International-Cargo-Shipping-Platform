@@ -1,35 +1,25 @@
-import { mockCompanies, mockUsers } from '../mock/auth.mock-data';
-import type { User, Company } from '../types';
-
-type AuthEntity = User | Company;
+import { mockAuthEntities } from '../mock/auth.mock-data';
+import type { User, Company, AuthEntity } from '../types';
 
 export class AuthService {
   private static currentUser: AuthEntity | null = null;
 
   static login(email: string): AuthEntity | null {
-    const user = mockUsers.find((u) => u.email === email);
-    if (user) {
-      this.currentUser = user;
-      return user;
+    const entity = mockAuthEntities.find((e) => e.email === email) ?? null;
+    if (entity) {
+      this.currentUser = entity;
     }
-
-    const company = mockCompanies.find((c) => c.contactEmail === email);
-    if (company) {
-      this.currentUser = company;
-      return company;
-    }
-
-    return null;
+    return entity;
   }
 
   static registerUser(user: User): User {
-    mockUsers.push(user);
+    mockAuthEntities.push(user);
     this.currentUser = user;
     return user;
   }
 
   static registerCompany(company: Company): Company {
-    mockCompanies.push(company);
+    mockAuthEntities.push(company);
     this.currentUser = company;
     return company;
   }

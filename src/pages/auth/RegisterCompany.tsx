@@ -16,24 +16,7 @@ export function RegisterCompanyPage() {
     const newCompany: Company = {
       id: uuid(),
       name,
-      contactEmail: email,
-      hqAddress: {
-        id: uuid(),
-        country: 'GE',
-        city: 'Tbilisi',
-        line1: 'Default HQ Address',
-        postalCode: '0100',
-      },
-      regions: [],
-      supportedTypes: [],
-      pricing: {
-        basePrice: 20,
-        pricePerKg: 5,
-        fuelPct: 0.1,
-        insurancePct: 0.02,
-        typeMultipliers: { SEA: 0.7, RAILWAY: 0.85, ROAD: 1.0, AIR: 1.6 },
-        remoteAreaPct: 0.15,
-      },
+      email,
       role: 'COMPANY_ADMIN',
     };
 

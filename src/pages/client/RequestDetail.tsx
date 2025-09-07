@@ -34,7 +34,7 @@ export function RequestDetail() {
               key={status}
               className={`p-2 rounded ${
                 request.status === status
-                  ? 'bg-blue-100 font-semibold'
+                  ? 'bg-blue-400 font-semibold'
                   : 'bg-gray-100'
               }`}
             >

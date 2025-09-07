@@ -1,19 +1,19 @@
-import { DashboardLayout } from "../../components/DashboardLayout";
-import { useAuthStore } from "../../store/useAuthStore";
-import { useRequestsStore } from "../../store/useRequestsStore";
-import { Badge } from "../../components/common/Badge";
-import { Link } from "react-router-dom";
-import { Card } from "../../components/common/CardComponent";
+import { DashboardLayout } from '../../components/DashboardLayout';
+import { useAuthStore } from '../../store/useAuthStore';
+import { useRequestsStore } from '../../store/useRequestsStore';
+import { Badge } from '../../components/common/Badge';
+import { Link } from 'react-router-dom';
+import { Card } from '../../components/common/CardComponent';
 
 export function UserDashboard() {
   const currentUser = useAuthStore((s) => s.currentUser);
   const requests = useRequestsStore((s) =>
-    s.requests.filter((r) => r.userId === currentUser?.id)
+    s.requests.filter((r) => r.userId === currentUser?.id),
   );
 
   if (!currentUser) {
     return (
-      <DashboardLayout role="USER">  
+      <DashboardLayout role="USER">
         <p className="text-center text-red-500">Not logged in</p>
       </DashboardLayout>
     );
@@ -66,7 +66,8 @@ export function UserDashboard() {
                   {req.route.origin.city} → {req.route.destination.city}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  {req.parcel.weightKg}kg • {req.parcel.kind} • {req.shippingType}
+                  {req.parcel.weightKg}kg • {req.parcel.kind} •{' '}
+                  {req.shippingType}
                 </p>
               </div>
               <Badge status={req.status} />

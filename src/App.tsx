@@ -3,30 +3,34 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { RegisterCompanyPage } from './pages/auth/RegisterCompany';
 import { RegisterUserPage } from './pages/auth/RegisterUser';
 import { LoginPage } from './pages/auth/Login';
-import { UserDashboard } from './pages/client/Dashboard';
+import { ClientDashboard } from './pages/client/Dashboard';
 import { RequestDetail } from './pages/client/RequestDetail';
 import { CompanyDashboard } from './pages/company/Dashboard';
-import { ProtectedRoute as ProtectedRoute } from './components/ProtectedRoute';
+import { PricingPage } from './pages/company/Pricing';
+import { CompanyRequestsPage } from './pages/company/Requests';
+import { CompanySettingsPage } from './pages/company/Settings';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import { CreateRequestPage } from './pages/client/CreateRequest';
 import { TrackRequest } from './pages/client/Track';
 import HomePage from './pages/HomePage';
+import { CompanyRequestDetail } from './pages/company/RequestDetail';
 
 function App() {
   return (
     <HashRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        {/* შესვლა & რეგისტრაცია */}
+        {/* Auth */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register/user" element={<RegisterUserPage />} />
         <Route path="/register/company" element={<RegisterCompanyPage />} />
 
-        {/* მომხმარებლის მხარე */}
+        {/* Client */}
         <Route
           path="/client/dashboard"
           element={
             <ProtectedRoute role="USER">
-              <UserDashboard />
+              <ClientDashboard />
             </ProtectedRoute>
           }
         />
@@ -55,12 +59,43 @@ function App() {
           }
         />
 
-        {/* კომპანიის მხარე */}
+        {/* Company */}
         <Route
           path="/company/dashboard"
           element={
             <ProtectedRoute role="COMPANY_ADMIN">
               <CompanyDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/company/pricing"
+          element={
+            <ProtectedRoute role="COMPANY_ADMIN">
+              <PricingPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/company/requests"
+          element={
+            <ProtectedRoute role="COMPANY_ADMIN">
+              <CompanyRequestsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+        path="/company/request-detail"
+        element={
+          <ProtectedRoute role="COMPANY_ADMIN">
+            <CompanyRequestDetail />
+          </ProtectedRoute>
+        } />
+        <Route
+          path="/company/settings"
+          element={
+            <ProtectedRoute role="COMPANY_ADMIN">
+              <CompanySettingsPage />
             </ProtectedRoute>
           }
         />

@@ -46,6 +46,7 @@ export type RequestStatus =
 export interface ParcelRequest {
   id: string;
   userId: string;
+  companyId?: string;
   parcel: {
     weightKg: number;
     lengthCm: number;

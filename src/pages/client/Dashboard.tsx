@@ -1,11 +1,11 @@
-import { DashboardLayout } from '../../components/DashboardLayout';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useRequestsStore } from '../../store/useRequestsStore';
 import { Badge } from '../../components/common/Badge';
-import { Link } from 'react-router-dom';
 import { Card } from '../../components/common/CardComponent';
+import { Link } from 'react-router-dom';
+import { DashboardLayout } from '../../components/DashboardLayout';
 
-export function UserDashboard() {
+export function ClientDashboard() {
   const currentUser = useAuthStore((s) => s.currentUser);
   const requests = useRequestsStore((s) =>
     s.requests.filter((r) => r.userId === currentUser?.id),
@@ -13,74 +13,67 @@ export function UserDashboard() {
 
   if (!currentUser) {
     return (
-      <DashboardLayout role="USER">
-        <p className="text-center text-red-500">Not logged in</p>
-      </DashboardLayout>
+      <p className="text-center text-red-500 mt-16 text-lg">Not logged in</p>
     );
   }
 
   return (
     <DashboardLayout role="USER">
-      {/* Header Section */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-blue-600">
-          {/* Welcome, {currentUser.fullName} */}
-        </h1>
-        <div className="flex gap-3">
-          <Link
-            to="/client/create-request"
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
-          >
-            + Create Request
-          </Link>
-          <Link
-            to="/client/track"
-            className="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition"
-          >
-            Track Request
-          </Link>
-        </div>
-      </div>
+      <div className="space-y-8">
+        <header className="space-y-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-blue-400">
+            Welcome,{' '}
+            {currentUser.role === 'USER'
+              ? currentUser.fullName
+              : currentUser.name}
+          </h1>
+          <p className="text-gray-400 text-lg">
+            Here are your recent parcel requests:
+          </p>
+        </header>
 
-      {/* Requests */}
-      <h2 className="text-xl font-semibold text-gray-200 mb-3">
-        Your Parcel Requests
-      </h2>
-
-      {requests.length === 0 ? (
-        <Card className="p-4 text-center">
-          <p className="text-gray-400">No requests yet.</p>
-          <Link
-            to="/client/create-request"
-            className="mt-2 inline-block text-blue-500 hover:underline"
-          >
-            Create your first request →
-          </Link>
-        </Card>
-      ) : (
-        requests.map((req) => (
-          <Card key={req.id}>
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="font-semibold">
-                  {req.route.origin.city} → {req.route.destination.city}
-                </h2>
-                <p className="text-sm text-gray-500">
-                  {req.parcel.weightKg}kg • {req.parcel.kind} •{' '}
-                  {req.shippingType}
-                </p>
-              </div>
-              <Badge status={req.status} />
-            </div>
+        {requests.length === 0 ? (
+          <Card className="text-center py-10 bg-[#1a2338] border-0">
+            <p className="text-gray-400 text-lg">
+              No requests yet. Ready to get started?
+            </p>
             <Link
-              to={`/client/requests/${req.id}`}
-              className="text-blue-500 text-sm mt-2 inline-block"
+              to="/client/create-request"
+              className="inline-block mt-4 px-5 py-2 bg-green-500 rounded text-white text-base font-semibold hover:bg-green-600 transition"
             >
-              View details →
+              + Create Your First Request
             </Link>
           </Card>
-        ))
-      )}
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {requests.map((req) => (
+              <Card
+                key={req.id}
+                className="p-5 bg-[#1a2338] border-0 shadow-sm flex flex-col gap-2"
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="font-semibold text-lg text-white">
+                      {req.route.origin.city} → {req.route.destination.city}
+                    </h2>
+                    <p className="text-sm text-gray-400">
+                      {req.parcel.weightKg}kg • {req.parcel.kind} •{' '}
+                      {req.shippingType}
+                    </p>
+                  </div>
+                  <Badge status={req.status} />
+                </div>
+                <Link
+                  to={`/client/requests/${req.id}`}
+                  className="text-blue-400 text-sm mt-2 inline-block hover:underline"
+                >
+                  View details →
+                </Link>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
     </DashboardLayout>
   );
 }

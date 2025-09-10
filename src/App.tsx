@@ -6,14 +6,14 @@ import { LoginPage } from './pages/auth/Login';
 import { ClientDashboard } from './pages/client/Dashboard';
 import { RequestDetail } from './pages/client/RequestDetail';
 import { CompanyDashboard } from './pages/company/Dashboard';
-import { PricingPage } from './pages/company/Pricing';
-import { CompanyRequestsPage } from './pages/company/Requests';
+import { CompanyPricingPage } from './pages/company/Pricing';
 import { CompanySettingsPage } from './pages/company/Settings';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { CreateRequestPage } from './pages/client/CreateRequest';
 import { TrackRequest } from './pages/client/Track';
 import HomePage from './pages/HomePage';
 import { CompanyRequestDetail } from './pages/company/RequestDetail';
+import { CompanyRequests } from './pages/company/Requests';
 
 function App() {
   return (
@@ -72,7 +72,7 @@ function App() {
           path="/company/pricing"
           element={
             <ProtectedRoute role="COMPANY_ADMIN">
-              <PricingPage />
+              <CompanyPricingPage />
             </ProtectedRoute>
           }
         />
@@ -80,17 +80,18 @@ function App() {
           path="/company/requests"
           element={
             <ProtectedRoute role="COMPANY_ADMIN">
-              <CompanyRequestsPage />
+              <CompanyRequests />
             </ProtectedRoute>
           }
         />
         <Route
-        path="/company/request-detail"
-        element={
-          <ProtectedRoute role="COMPANY_ADMIN">
-            <CompanyRequestDetail />
-          </ProtectedRoute>
-        } />
+          path="/company/request-detail"
+          element={
+            <ProtectedRoute role="COMPANY_ADMIN">
+              <CompanyRequestDetail />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/company/settings"
           element={

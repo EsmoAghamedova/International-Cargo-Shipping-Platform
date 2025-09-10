@@ -40,7 +40,8 @@ export type RequestStatus =
   | 'ACCEPTED'
   | 'IN_TRANSIT'
   | 'OUT_FOR_DELIVERY'
-  | 'DELIVERED';
+  | 'DELIVERED'
+  | 'REJECTED';
 
 // ამანათის request
 export interface ParcelRequest {

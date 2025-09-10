@@ -1,21 +1,21 @@
-import { useRequestsStore } from "../../store/useRequestsStore";
-import { useAuthStore } from "../../store/useAuthStore";
-import { DashboardLayout } from "../../components/DashboardLayout";
-import { Card } from "../../components/common/CardComponent";
-import { Badge } from "../../components/common/Badge";
-import { Link } from "react-router-dom";
+// src/pages/company/Requests.tsx
 
-export function CompanyRequestsPage() {
-  const currentUser = useAuthStore((s) => s.currentUser);
+import { useAuthStore } from '../../store/useAuthStore';
+import { useRequestsStore } from '../../store/useRequestsStore';
+import { Badge } from '../../components/common/Badge';
+import { Card } from '../../components/common/CardComponent';
+import { Link } from 'react-router-dom';
+import { DashboardLayout } from '../../components/DashboardLayout';
+
+export function CompanyRequests() {
+  const currentCompany = useAuthStore((s) => s.currentUser);
   const requests = useRequestsStore((s) =>
-    s.requests.filter((r) => r.companyId === currentUser?.id)
+    s.requests.filter((r) => r.companyId === currentCompany?.id),
   );
 
-  if (!currentUser || currentUser.role !== "COMPANY_ADMIN") {
+  if (!currentCompany || currentCompany.role !== 'COMPANY_ADMIN') {
     return (
-      <p className="text-center text-red-500 mt-16 text-lg">
-        Access denied. Only companies can view this page.
-      </p>
+      <p className="text-center text-red-500 mt-16 text-lg">Not authorized</p>
     );
   }
 
@@ -23,18 +23,18 @@ export function CompanyRequestsPage() {
     <DashboardLayout role="COMPANY_ADMIN">
       <div className="space-y-8">
         <header className="space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold text-blue-400">
+          <h1 className="text-3xl md:text-4xl font-bold text-green-400">
             All Requests
           </h1>
           <p className="text-gray-400 text-lg">
-            Here are all the requests assigned to your company.
+            Review and manage all parcel requests assigned to your company.
           </p>
         </header>
 
         {requests.length === 0 ? (
           <Card className="text-center py-10 bg-[#1a2338] border-0">
             <p className="text-gray-400 text-lg">
-              No requests yet. They will appear here once users send them.
+              No requests assigned to your company yet.
             </p>
           </Card>
         ) : (
@@ -50,7 +50,7 @@ export function CompanyRequestsPage() {
                       {req.route.origin.city} → {req.route.destination.city}
                     </h2>
                     <p className="text-sm text-gray-400">
-                      {req.parcel.weightKg}kg • {req.parcel.kind} •{" "}
+                      {req.parcel.weightKg}kg • {req.parcel.kind} •{' '}
                       {req.shippingType}
                     </p>
                   </div>
@@ -58,9 +58,9 @@ export function CompanyRequestsPage() {
                 </div>
                 <Link
                   to={`/company/requests/${req.id}`}
-                  className="text-blue-400 text-sm mt-2 inline-block hover:underline"
+                  className="text-green-400 text-sm mt-2 inline-block hover:underline"
                 >
-                  View details →
+                  Manage →
                 </Link>
               </Card>
             ))}

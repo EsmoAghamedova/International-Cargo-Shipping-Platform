@@ -1,21 +1,19 @@
-import { useAuthStore } from "../../store/useAuthStore";
-import { useRequestsStore } from "../../store/useRequestsStore";
-import { DashboardLayout } from "../../components/DashboardLayout";
-import { Card } from "../../components/common/CardComponent";
-import { Badge } from "../../components/common/Badge";
-import { Link } from "react-router-dom";
+import { useAuthStore } from '../../store/useAuthStore';
+import { useRequestsStore } from '../../store/useRequestsStore';
+import { DashboardLayout } from '../../components/DashboardLayout';
+import { Card } from '../../components/common/CardComponent';
+import { Badge } from '../../components/common/Badge';
+import { Link } from 'react-router-dom';
 
 export function CompanyDashboard() {
   const currentUser = useAuthStore((s) => s.currentUser);
   const requests = useRequestsStore((s) =>
-    s.requests.filter((r) => r.companyId === currentUser?.id)
+    s.requests.filter((r) => r.companyId === currentUser?.id),
   );
 
   if (!currentUser) {
     return (
-      <p className="text-center text-red-500 mt-16 text-lg">
-        Not logged in
-      </p>
+      <p className="text-center text-red-500 mt-16 text-lg">Not logged in</p>
     );
   }
 
@@ -25,7 +23,10 @@ export function CompanyDashboard() {
         {/* Header */}
         <header className="space-y-2">
           <h1 className="text-3xl md:text-4xl font-bold text-blue-400">
-            Welcome, {currentUser.role === "COMPANY_ADMIN" ? currentUser.name : currentUser.fullName}
+            Welcome,{' '}
+            {currentUser.role === 'COMPANY_ADMIN'
+              ? currentUser.name
+              : currentUser.fullName}
           </h1>
           <p className="text-gray-400 text-lg">
             Here are the parcel requests assigned to your company:
@@ -50,7 +51,7 @@ export function CompanyDashboard() {
                       {req.route.origin.city} → {req.route.destination.city}
                     </h2>
                     <p className="text-sm text-gray-400">
-                      {req.parcel.weightKg}kg • {req.parcel.kind} •{" "}
+                      {req.parcel.weightKg}kg • {req.parcel.kind} •{' '}
                       {req.shippingType}
                     </p>
                   </div>

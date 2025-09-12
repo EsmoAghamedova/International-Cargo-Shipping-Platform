@@ -1,44 +1,79 @@
-import { useParams } from 'react-router-dom';
-import { useRequestsStore } from '../../store/useRequestsStore';
-import { Card } from '../../components/common/CardComponent';
-import { Badge } from '../../components/common/Badge';
-import { DashboardLayout } from '../../components/DashboardLayout';
+// src/pages/client/Track.tsx
+import { useState } from "react";
+import { useRequestsStore } from "../../store/useRequestsStore";
+import { Card } from "../../components/common/CardComponent";
+import { Badge } from "../../components/common/Badge";
+import { DashboardLayout } from "../../components/DashboardLayout";
 
 export function TrackRequest() {
-  const { id } = useParams();
-  const request = useRequestsStore((s) => s.requests.find((r) => r.id === id));
+  const [trackingId, setTrackingId] = useState("");
+  const [searched, setSearched] = useState(false);
 
-  if (!request) {
-    return <p className="text-center text-red-500">Request not found</p>;
-  }
+  const request = useRequestsStore((s) =>
+    s.requests.find((r) => r.trackingId === trackingId)
+  );
 
   return (
     <DashboardLayout role="USER">
-      <div className="max-w-2xl mx-auto p-6">
-        <Card>
-          <h1 className="text-xl font-bold mb-2">
-            Tracking #{request.trackingId}
+      <div className="max-w-2xl mx-auto p-6 space-y-6">
+        {/* Search box */}
+        <Card className="p-4 bg-[#1a2338] border-0">
+          <h1 className="text-2xl font-bold text-blue-400 mb-3">
+            Track Your Parcel
           </h1>
-          <Badge status={request.status} />
-
-          <div className="mt-4">
-            <p className="text-gray-600">
-              From: {request.route.origin.city}, {request.route.origin.country}
-            </p>
-            <p className="text-gray-600">
-              To: {request.route.destination.city},{' '}
-              {request.route.destination.country}
-            </p>
-            <p className="text-gray-600">
-              Parcel: {request.parcel.weightKg}kg • {request.parcel.kind} •
-              Value: ${request.parcel.declaredValue}
-            </p>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Enter Tracking ID..."
+              value={trackingId}
+              onChange={(e) => setTrackingId(e.target.value)}
+              className="flex-1 px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+            <button
+              onClick={() => setSearched(true)}
+              className="px-4 py-2 bg-green-500 hover:bg-green-600 rounded text-white font-semibold"
+            >
+              Search
+            </button>
           </div>
-
-          {request.parcel.fragile && (
-            <p className="mt-2 text-red-500">⚠️ Fragile parcel</p>
-          )}
         </Card>
+
+        {/* Results */}
+        {searched && (
+          <>
+            {!request ? (
+              <Card className="p-4 bg-[#1a2338] border-0">
+                <p className="text-red-400 font-medium">
+                  ❌ Request not found. Please check the tracking ID.
+                </p>
+              </Card>
+            ) : (
+              <Card className="p-5 bg-[#1a2338] border-0 space-y-3">
+                <h2 className="text-xl font-bold text-white">
+                  Tracking #{request.trackingId}
+                </h2>
+                <Badge status={request.status} />
+
+                <p className="text-gray-400">
+                  From: {request.route.origin.city},{" "}
+                  {request.route.origin.country}
+                </p>
+                <p className="text-gray-400">
+                  To: {request.route.destination.city},{" "}
+                  {request.route.destination.country}
+                </p>
+                <p className="text-gray-400">
+                  Parcel: {request.parcel.weightKg}kg • {request.parcel.kind} •
+                  Value: ${request.parcel.declaredValue}
+                </p>
+
+                {request.parcel.fragile && (
+                  <p className="text-red-400">⚠️ Fragile parcel</p>
+                )}
+              </Card>
+            )}
+          </>
+        )}
       </div>
     </DashboardLayout>
   );

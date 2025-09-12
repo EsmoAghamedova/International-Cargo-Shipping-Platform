@@ -1,16 +1,17 @@
 // src/pages/company/Pricing.tsx
 
-import { useAuthStore } from "../../store/useAuthStore";
 import { DashboardLayout } from "../../components/DashboardLayout";
+import { useAuthStore } from "../../store/useAuthStore";
 import { Card } from "../../components/common/CardComponent";
+import { mockPricing } from "../../mock/pricing.mock-data";
 
 export function CompanyPricingPage() {
-  const currentCompany = useAuthStore((s) => s.currentUser);
+  const currentUser = useAuthStore((s) => s.currentUser);
 
-  if (!currentCompany || currentCompany.role !== "COMPANY_ADMIN") {
+  if (!currentUser || currentUser.role !== "COMPANY_ADMIN") {
     return (
       <p className="text-center text-red-500 mt-16 text-lg">
-        Not authorized
+        Unauthorized – only company admins can access this page.
       </p>
     );
   }
@@ -19,33 +20,66 @@ export function CompanyPricingPage() {
     <DashboardLayout role="COMPANY_ADMIN">
       <div className="space-y-8">
         <header>
-          <h1 className="text-3xl md:text-4xl font-bold text-green-400">
-            Pricing Settings
-          </h1>
-          <p className="text-gray-400 mt-2 text-lg">
-            Here you can review your company’s shipping pricing.
+          <h1 className="text-3xl font-bold text-blue-400">Company Pricing</h1>
+          <p className="text-gray-400 text-lg">
+            Manage your pricing strategy for shipments
           </p>
         </header>
 
         <Card className="p-6 bg-[#1a2338] border-0">
-          <h2 className="text-xl font-semibold text-white mb-4">Base Pricing</h2>
-          <ul className="space-y-2 text-gray-300">
-            <li>Base price: $50</li>
-            <li>Price per Kg: $5</li>
-            <li>Fuel surcharge: 10%</li>
-            <li>Insurance: 2%</li>
-            <li>Remote area surcharge: 15%</li>
+          <h2 className="text-xl font-semibold text-white mb-4">
+            Current Pricing
+          </h2>
+          <ul className="text-gray-300 space-y-3">
+            {mockPricing.map((rule) => (
+              <li
+                key={rule.shippingType}
+                className="flex justify-between border-b border-gray-700 pb-2"
+              >
+                <span className="font-medium">{rule.shippingType}</span>
+                <span>
+                  Base: ${rule.basePrice} • Per Kg: ${rule.pricePerKg}
+                </span>
+              </li>
+            ))}
           </ul>
         </Card>
 
         <Card className="p-6 bg-[#1a2338] border-0">
-          <h2 className="text-xl font-semibold text-white mb-4">Type Multipliers</h2>
-          <ul className="space-y-2 text-gray-300">
-            <li>SEA: 0.7x</li>
-            <li>RAILWAY: 0.85x</li>
-            <li>ROAD: 1.0x</li>
-            <li>AIR: 1.6x</li>
-          </ul>
+          <h2 className="text-xl font-semibold text-white mb-4">
+            Update Pricing
+          </h2>
+          <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {mockPricing.map((rule) => (
+              <div
+                key={rule.shippingType}
+                className="col-span-1 md:col-span-2 p-4 bg-gray-800 rounded-lg space-y-2"
+              >
+                <h3 className="text-white font-medium">
+                  {rule.shippingType} Pricing
+                </h3>
+                <input
+                  type="number"
+                  defaultValue={rule.basePrice}
+                  placeholder="Base Price"
+                  className="w-full p-2 rounded bg-gray-900 text-white"
+                />
+                <input
+                  type="number"
+                  defaultValue={rule.pricePerKg}
+                  placeholder="Price per Kg"
+                  className="w-full p-2 rounded bg-gray-900 text-white"
+                />
+              </div>
+            ))}
+
+            <button
+              type="submit"
+              className="col-span-1 md:col-span-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded py-2 mt-4"
+            >
+              Save Changes
+            </button>
+          </form>
         </Card>
       </div>
     </DashboardLayout>

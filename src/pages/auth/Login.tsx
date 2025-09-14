@@ -1,6 +1,6 @@
 import { Button } from '../../components/common/Button';
 import { useAuthStore } from '../../store/useAuthStore';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export function LoginPage() {
   const login = useAuthStore((s) => s.login);
@@ -22,6 +22,7 @@ export function LoginPage() {
   }
 
   return (
+    <div>
     <form
       onSubmit={handleSubmit}
       className="flex flex-col gap-3 p-6 max-w-sm mx-auto bg-slate-800 rounded-xl shadow"
@@ -32,10 +33,19 @@ export function LoginPage() {
         placeholder="Enter email"
         className="border border-slate-600 bg-slate-900 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      {/* აქ Button კომპონენტი */}
       <Button type="submit" variant="primary">
         Login
       </Button>
     </form>
+
+    <div className="text-center mt-4">
+      <p className="text-slate-400">
+        Don't have an account?{' '}
+        <Link to="/register" className="text-blue-500 hover:underline">
+          Register here
+        </Link>
+      </p>
+    </div>
+    </div>
   );
 }

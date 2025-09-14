@@ -1,61 +1,49 @@
-import { v4 as uuid } from 'uuid';
-import { useAuthStore } from '../../store/useAuthStore';
-import { useRequestsStore } from '../../store/useRequestsStore';
-import type { ParcelRequest, ShippingType } from '../../types';
-import { useNavigate } from 'react-router-dom';
-import { DashboardLayout } from '../../components/DashboardLayout';
+import { v4 as uuid } from "uuid";
+import { useAuthStore } from "../../store/useAuthStore";
+import { useRequestsStore } from "../../store/useRequestsStore";
+import type { ParcelRequest, ShippingType } from "../../types";
+import { useNavigate } from "react-router-dom";
+import { DashboardLayout } from "../../components/DashboardLayout";
 
 export function CreateRequestPage() {
   const currentUser = useAuthStore((s) => s.currentUser);
   const addRequest = useRequestsStore((s) => s.addRequest);
-  const navigate = useNavigate(); // 👈 react-router hook
+  const navigate = useNavigate();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
 
     const weightKg = parseFloat(
-      (form.elements.namedItem('weight') as HTMLInputElement).value,
+      (form.elements.namedItem("weight") as HTMLInputElement).value
     );
     const lengthCm = parseFloat(
-      (form.elements.namedItem('length') as HTMLInputElement).value,
+      (form.elements.namedItem("length") as HTMLInputElement).value
     );
     const widthCm = parseFloat(
-      (form.elements.namedItem('width') as HTMLInputElement).value,
+      (form.elements.namedItem("width") as HTMLInputElement).value
     );
     const heightCm = parseFloat(
-      (form.elements.namedItem('height') as HTMLInputElement).value,
+      (form.elements.namedItem("height") as HTMLInputElement).value
     );
-    const kind = (form.elements.namedItem('type') as HTMLSelectElement)
-      .value as 'DOCUMENTS' | 'GOODS';
+    const kind = (form.elements.namedItem("type") as HTMLSelectElement)
+      .value as "DOCUMENTS" | "GOODS";
     const declaredValue = parseFloat(
-      (form.elements.namedItem('value') as HTMLInputElement).value,
+      (form.elements.namedItem("value") as HTMLInputElement).value
     );
 
-    const origin = (form.elements.namedItem('origin') as HTMLInputElement)
-      .value;
-    const destination = (
-      form.elements.namedItem('destination') as HTMLInputElement
-    ).value;
-    const originCountry = (
-      form.elements.namedItem('originCountry') as HTMLInputElement
-    ).value;
-    const destinationCountry = (
-      form.elements.namedItem('destinationCountry') as HTMLInputElement
-    ).value;
-    const pickup = (form.elements.namedItem('pickup') as HTMLInputElement)
-      .value;
-    const pickupAddress = (
-      form.elements.namedItem('pickupAddress') as HTMLInputElement
-    ).value;
-    const delivery = (form.elements.namedItem('delivery') as HTMLInputElement)
-      .value;
-    const deliveryAddress = (
-      form.elements.namedItem('deliveryAddress') as HTMLInputElement
-    ).value;
+    // Origin
+    const originCountry = (form.elements.namedItem("originCountry") as HTMLInputElement).value;
+    const originCity = (form.elements.namedItem("originCity") as HTMLInputElement).value;
+    const originStreet = (form.elements.namedItem("originStreet") as HTMLInputElement).value;
+
+    // Destination
+    const destinationCountry = (form.elements.namedItem("destinationCountry") as HTMLInputElement).value;
+    const destinationCity = (form.elements.namedItem("destinationCity") as HTMLInputElement).value;
+    const destinationStreet = (form.elements.namedItem("destinationStreet") as HTMLInputElement).value;
 
     const shippingType = (
-      form.elements.namedItem('shippingType') as HTMLSelectElement
+      form.elements.namedItem("shippingType") as HTMLSelectElement
     ).value as ShippingType;
 
     const newRequest: ParcelRequest = {
@@ -71,20 +59,18 @@ export function CreateRequestPage() {
         fragile: false,
       },
       route: {
-        origin: { city: origin, country: originCountry },
-        destination: { city: destination, country: destinationCountry },
-        pickupAddress: { city: pickup, country: pickupAddress },
-        deliveryAddress: { city: delivery, country: deliveryAddress },
+        origin: { country: originCountry, city: originCity, street: originStreet },
+        destination: { country: destinationCountry, city: destinationCity, street: destinationStreet },
+        pickupAddress: { country: originCountry, city: originCity, street: originStreet },
+        deliveryAddress: { country: destinationCountry, city: destinationCity, street: destinationStreet },
       },
       shippingType,
-      status: 'PENDING_REVIEW',
+      status: "PENDING_REVIEW",
       createdAt: new Date().toISOString(),
     };
 
     addRequest(newRequest);
-
-    // 🚀 Instead of alert, redirect to dashboard
-    navigate('/client/dashboard');
+    navigate("/client/dashboard");
   }
 
   return (
@@ -98,108 +84,49 @@ export function CreateRequestPage() {
 
         {/* Parcel Info */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-700">
+          <h3 className="text-lg font-semibold text-gray-200">
             Parcel Information
           </h3>
-          <input
-            name="weight"
-            type="number"
-            placeholder="Weight (kg)"
-            className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-
+          <input name="weight" type="number" placeholder="Weight (kg)" className="w-full border p-3 rounded-lg" />
           <div className="grid grid-cols-3 gap-3">
-            <input
-              name="length"
-              type="number"
-              placeholder="Length (cm)"
-              className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-            <input
-              name="width"
-              type="number"
-              placeholder="Width (cm)"
-              className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-            <input
-              name="height"
-              type="number"
-              placeholder="Height (cm)"
-              className="border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-            />
+            <input name="length" type="number" placeholder="Length (cm)" className="border p-3 rounded-lg" />
+            <input name="width" type="number" placeholder="Width (cm)" className="border p-3 rounded-lg" />
+            <input name="height" type="number" placeholder="Height (cm)" className="border p-3 rounded-lg" />
           </div>
-
-          <select
-            name="type"
-            className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          >
+          <select name="type" className="w-full border p-3 rounded-lg">
             <option value="DOCUMENTS">Documents</option>
             <option value="GOODS">Goods</option>
           </select>
-
-          <input
-            name="value"
-            type="number"
-            placeholder="Declared Value ($)"
-            className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          />
+          <input name="value" type="number" placeholder="Declared Value ($)" className="w-full border p-3 rounded-lg" />
         </div>
 
         {/* Route Info */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-700">
+          <h3 className="text-lg font-semibold text-gray-200">
             Route Information
           </h3>
-          <input
-            name="originCountry"
-            placeholder="Origin Country (e.g. Georgia)"
-            className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-          <input
-            name="origin"
-            placeholder="Origin City"
-            className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-          <input
-            name="destinationCountry"
-            placeholder="Destination Country (e.g. Turkey)"
-            className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-          <input
-            name="destination"
-            placeholder="Destination City"
-            className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-          <input
-            name="pickup"
-            placeholder="Pickup Address"
-            className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-          <input
-            name="delivery"
-            placeholder="Delivery Address"
-            className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          />
+
+          {/* Origin */}
+          <input name="originCountry" placeholder="Origin Country" className="w-full border p-3 rounded-lg" />
+          <input name="originCity" placeholder="Origin City" className="w-full border p-3 rounded-lg" />
+          <input name="originStreet" placeholder="Origin Street (e.g. Rustaveli Ave 1)" className="w-full border p-3 rounded-lg" />
+
+          {/* Destination */}
+          <input name="destinationCountry" placeholder="Destination Country" className="w-full border p-3 rounded-lg" />
+          <input name="destinationCity" placeholder="Destination City" className="w-full border p-3 rounded-lg" />
+          <input name="destinationStreet" placeholder="Destination Street (e.g. Taksim Square 5)" className="w-full border p-3 rounded-lg" />
         </div>
 
         {/* Shipping Type */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">
-            Shipping Type
-          </h3>
-          <select
-            name="shippingType"
-            className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-          >
+          <h3 className="text-lg font-semibold text-gray-200 mb-2">Shipping Type</h3>
+          <select name="shippingType" className="w-full border p-3 rounded-lg">
             <option value="STANDARD">Standard</option>
             <option value="EXPRESS">Express</option>
           </select>
         </div>
 
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 transition text-white font-semibold rounded-lg p-3 shadow-md"
-        >
+        <button type="submit" className="bg-blue-600 hover:bg-blue-700 transition text-white font-semibold rounded-lg p-3 shadow-md">
           🚀 Create Request
         </button>
       </form>

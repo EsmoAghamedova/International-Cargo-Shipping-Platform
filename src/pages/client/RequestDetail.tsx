@@ -56,7 +56,8 @@ export function RequestDetail() {
                 className={`p-3 rounded-md ${
                   request.status === status
                     ? "bg-blue-600 text-white font-semibold"
-                    : "bg-gray-800 text-gray-300"
+                    : "bg-gray-800 text-gray-300" 
+                } ${request.status === "REJECTED" && status === "REJECTED" ? "bg-red-600 text-white font-semibold" : ""
                 }`}
               >
                 {STATUS_LABELS[status] || status}

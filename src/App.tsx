@@ -14,6 +14,7 @@ import { TrackRequest } from './pages/client/Track';
 import HomePage from './pages/HomePage';
 import { CompanyRequestDetail } from './pages/company/RequestDetail';
 import { CompanyRequests } from './pages/company/Requests';
+import { CompanyOrClientPage } from './pages/auth/companyOrClient';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         {/* Auth */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<CompanyOrClientPage />} />
         <Route path="/register/user" element={<RegisterUserPage />} />
         <Route path="/register/company" element={<RegisterCompanyPage />} />
 

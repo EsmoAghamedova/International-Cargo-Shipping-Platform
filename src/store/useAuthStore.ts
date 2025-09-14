@@ -1,9 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User, Company } from '../types';
+import type { AuthEntity } from '../types';
 import { AuthService } from '../services/AuthService';
-
-type AuthEntity = User | Company;
 
 interface AuthState {
   currentUser: AuthEntity | null;
@@ -18,8 +16,10 @@ export const useAuthStore = create<AuthState>()(
       currentUser: null,
 
       login: (email: string) => {
-        const entity = AuthService.login(email);
-        set({ currentUser: entity });
+        const entity = AuthService.login(email); // Mock DB check
+        if (entity) {
+          set({ currentUser: entity }); // persist-ში ჩაიწერება
+        }
         return entity;
       },
 
@@ -28,10 +28,10 @@ export const useAuthStore = create<AuthState>()(
         set({ currentUser: null });
       },
 
-      setCurrent: (entity) => set({ currentUser: entity }), // 👈 აქ დაამატე
+      setCurrent: (entity) => set({ currentUser: entity }),
     }),
     {
-      name: 'auth-storage',
+      name: 'auth-storage', // key localStorage-ში
     },
   ),
 );

@@ -2,6 +2,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import type { Company } from '../../types';
 import { v4 as uuid } from 'uuid';
+import { AuthService } from '../../services/AuthService';
 
 export function RegisterCompanyPage() {
   const setCurrent = useAuthStore((s) => s.setCurrent);
@@ -20,7 +21,8 @@ export function RegisterCompanyPage() {
       role: 'COMPANY_ADMIN',
     };
 
-    setCurrent(newCompany);
+    AuthService.registerCompany(newCompany); // 👈 DB-ში ჩაწერა
+    setCurrent(newCompany); // 👈 localStorage-ში ჩაწერა
     navigate('/company/dashboard');
   }
 

@@ -2,6 +2,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import type { User } from '../../types';
 import { v4 as uuid } from 'uuid';
+import { AuthService } from '../../services/AuthService';
 
 export function RegisterUserPage() {
   const setCurrent = useAuthStore((s) => s.setCurrent);
@@ -10,8 +11,7 @@ export function RegisterUserPage() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
-    const fullName = (form.elements.namedItem('fullName') as HTMLInputElement)
-      .value;
+    const fullName = (form.elements.namedItem('fullName') as HTMLInputElement).value;
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
 
     const newUser: User = {
@@ -22,7 +22,8 @@ export function RegisterUserPage() {
       role: 'USER',
     };
 
-    setCurrent(newUser);
+    AuthService.registerUser(newUser); // 👈 DB-ში ჩაწერა
+    setCurrent(newUser); // 👈 localStorage-ში ჩაწერა
     navigate('/client/dashboard');
   }
 

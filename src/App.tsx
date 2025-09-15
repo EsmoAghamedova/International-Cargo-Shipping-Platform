@@ -11,12 +11,20 @@ import { CompanySettingsPage } from './pages/company/Settings';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { CreateRequestPage } from './pages/client/CreateRequest';
 import { TrackRequest } from './pages/client/Track';
-import HomePage from './pages/HomePage';
+import { HomePage } from './pages/HomePage';
 import { CompanyRequestDetail } from './pages/company/RequestDetail';
 import { CompanyRequests } from './pages/company/Requests';
 import { CompanyOrClientPage } from './pages/auth/companyOrClient';
+import { useRequestsStore } from './store/useRequestsStore';
+import { useEffect } from 'react';
 
 function App() {
+  const loadRequests = useRequestsStore((s) => s.loadRequests);
+
+  useEffect(() => {
+    loadRequests();
+  }, [loadRequests]);
+
   return (
     <HashRouter>
       <Routes>

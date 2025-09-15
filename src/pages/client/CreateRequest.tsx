@@ -4,6 +4,11 @@ import { useRequestsStore } from "../../store/useRequestsStore";
 import type { ParcelRequest, ShippingType } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../components/DashboardLayout";
+// import { ParcelService } from "../../services/ParcelService";
+
+function generateTrackingId() {
+  return Math.random().toString(36).substring(2, 10).toUpperCase();
+}
 
 export function CreateRequestPage() {
   const currentUser = useAuthStore((s) => s.currentUser);
@@ -67,6 +72,7 @@ export function CreateRequestPage() {
       shippingType,
       status: "PENDING_REVIEW",
       createdAt: new Date().toISOString(),
+      trackingId: generateTrackingId(), // 👈 ეს დავამატე
     };
 
     addRequest(newRequest);

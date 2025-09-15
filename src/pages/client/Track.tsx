@@ -1,4 +1,3 @@
-// src/pages/client/Track.tsx
 import { useState } from "react";
 import { useRequestsStore } from "../../store/useRequestsStore";
 import { Card } from "../../components/common/CardComponent";
@@ -10,7 +9,7 @@ export function TrackRequest() {
   const [searched, setSearched] = useState(false);
 
   const request = useRequestsStore((s) =>
-    s.requests.find((r) => r.trackingId === trackingId)
+    s.requests.find((r) => r.trackingId?.toUpperCase() === trackingId.toUpperCase())
   );
 
   return (

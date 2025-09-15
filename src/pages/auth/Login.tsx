@@ -40,7 +40,7 @@ export function LoginPage() {
 
     <div className="text-center mt-4">
       <p className="text-slate-400">
-        Don't have an account?{' '}
+        Do you not have an account?{' '}
         <Link to="/register" className="text-blue-500 hover:underline">
           Register here
         </Link>

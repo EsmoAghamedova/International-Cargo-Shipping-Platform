@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-export default function HomePage() {
+export function HomePage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b">
       <h1 className="text-4xl font-bold text-blue-700 mb-4">

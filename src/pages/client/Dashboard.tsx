@@ -60,6 +60,9 @@ export function ClientDashboard() {
                       {req.parcel.weightKg}kg • {req.parcel.kind} •{' '}
                       {req.shippingType}
                     </p>
+                    <p className="text-xs text-gray-500">
+                      Tracking ID: <span className="font-mono">{req.trackingId}</span>
+                    </p>
                   </div>
                   <Badge status={req.status} />
                 </div>

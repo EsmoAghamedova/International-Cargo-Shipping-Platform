@@ -4,7 +4,14 @@ import { useRequestsStore } from "../../store/useRequestsStore";
 import type { ParcelRequest, ShippingType } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../components/DashboardLayout";
-// import { ParcelService } from "../../services/ParcelService";
+import { ParcelService } from "../../services/ParcelService";
+
+// 🔑 ტესტისთვის უბრალოდ ჩამოვწეროთ კომპანიის mock-ები
+const mockCompanies = [
+  { id: "company1", name: "DHL" },
+  { id: "company2", name: "FedEx" },
+  { id: "company3", name: "UPS" },
+];
 
 function generateTrackingId() {
   return Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -19,49 +26,42 @@ export function CreateRequestPage() {
     e.preventDefault();
     const form = e.currentTarget;
 
-    const weightKg = parseFloat(
-      (form.elements.namedItem("weight") as HTMLInputElement).value
-    );
-    const lengthCm = parseFloat(
-      (form.elements.namedItem("length") as HTMLInputElement).value
-    );
-    const widthCm = parseFloat(
-      (form.elements.namedItem("width") as HTMLInputElement).value
-    );
-    const heightCm = parseFloat(
-      (form.elements.namedItem("height") as HTMLInputElement).value
-    );
-    const kind = (form.elements.namedItem("type") as HTMLSelectElement)
-      .value as "DOCUMENTS" | "GOODS";
-    const declaredValue = parseFloat(
-      (form.elements.namedItem("value") as HTMLInputElement).value
-    );
+    // Form fields
+    const weightKg = parseFloat((form.elements.namedItem("weight") as HTMLInputElement).value);
+    const lengthCm = parseFloat((form.elements.namedItem("length") as HTMLInputElement).value);
+    const widthCm = parseFloat((form.elements.namedItem("width") as HTMLInputElement).value);
+    const heightCm = parseFloat((form.elements.namedItem("height") as HTMLInputElement).value);
+    const kind = (form.elements.namedItem("type") as HTMLSelectElement).value as "DOCUMENTS" | "GOODS";
 
-    // Origin
     const originCountry = (form.elements.namedItem("originCountry") as HTMLInputElement).value;
     const originCity = (form.elements.namedItem("originCity") as HTMLInputElement).value;
     const originStreet = (form.elements.namedItem("originStreet") as HTMLInputElement).value;
 
-    // Destination
     const destinationCountry = (form.elements.namedItem("destinationCountry") as HTMLInputElement).value;
     const destinationCity = (form.elements.namedItem("destinationCity") as HTMLInputElement).value;
     const destinationStreet = (form.elements.namedItem("destinationStreet") as HTMLInputElement).value;
 
-    const shippingType = (
-      form.elements.namedItem("shippingType") as HTMLSelectElement
-    ).value as ShippingType;
+    const shippingType = (form.elements.namedItem("shippingType") as HTMLSelectElement).value as ShippingType;
+    const companyId = (form.elements.namedItem("companyId") as HTMLSelectElement).value; // 👈 არჩეული კომპანია
 
+    // კომპანიის ფასების წამოღება localStorage-დან
+    const saved = localStorage.getItem(`company_pricing_${companyId}`);
+    const companyPricing = saved
+      ? JSON.parse(saved)
+      : { basePrice: 10, pricePerKg: 2, fuelPct: 0.1, insurancePct: 0.05 };
+
+    // გამოთვლა
+    const parcel = { weightKg, lengthCm, widthCm, heightCm, kind, declaredValue: 0, fragile: false };
+    const calculatedPrice = ParcelService.calculatePrice(parcel, companyPricing);
+
+    // ახალი რექუესთი
     const newRequest: ParcelRequest = {
       id: uuid(),
       userId: currentUser!.id,
+      companyId, // 👈 რომელი კომპანიას ეკუთვნის
       parcel: {
-        weightKg,
-        lengthCm,
-        widthCm,
-        heightCm,
-        kind,
-        declaredValue,
-        fragile: false,
+        ...parcel,
+        declaredValue: calculatedPrice, // ფასს თვითონ ვუთითებთ
       },
       route: {
         origin: { country: originCountry, city: originCity, street: originStreet },
@@ -72,7 +72,7 @@ export function CreateRequestPage() {
       shippingType,
       status: "PENDING_REVIEW",
       createdAt: new Date().toISOString(),
-      trackingId: generateTrackingId(), // 👈 ეს დავამატე
+      trackingId: generateTrackingId(),
     };
 
     addRequest(newRequest);
@@ -90,9 +90,7 @@ export function CreateRequestPage() {
 
         {/* Parcel Info */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-200">
-            Parcel Information
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-200">Parcel Information</h3>
           <input name="weight" type="number" placeholder="Weight (kg)" className="w-full border p-3 rounded-lg" />
           <div className="grid grid-cols-3 gap-3">
             <input name="length" type="number" placeholder="Length (cm)" className="border p-3 rounded-lg" />
@@ -103,21 +101,16 @@ export function CreateRequestPage() {
             <option value="DOCUMENTS">Documents</option>
             <option value="GOODS">Goods</option>
           </select>
-          <input name="value" type="number" placeholder="Declared Value ($)" className="w-full border p-3 rounded-lg" />
         </div>
 
         {/* Route Info */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-200">
-            Route Information
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-200">Route Information</h3>
 
-          {/* Origin */}
           <input name="originCountry" placeholder="Origin Country" className="w-full border p-3 rounded-lg" />
           <input name="originCity" placeholder="Origin City" className="w-full border p-3 rounded-lg" />
           <input name="originStreet" placeholder="Origin Street (e.g. Rustaveli Ave 1)" className="w-full border p-3 rounded-lg" />
 
-          {/* Destination */}
           <input name="destinationCountry" placeholder="Destination Country" className="w-full border p-3 rounded-lg" />
           <input name="destinationCity" placeholder="Destination City" className="w-full border p-3 rounded-lg" />
           <input name="destinationStreet" placeholder="Destination Street (e.g. Taksim Square 5)" className="w-full border p-3 rounded-lg" />
@@ -127,8 +120,22 @@ export function CreateRequestPage() {
         <div>
           <h3 className="text-lg font-semibold text-gray-200 mb-2">Shipping Type</h3>
           <select name="shippingType" className="w-full border p-3 rounded-lg">
-            <option value="STANDARD">Standard</option>
-            <option value="EXPRESS">Express</option>
+            <option value="SEA">Sea</option>
+            <option value="RAILWAY">Railway</option>
+            <option value="ROAD">Road</option>
+            <option value="AIR">Air</option>
+          </select>
+        </div>
+
+        {/* Select Company */}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-200 mb-2">Select Company</h3>
+          <select name="companyId" className="w-full border p-3 rounded-lg">
+            {mockCompanies.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
           </select>
         </div>
 

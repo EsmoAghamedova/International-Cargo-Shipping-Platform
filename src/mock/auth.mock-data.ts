@@ -20,5 +20,9 @@ export const mockAuthEntities: AuthEntity[] = [
     name: 'CargoExpress LLC',
     email: 'admin@cargoexpress.com',
     role: 'COMPANY_ADMIN',
+    basePrice: 50,
+    pricePerKg: 2,
+    fuelPct: 0.1, 
+    insurancePct: 0.02, 
   },
 ];

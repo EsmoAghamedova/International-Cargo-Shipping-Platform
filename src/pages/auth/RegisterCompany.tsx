@@ -19,6 +19,10 @@ export function RegisterCompanyPage() {
       name,
       email,
       role: 'COMPANY_ADMIN',
+      basePrice: 50,
+      pricePerKg: 5,
+      fuelPct: 0.1, 
+      insurancePct: 0.02, 
     };
 
     AuthService.registerCompany(newCompany); // 👈 DB-ში ჩაწერა

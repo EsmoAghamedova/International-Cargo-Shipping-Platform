@@ -15,6 +15,10 @@ export interface Company {
   name: string;
   email: string;
   role: 'COMPANY_ADMIN';
+  basePrice: number;
+  pricePerKg: number;
+  fuelPct: number; // 0.1 = 10%
+  insurancePct: number; // 0.02 = 2%
 }
 
 // ორივე ერთად
@@ -32,7 +36,7 @@ export interface Address {
 export type ParcelKind = 'DOCUMENTS' | 'GOODS';
 
 // ტრანსპორტირების ტიპი
-export type ShippingType = 'STANDARD' | 'EXPRESS';
+export type ShippingType = 'SEA' | 'RAILWAY' | 'ROAD' | 'AIR';
 
 // სტატუსი
 export type RequestStatus =

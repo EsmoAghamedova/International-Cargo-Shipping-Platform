@@ -95,7 +95,7 @@ function App() {
           }
         />
         <Route
-          path="/company/request-detail"
+          path="/company/request-detail/:id"
           element={
             <ProtectedRoute role="COMPANY_ADMIN">
               <CompanyRequestDetail />

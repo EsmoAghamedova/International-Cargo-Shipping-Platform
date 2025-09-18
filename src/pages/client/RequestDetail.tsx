@@ -62,6 +62,9 @@ export function RequestDetail() {
               >
                 {STATUS_LABELS[status] || status}
               </li>
+
+              // if request is rejected, highlight only the rejected status and show comment if exists
+              // otherwise, highlight up to the current status
             ))}
           </ul>
 

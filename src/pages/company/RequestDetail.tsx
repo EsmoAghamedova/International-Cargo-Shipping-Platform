@@ -1,111 +1,107 @@
-import { useParams, Link } from 'react-router-dom';
-import { useRequestsStore } from '../../store/useRequestsStore';
-import { DashboardLayout } from '../../components/DashboardLayout';
-import { Badge } from '../../components/common/Badge';
-import { Card } from '../../components/common/CardComponent';
+// src/pages/company/RequestDetail.tsx
+import { useParams } from "react-router-dom";
+import { useRequestsStore } from "../../store/useRequestsStore";
+import { DashboardLayout } from "../../components/DashboardLayout";
+import { Card } from "../../components/common/CardComponent";
+import { Badge } from "../../components/common/Badge";
+import { useState, useMemo } from "react";
+import type { RequestStatus } from "../../types";
 
 export function CompanyRequestDetail() {
   const { id } = useParams<{ id: string }>();
-  const request = useRequestsStore((s) => s.requests.find((r) => r.id === id));
-  const updateRequestStatus = useRequestsStore((s) => s.updateRequestStatus);
+  const { requests, updateRequestStatus } = useRequestsStore();
+
+  // 👇 useMemo: თუ ვერ იპოვა request → აბრუნებს null
+  const request = useMemo(
+    () => requests.find((r) => r.id === id) ?? null,
+    [requests, id]
+  );
+
+  const [newStatus, setNewStatus] = useState<RequestStatus | "">("");
+  const [comment, setComment] = useState("");
 
   if (!request) {
     return (
       <DashboardLayout role="COMPANY_ADMIN">
-        <p className="text-center text-red-500 mt-10 text-lg">
-          Request not found
-        </p>
-        <div className="text-center mt-4">
-          <Link
-            to="/company/requests"
-            className="text-blue-400 hover:underline"
-          >
-            ← Back to all requests
-          </Link>
+        <div className="text-center text-red-500 mt-16 text-lg">
+          ❌ Request not found
         </div>
       </DashboardLayout>
     );
   }
 
-  const handleUpdate = (status: typeof request.status) => {
-    updateRequestStatus(request.id, status);
-  };
+  function handleSave() {
+    if (!newStatus) return;
+
+    updateRequestStatus(request.id, newStatus, comment || undefined);
+    alert("✅ Request updated!");
+  }
 
   return (
     <DashboardLayout role="COMPANY_ADMIN">
       <div className="space-y-6">
-        <header className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-blue-400">
-            Request Detail #{request.id}
-          </h1>
-          <Badge status={request.status} />
+        <header>
+          <h1 className="text-2xl font-bold text-white">Request Details</h1>
+          <p className="text-gray-400">Tracking ID: {request.trackingId}</p>
         </header>
 
-        <Card className="p-6 bg-[#1a2338] border-0 space-y-4">
-          <h2 className="text-lg font-semibold text-white">Parcel Info</h2>
+        <Card className="p-6 bg-[#1a2338] border-0">
+          <h2 className="text-xl font-semibold text-white mb-3">
+            Shipment Information
+          </h2>
           <p className="text-gray-300">
-            {request.parcel.weightKg}kg • {request.parcel.kind} •{' '}
+            {request.route.origin.city} → {request.route.destination.city}
+          </p>
+          <p className="text-gray-400 text-sm">
+            {request.parcel.weightKg}kg • {request.parcel.kind} •{" "}
             {request.shippingType}
           </p>
-          <p className="text-gray-400">
-            Declared Value: ${request.parcel.declaredValue}
-          </p>
+          <div className="mt-2">
+            <Badge status={request.status} />
+          </div>
+
+          {request.reviewComment && (
+            <p className="mt-3 text-yellow-400 italic">
+              💬 Company Comment: {request.reviewComment}
+            </p>
+          )}
         </Card>
 
-        <Card className="p-6 bg-[#1a2338] border-0 space-y-4">
-          <h2 className="text-lg font-semibold text-white">Route</h2>
-          <p className="text-gray-300">
-            {request.route.origin.city}, {request.route.origin.country} →
-            {request.route.destination.city},{' '}
-            {request.route.destination.country}
-          </p>
-        </Card>
-
-        <div className="flex gap-3">
-          {request.status === 'PENDING_REVIEW' && (
-            <>
-              <button
-                onClick={() => handleUpdate('ACCEPTED')}
-                className="px-4 py-2 bg-green-600 rounded hover:bg-green-700"
-              >
-                Accept
-              </button>
-              <button
-                onClick={() => handleUpdate('REJECTED')}
-                className="px-4 py-2 bg-red-600 rounded hover:bg-red-700"
-              >
-                Reject
-              </button>
-            </>
-          )}
-
-          {request.status === 'ACCEPTED' && (
-            <button
-              onClick={() => handleUpdate('IN_TRANSIT')}
-              className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700"
-            >
-              Mark In Transit
-            </button>
-          )}
-
-          {request.status === 'IN_TRANSIT' && (
-            <button
-              onClick={() => handleUpdate('DELIVERED')}
-              className="px-4 py-2 bg-purple-600 rounded hover:bg-purple-700"
-            >
-              Mark Delivered
-            </button>
-          )}
-        </div>
-
-        <div className="mt-6">
-          <Link
-            to="/company/requests"
-            className="text-blue-400 hover:underline"
+        {/* ---- Status Update Form ---- */}
+        <Card className="p-6 bg-gray-800 border-0">
+          <h2 className="text-lg font-semibold text-white mb-3">
+            Update Request Status
+          </h2>
+          <select
+            className="w-full p-3 rounded bg-gray-900 text-white"
+            value={newStatus}
+            onChange={(e) => setNewStatus(e.target.value as RequestStatus)}
           >
-            ← Back to all requests
-          </Link>
-        </div>
+            <option value="">-- Select status --</option>
+            <option value="PENDING_REVIEW">Pending Review</option>
+            <option value="ACCEPTED">Accepted</option>
+            <option value="IN_TRANSIT">In Transit</option>
+            <option value="OUT_FOR_DELIVERY">Out for Delivery</option>
+            <option value="DELIVERED">Delivered</option>
+            <option value="REJECTED">Rejected</option>
+          </select>
+
+          {newStatus === "REJECTED" && (
+            <textarea
+              placeholder="Enter rejection reason..."
+              className="w-full mt-3 p-3 rounded bg-gray-900 text-white"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
+          )}
+
+          <button
+            onClick={handleSave}
+            className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-semibold"
+          >
+            💾 Save Changes
+          </button>
+        </Card>
       </div>
     </DashboardLayout>
   );

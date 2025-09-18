@@ -1,22 +1,22 @@
 // src/store/useRequestsStore.ts
-import { create } from 'zustand';
-import type { ParcelRequest, RequestStatus } from '../types';
-import { StorageService } from '../services/StorageService';
-import { mockParcelRequests } from '../mock/parcels.mock-data';
+import { create } from "zustand";
+import type { ParcelRequest, RequestStatus } from "../types";
+import { StorageService } from "../services/StorageService";
+import { mockParcelRequests } from "../mock/parcels.mock-data";
 
-const STORAGE_KEY = 'requests-storage';
+const STORAGE_KEY = "requests-storage";
 
 interface RequestsState {
   requests: ParcelRequest[];
   loadRequests: () => void;
   addRequest: (request: ParcelRequest) => void;
-  updateRequestStatus: (id: string, status: RequestStatus) => void;
+  updateRequestStatus: (id: string, status: RequestStatus, comment?: string) => void;
 }
 
 export const useRequestsStore = create<RequestsState>((set, get) => ({
   requests: [],
 
-  // ერთი ჯერ უნდა გამოიძახო App-ში ან Layout-ში, რომ ჩაიტვირთოს
+  // ერთჯერადი ჩატვირთვა: mock + localStorage
   loadRequests: () => {
     const saved = StorageService.get<ParcelRequest[]>(STORAGE_KEY, []);
     set({ requests: [...mockParcelRequests, ...saved] });
@@ -24,7 +24,7 @@ export const useRequestsStore = create<RequestsState>((set, get) => ({
 
   addRequest: (request) => {
     const updated = [...get().requests, request];
-    // მარტო user-ის შექმნილი requests ვინახოთ localStorage-ში
+    // მხოლოდ user-ის შექმნილი requests ინახება localStorage-ში
     const userRequests = updated.filter(
       (r) => !mockParcelRequests.find((m) => m.id === r.id)
     );
@@ -32,13 +32,15 @@ export const useRequestsStore = create<RequestsState>((set, get) => ({
     set({ requests: updated });
   },
 
-  updateRequestStatus: (id, status) => {
+  updateRequestStatus: (id, status, comment) => {
     const updated = get().requests.map((r) =>
-      r.id === id ? { ...r, status } : r
+      r.id === id ? { ...r, status, reviewComment: comment } : r
     );
+
     const userRequests = updated.filter(
       (r) => !mockParcelRequests.find((m) => m.id === r.id)
     );
+
     StorageService.set(STORAGE_KEY, userRequests);
     set({ requests: updated });
   },

@@ -4,12 +4,19 @@ import { Badge } from '../../components/common/Badge';
 import { Card } from '../../components/common/CardComponent';
 import { Link } from 'react-router-dom';
 import { DashboardLayout } from '../../components/DashboardLayout';
+import { useEffect } from 'react';
 
 export function ClientDashboard() {
   const currentUser = useAuthStore((s) => s.currentUser);
   const requests = useRequestsStore((s) =>
     s.requests.filter((r) => r.userId === currentUser?.id),
   );
+  const loadRequests = useRequestsStore((s) => s.loadRequests);
+
+  // ჩავტვირთოთ mock + localStorage
+  useEffect(() => {
+    loadRequests();
+  }, [loadRequests]);
 
   if (!currentUser) {
     return (
@@ -61,7 +68,8 @@ export function ClientDashboard() {
                       {req.shippingType}
                     </p>
                     <p className="text-xs text-gray-500">
-                      Tracking ID: <span className="font-mono">{req.trackingId}</span>
+                      Tracking ID:{' '}
+                      <span className="font-mono">{req.trackingId}</span>
                     </p>
                   </div>
                   <Badge status={req.status} />

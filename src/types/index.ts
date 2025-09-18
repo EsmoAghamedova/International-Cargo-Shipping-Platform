@@ -71,4 +71,5 @@ export interface ParcelRequest {
   status: RequestStatus;
   createdAt: string;
   trackingId?: string;
+  reviewComment?: string;
 }

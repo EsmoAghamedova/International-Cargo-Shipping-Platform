@@ -35,27 +35,39 @@ export class PricingService {
     const volumetricWeight = (lengthCm * widthCm * heightCm) / 5000;
     const chargeableWeight = Math.max(weightKg, volumetricWeight);
 
-    // 2. Distance factor (mock: just EU-Asia example)
+    // 2. Distance factor
     let distanceFactor = 1.0;
-    if (origin === 'EU' && destination === 'ASIA') distanceFactor = distanceFactors['EU-ASIA'];
-    else if (origin === 'GLOBAL' && destination === 'REMOTE') distanceFactor = distanceFactors['GLOBAL-REMOTE'];
+    if (origin === 'EU' && destination === 'ASIA') {
+      distanceFactor = distanceFactors['EU-ASIA'];
+    } else if (origin === 'GLOBAL' && destination === 'REMOTE') {
+      distanceFactor = distanceFactors['GLOBAL-REMOTE'];
+    }
 
-    // 3. Company pricing
+    // 3. ფასების წამოღება
+    // ჯერ localStorage → მერე mockCompanies → მერე default
+    const localPricingRaw = localStorage.getItem(`company_pricing_${companyId}`);
+    const localPricing = localPricingRaw ? JSON.parse(localPricingRaw) : null;
+
     const company = mockCompanies.find((c) => c.id === companyId);
-    if (!company) throw new Error('Company not found');
 
+    const basePrice = localPricing?.basePrice ?? company?.basePrice ?? 10;
+    const pricePerKg = localPricing?.pricePerKg ?? company?.pricePerKg ?? 2;
+    const fuelPct = localPricing?.fuelPct ?? company?.fuelPct ?? 0.1;
+    const insurancePct = localPricing?.insurancePct ?? company?.insurancePct ?? 0.05;
+
+    // 4. Shipping rule
     const rule = mockPricing.find((p) => p.shippingType === shippingType);
-    if (!rule) throw new Error('Pricing rule not found');
+    if (!rule) throw new Error(`Pricing rule not found for type: ${shippingType}`);
 
-    // 4. Base price
-    const base = company.basePrice + chargeableWeight * company.pricePerKg;
+    // 5. Base price
+    const base = basePrice + chargeableWeight * pricePerKg;
 
-    // 5. Surcharges
-    const fuelSurcharge = base * company.fuelPct;
+    // 6. Surcharges
+    const fuelSurcharge = base * fuelPct;
     const remoteSurcharge = base * remotePct;
-    const insurance = includeInsurance ? declaredValue * company.insurancePct : 0;
+    const insurance = includeInsurance ? declaredValue * insurancePct : 0;
 
-    // 6. Total
+    // 7. Total
     const total =
       base * rule.typeMultiplier * distanceFactor +
       fuelSurcharge +

@@ -1,12 +1,12 @@
-import { DashboardLayout } from "../../components/DashboardLayout";
-import { useAuthStore } from "../../store/useAuthStore";
-import { Card } from "../../components/common/CardComponent";
-import { useState, useEffect } from "react";
+import { DashboardLayout } from '../../components/DashboardLayout';
+import { useAuthStore } from '../../store/useAuthStore';
+import { Card } from '../../components/common/CardComponent';
+import { useState, useEffect } from 'react';
 
 export function CompanyPricingPage() {
   const currentUser = useAuthStore((s) => s.currentUser);
 
-  if (!currentUser || currentUser.role !== "COMPANY_ADMIN") {
+  if (!currentUser || currentUser.role !== 'COMPANY_ADMIN') {
     return (
       <p className="text-center text-red-500 mt-16 text-lg">
         Unauthorized – only company admins can access this page.
@@ -42,7 +42,7 @@ export function CompanyPricingPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     localStorage.setItem(storageKey, JSON.stringify(pricing));
-    alert("✅ Pricing saved to localStorage!");
+    alert('✅ Pricing saved to localStorage!');
   }
 
   return (

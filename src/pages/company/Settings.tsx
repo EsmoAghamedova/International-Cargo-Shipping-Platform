@@ -1,17 +1,15 @@
 // src/pages/company/Settings.tsx
 
-import { useAuthStore } from "../../store/useAuthStore";
-import { DashboardLayout } from "../../components/DashboardLayout";
-import { Card } from "../../components/common/CardComponent";
+import { useAuthStore } from '../../store/useAuthStore';
+import { DashboardLayout } from '../../components/DashboardLayout';
+import { Card } from '../../components/common/CardComponent';
 
 export function CompanySettingsPage() {
   const currentCompany = useAuthStore((s) => s.currentUser);
 
-  if (!currentCompany || currentCompany.role !== "COMPANY_ADMIN") {
+  if (!currentCompany || currentCompany.role !== 'COMPANY_ADMIN') {
     return (
-      <p className="text-center text-red-500 mt-16 text-lg">
-        Not authorized
-      </p>
+      <p className="text-center text-red-500 mt-16 text-lg">Not authorized</p>
     );
   }
 
@@ -31,15 +29,15 @@ export function CompanySettingsPage() {
           <h2 className="text-xl font-semibold text-white mb-4">Profile</h2>
           <ul className="space-y-2 text-gray-300">
             <li>
-              <span className="font-medium text-white">Name:</span>{" "}
+              <span className="font-medium text-white">Name:</span>{' '}
               {currentCompany.name}
             </li>
             <li>
-              <span className="font-medium text-white">Email:</span>{" "}
+              <span className="font-medium text-white">Email:</span>{' '}
               {currentCompany.email}
             </li>
             <li>
-              <span className="font-medium text-white">ID:</span>{" "}
+              <span className="font-medium text-white">ID:</span>{' '}
               {currentCompany.id}
             </li>
           </ul>

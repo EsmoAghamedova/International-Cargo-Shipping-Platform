@@ -33,6 +33,6 @@ export const mockAuthEntities: AuthEntity[] = [
     basePrice: 75,
     pricePerKg: 2.8,
     fuelPct: 0.1,
-    insurancePct: 0.015
-  }
+    insurancePct: 0.015,
+  },
 ];

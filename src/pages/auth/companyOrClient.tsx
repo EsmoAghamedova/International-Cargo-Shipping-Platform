@@ -3,7 +3,9 @@ import { Button } from '../../components/common/Button';
 import { useNavigate } from 'react-router-dom';
 
 export function CompanyOrClientPage() {
-  const [selection, setSelection] = useState<'USER' | 'COMPANY_ADMIN' | null>(null);
+  const [selection, setSelection] = useState<'USER' | 'COMPANY_ADMIN' | null>(
+    null,
+  );
   const navigate = useNavigate();
 
   useEffect(() => {

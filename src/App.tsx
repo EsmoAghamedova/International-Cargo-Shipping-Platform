@@ -4,7 +4,6 @@ import { RegisterCompanyPage } from './pages/auth/RegisterCompany';
 import { RegisterUserPage } from './pages/auth/RegisterUser';
 import { LoginPage } from './pages/auth/Login';
 import { ClientDashboard } from './pages/client/Dashboard';
-import { RequestDetail } from './pages/client/RequestDetail';
 import { CompanyDashboard } from './pages/company/Dashboard';
 import { CompanyPricingPage } from './pages/company/Pricing';
 import { CompanySettingsPage } from './pages/company/Settings';
@@ -17,6 +16,7 @@ import { CompanyRequests } from './pages/company/Requests';
 import { CompanyOrClientPage } from './pages/auth/companyOrClient';
 import { useRequestsStore } from './store/useRequestsStore';
 import { useEffect } from 'react';
+import { RequestDetail } from './pages/client/RequestDetail';
 
 function App() {
   const loadRequests = useRequestsStore((s) => s.loadRequests);

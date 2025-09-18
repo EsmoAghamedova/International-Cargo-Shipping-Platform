@@ -23,29 +23,29 @@ export function LoginPage() {
 
   return (
     <div>
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-3 p-6 max-w-sm mx-auto bg-slate-800 rounded-xl shadow"
-    >
-      <h2 className="text-xl font-bold text-blue-500">Login</h2>
-      <input
-        name="email"
-        placeholder="Enter email"
-        className="border border-slate-600 bg-slate-900 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <Button type="submit" variant="primary">
-        Login
-      </Button>
-    </form>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-3 p-6 max-w-sm mx-auto bg-slate-800 rounded-xl shadow"
+      >
+        <h2 className="text-xl font-bold text-blue-500">Login</h2>
+        <input
+          name="email"
+          placeholder="Enter email"
+          className="border border-slate-600 bg-slate-900 text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <Button type="submit" variant="primary">
+          Login
+        </Button>
+      </form>
 
-    <div className="text-center mt-4">
-      <p className="text-slate-400">
-        Do you not have an account?{' '}
-        <Link to="/register" className="text-blue-500 hover:underline">
-          Register here
-        </Link>
-      </p>
-    </div>
+      <div className="text-center mt-4">
+        <p className="text-slate-400">
+          Do you not have an account?{' '}
+          <Link to="/register" className="text-blue-500 hover:underline">
+            Register here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

@@ -1,16 +1,16 @@
 // src/pages/company/Dashboard.tsx
-import { useAuthStore } from "../../store/useAuthStore";
-import { useRequestsStore } from "../../store/useRequestsStore";
-import { DashboardLayout } from "../../components/DashboardLayout";
-import { Card } from "../../components/common/CardComponent";
-import { Badge } from "../../components/common/Badge";
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useAuthStore } from '../../store/useAuthStore';
+import { useRequestsStore } from '../../store/useRequestsStore';
+import { DashboardLayout } from '../../components/DashboardLayout';
+import { Card } from '../../components/common/CardComponent';
+import { Badge } from '../../components/common/Badge';
+import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export function CompanyDashboard() {
   const currentUser = useAuthStore((s) => s.currentUser);
   const requests = useRequestsStore((s) =>
-    s.requests.filter((r) => r.companyId === currentUser?.id)
+    s.requests.filter((r) => r.companyId === currentUser?.id),
   );
   const loadRequests = useRequestsStore((s) => s.loadRequests);
 
@@ -30,8 +30,8 @@ export function CompanyDashboard() {
         {/* Header */}
         <header className="space-y-2">
           <h1 className="text-3xl md:text-4xl font-bold text-blue-400">
-            Welcome,{" "}
-            {currentUser.role === "COMPANY_ADMIN"
+            Welcome,{' '}
+            {currentUser.role === 'COMPANY_ADMIN'
               ? currentUser.name
               : currentUser.fullName}
           </h1>
@@ -58,14 +58,14 @@ export function CompanyDashboard() {
                       {req.route.origin.city} → {req.route.destination.city}
                     </h2>
                     <p className="text-sm text-gray-400">
-                      {req.parcel.weightKg}kg • {req.parcel.kind} •{" "}
+                      {req.parcel.weightKg}kg • {req.parcel.kind} •{' '}
                       {req.shippingType}
                     </p>
                   </div>
                   <Badge status={req.status} />
                 </div>
                 <Link
-                  to={`/company/request-detail/${req.id}`} 
+                  to={`/company/request-detail/${req.id}`}
                   className="text-blue-400 text-sm mt-2 inline-block hover:underline"
                 >
                   View details →

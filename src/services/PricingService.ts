@@ -1,5 +1,9 @@
 // src/services/PricingService.ts
-import { mockPricing, distanceFactors, remotePct } from '../mock/pricing.mock-data';
+import {
+  mockPricing,
+  distanceFactors,
+  remotePct,
+} from '../mock/pricing.mock-data';
 import { mockCompanies } from '../mock/company.mock-data';
 import type { ShippingType } from '../types';
 
@@ -45,7 +49,9 @@ export class PricingService {
 
     // 3. ფასების წამოღება
     // ჯერ localStorage → მერე mockCompanies → მერე default
-    const localPricingRaw = localStorage.getItem(`company_pricing_${companyId}`);
+    const localPricingRaw = localStorage.getItem(
+      `company_pricing_${companyId}`,
+    );
     const localPricing = localPricingRaw ? JSON.parse(localPricingRaw) : null;
 
     const company = mockCompanies.find((c) => c.id === companyId);
@@ -53,11 +59,13 @@ export class PricingService {
     const basePrice = localPricing?.basePrice ?? company?.basePrice ?? 10;
     const pricePerKg = localPricing?.pricePerKg ?? company?.pricePerKg ?? 2;
     const fuelPct = localPricing?.fuelPct ?? company?.fuelPct ?? 0.1;
-    const insurancePct = localPricing?.insurancePct ?? company?.insurancePct ?? 0.05;
+    const insurancePct =
+      localPricing?.insurancePct ?? company?.insurancePct ?? 0.05;
 
     // 4. Shipping rule
     const rule = mockPricing.find((p) => p.shippingType === shippingType);
-    if (!rule) throw new Error(`Pricing rule not found for type: ${shippingType}`);
+    if (!rule)
+      throw new Error(`Pricing rule not found for type: ${shippingType}`);
 
     // 5. Base price
     const base = basePrice + chargeableWeight * pricePerKg;

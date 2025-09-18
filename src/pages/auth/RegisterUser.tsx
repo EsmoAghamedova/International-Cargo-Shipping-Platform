@@ -11,7 +11,8 @@ export function RegisterUserPage() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
-    const fullName = (form.elements.namedItem('fullName') as HTMLInputElement).value;
+    const fullName = (form.elements.namedItem('fullName') as HTMLInputElement)
+      .value;
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
 
     const newUser: User = {

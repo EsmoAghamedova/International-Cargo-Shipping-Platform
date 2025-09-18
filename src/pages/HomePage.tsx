@@ -17,7 +17,7 @@ export function HomePage() {
         >
           Login
         </Link>
-        
+
         <Link
           to="/register"
           className="px-6 py-3 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition"

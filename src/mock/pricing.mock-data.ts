@@ -9,7 +9,12 @@ export interface PricingRule {
 
 export const mockPricing: PricingRule[] = [
   { shippingType: 'SEA', basePrice: 50, pricePerKg: 1.5, typeMultiplier: 0.7 },
-  { shippingType: 'RAILWAY', basePrice: 60, pricePerKg: 2, typeMultiplier: 0.85 },
+  {
+    shippingType: 'RAILWAY',
+    basePrice: 60,
+    pricePerKg: 2,
+    typeMultiplier: 0.85,
+  },
   { shippingType: 'ROAD', basePrice: 70, pricePerKg: 2.5, typeMultiplier: 1.0 },
   { shippingType: 'AIR', basePrice: 100, pricePerKg: 3.5, typeMultiplier: 1.6 },
 ];

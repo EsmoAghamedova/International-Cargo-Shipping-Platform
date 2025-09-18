@@ -30,6 +30,6 @@ export const useAuthStore = create<AuthState>()(
 
       setCurrent: (entity) => set({ currentUser: entity }),
     }),
-    { name: 'auth-storage' }
-  )
+    { name: 'auth-storage' },
+  ),
 );

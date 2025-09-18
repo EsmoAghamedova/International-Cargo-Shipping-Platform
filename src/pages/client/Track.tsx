@@ -1,15 +1,17 @@
-import { useState } from "react";
-import { useRequestsStore } from "../../store/useRequestsStore";
-import { Card } from "../../components/common/CardComponent";
-import { Badge } from "../../components/common/Badge";
-import { DashboardLayout } from "../../components/DashboardLayout";
+import { useState } from 'react';
+import { useRequestsStore } from '../../store/useRequestsStore';
+import { Card } from '../../components/common/CardComponent';
+import { Badge } from '../../components/common/Badge';
+import { DashboardLayout } from '../../components/DashboardLayout';
 
 export function TrackRequest() {
-  const [trackingId, setTrackingId] = useState("");
+  const [trackingId, setTrackingId] = useState('');
   const [searched, setSearched] = useState(false);
 
   const request = useRequestsStore((s) =>
-    s.requests.find((r) => r.trackingId?.toUpperCase() === trackingId.toUpperCase())
+    s.requests.find(
+      (r) => r.trackingId?.toUpperCase() === trackingId.toUpperCase(),
+    ),
   );
 
   return (
@@ -54,11 +56,11 @@ export function TrackRequest() {
                 <Badge status={request.status} />
 
                 <p className="text-gray-400">
-                  From: {request.route.origin.city},{" "}
+                  From: {request.route.origin.city},{' '}
                   {request.route.origin.country}
                 </p>
                 <p className="text-gray-400">
-                  To: {request.route.destination.city},{" "}
+                  To: {request.route.destination.city},{' '}
                   {request.route.destination.country}
                 </p>
                 <p className="text-gray-400">

@@ -1,24 +1,30 @@
-// src/pages/company/RequestDetail.tsx
-import { useParams } from "react-router-dom";
-import { useRequestsStore } from "../../store/useRequestsStore";
-import { DashboardLayout } from "../../components/DashboardLayout";
-import { Card } from "../../components/common/CardComponent";
-import { Badge } from "../../components/common/Badge";
-import { useState, useMemo } from "react";
-import type { RequestStatus } from "../../types";
+import { useParams } from 'react-router-dom';
+import { useRequestsStore } from '../../store/useRequestsStore';
+import { useUsersStore } from '../../store/useClientStore';
+import { DashboardLayout } from '../../components/DashboardLayout';
+import { Card } from '../../components/common/CardComponent';
+import { Badge } from '../../components/common/Badge';
+import { useState, useMemo } from 'react';
+import type { RequestStatus } from '../../types';
+import { InlineChat } from '../../components/Chat';
 
 export function CompanyRequestDetail() {
   const { id } = useParams<{ id: string }>();
   const { requests, updateRequestStatus } = useRequestsStore();
-
-  // 👇 useMemo: თუ ვერ იპოვა request → აბრუნებს null
-  const request = useMemo(
-    () => requests.find((r) => r.id === id) ?? null,
-    [requests, id]
+  const user = useUsersStore((s) =>
+    requests ? s.users.find((u) => {
+      const req = requests.find((r) => r.id === id);
+      return req ? u.id === req.userId : false;
+    }) : undefined
   );
 
-  const [newStatus, setNewStatus] = useState<RequestStatus | "">("");
-  const [comment, setComment] = useState("");
+  const request = useMemo(
+    () => requests.find((r) => r.id === id) ?? null,
+    [requests, id],
+  );
+
+  const [newStatus, setNewStatus] = useState<RequestStatus | ''>('');
+  const [comment, setComment] = useState('');
 
   if (!request) {
     return (
@@ -32,9 +38,8 @@ export function CompanyRequestDetail() {
 
   function handleSave() {
     if (!newStatus) return;
-
-    updateRequestStatus(request.id, newStatus, comment || undefined);
-    alert("✅ Request updated!");
+    updateRequestStatus(request!.id, newStatus, comment || undefined);
+    alert('✅ Request updated!');
   }
 
   return (
@@ -42,7 +47,7 @@ export function CompanyRequestDetail() {
       <div className="space-y-6">
         <header>
           <h1 className="text-2xl font-bold text-white">Request Details</h1>
-          <p className="text-gray-400">Tracking ID: {request.trackingId}</p>
+          <p className="text-gray-400">Tracking ID: {request!.trackingId}</p>
         </header>
 
         <Card className="p-6 bg-[#1a2338] border-0">
@@ -50,19 +55,19 @@ export function CompanyRequestDetail() {
             Shipment Information
           </h2>
           <p className="text-gray-300">
-            {request.route.origin.city} → {request.route.destination.city}
+            {request!.route.origin.city} → {request!.route.destination.city}
           </p>
           <p className="text-gray-400 text-sm">
-            {request.parcel.weightKg}kg • {request.parcel.kind} •{" "}
-            {request.shippingType}
+            {request!.parcel.weightKg}kg • {request!.parcel.kind} •{' '}
+            {request!.shippingType}
           </p>
           <div className="mt-2">
-            <Badge status={request.status} />
+            <Badge status={request!.status} />
           </div>
 
-          {request.reviewComment && (
+          {request!.reviewComment && (
             <p className="mt-3 text-yellow-400 italic">
-              💬 Company Comment: {request.reviewComment}
+              💬 Company Comment: {request!.reviewComment}
             </p>
           )}
         </Card>
@@ -86,7 +91,7 @@ export function CompanyRequestDetail() {
             <option value="REJECTED">Rejected</option>
           </select>
 
-          {newStatus === "REJECTED" && (
+          {newStatus === 'REJECTED' && (
             <textarea
               placeholder="Enter rejection reason..."
               className="w-full mt-3 p-3 rounded bg-gray-900 text-white"
@@ -103,6 +108,13 @@ export function CompanyRequestDetail() {
           </button>
         </Card>
       </div>
+      {/* Inline chat: Company chatting with Client */}
+      {request && user && (
+      <InlineChat
+        contextId={`chat_${request.userId}_${request.companyId}`}
+        contextLabel={`Chat with ${user.fullName}`}
+      />
+      )}
     </DashboardLayout>
   );
 }

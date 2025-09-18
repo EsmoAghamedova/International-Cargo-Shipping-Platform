@@ -1,35 +1,42 @@
-import { create } from "zustand";
-
-export type User = {
-    id: string;
-    fullName: string;
-    // Add other fields as needed
-};
-
+import { create } from 'zustand';
+import type { User } from '../types';
+import { mockUsers } from '../mock/user.mock-data'; // mock მონაცემები
 interface UsersState {
-    users: User[];
-    setUsers: (users: User[]) => void;
-    addUser: (user: User) => void;
-    // More actions as needed
+  users: User[];
+  setUsers: (users: User[]) => void;
+  addUser: (user: User) => void;
 }
 
-const LOCAL_STORAGE_KEY = "users";
+const LOCAL_STORAGE_KEY = 'users';
 
 export const useUsersStore = create<UsersState>((set, get) => ({
-    users: [],
-    setUsers: (users) => {
-        set({ users });
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(users));
-    },
-    addUser: (user) => {
-        const users = [...get().users, user];
-        set({ users });
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(users));
-    },
+  users: [],
+  setUsers: (users) => {
+    set({ users });
+    localStorage.setItem(
+      LOCAL_STORAGE_KEY,
+      JSON.stringify(
+        users.filter((u) => !mockUsers.find((m) => m.id === u.id)),
+      ),
+    );
+  },
+  addUser: (user) => {
+    const users = [...get().users, user];
+    set({ users });
+    localStorage.setItem(
+      LOCAL_STORAGE_KEY,
+      JSON.stringify(
+        users.filter((u) => !mockUsers.find((m) => m.id === u.id)),
+      ),
+    );
+  },
 }));
 
-// Load from localStorage on init
+// Init: mockUsers + localStorage
 const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
 if (saved) {
-    useUsersStore.getState().setUsers(JSON.parse(saved));
+  const parsed = JSON.parse(saved) as User[];
+  useUsersStore.getState().setUsers([...mockUsers, ...parsed]);
+} else {
+  useUsersStore.getState().setUsers(mockUsers);
 }

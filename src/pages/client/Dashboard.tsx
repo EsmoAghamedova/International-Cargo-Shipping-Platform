@@ -84,7 +84,7 @@ export function ClientDashboard() {
             ))}
           </div>
         )}
-              </div>
+      </div>
     </DashboardLayout>
   );
 }

@@ -29,7 +29,7 @@ export function RequestDetail() {
   const { id } = useParams();
   const request = useRequestsStore((s) => s.requests.find((r) => r.id === id));
   const company = useCompaniesStore((s) =>
-    request ? s.companies.find((c) => c.id === request.companyId) : undefined
+    request ? s.companies.find((c) => c.id === request.companyId) : undefined,
   );
 
   if (!request) {
@@ -114,6 +114,7 @@ export function RequestDetail() {
         <InlineChat
           contextId={`chat_${request.userId}_${request.companyId}`}
           contextLabel={`Chat with ${company.name}`}
+          sender="client"
         />
       )}
     </DashboardLayout>

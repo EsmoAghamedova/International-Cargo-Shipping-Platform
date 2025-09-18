@@ -1,35 +1,43 @@
-import { create } from "zustand";
-
-export type Company = {
-    id: string;
-    name: string;
-    // Add other fields as needed
-};
+import { create } from 'zustand';
+import type { Company } from '../types';
+import { mockCompanies } from '../mock/company.mock-data';
 
 interface CompaniesState {
-    companies: Company[];
-    setCompanies: (companies: Company[]) => void;
-    addCompany: (company: Company) => void;
-    // More actions as needed
+  companies: Company[];
+  setCompanies: (companies: Company[]) => void;
+  addCompany: (company: Company) => void;
 }
 
-const LOCAL_STORAGE_KEY = "companies";
+const LOCAL_STORAGE_KEY = 'companies';
 
 export const useCompaniesStore = create<CompaniesState>((set, get) => ({
-    companies: [],
-    setCompanies: (companies) => {
-        set({ companies });
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(companies));
-    },
-    addCompany: (company) => {
-        const companies = [...get().companies, company];
-        set({ companies });
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(companies));
-    },
+  companies: [],
+  setCompanies: (companies) => {
+    set({ companies });
+    localStorage.setItem(
+      LOCAL_STORAGE_KEY,
+      JSON.stringify(
+        companies.filter((c) => !mockCompanies.find((m) => m.id === c.id)),
+      ),
+    );
+  },
+  addCompany: (company) => {
+    const companies = [...get().companies, company];
+    set({ companies });
+    localStorage.setItem(
+      LOCAL_STORAGE_KEY,
+      JSON.stringify(
+        companies.filter((c) => !mockCompanies.find((m) => m.id === c.id)),
+      ),
+    );
+  },
 }));
 
-// Load from localStorage on init
+// Init: mockCompanies + localStorage
 const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
 if (saved) {
-    useCompaniesStore.getState().setCompanies(JSON.parse(saved));
+  const parsed = JSON.parse(saved) as Company[];
+  useCompaniesStore.getState().setCompanies([...mockCompanies, ...parsed]);
+} else {
+  useCompaniesStore.getState().setCompanies(mockCompanies);
 }

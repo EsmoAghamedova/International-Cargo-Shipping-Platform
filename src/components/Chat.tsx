@@ -1,56 +1,41 @@
-import { useState, useRef, useEffect } from "react";
-import type { FormEvent } from "react";
-
-type Message = {
-  id: number;
-  sender: "me" | "other";
-  text: string;
-  timestamp: string;
-};
+import { useRef, useEffect, useState } from 'react';
+import { useMessageStore, type Message } from '../store/useMessageStore';
 
 interface InlineChatProps {
   contextId: string;
   contextLabel: string;
+  sender: 'client' | 'company'; // ვინ აგზავნის
 }
 
-export function InlineChat({ contextId, contextLabel }: InlineChatProps) {
+export function InlineChat({
+  contextId,
+  contextLabel,
+  sender,
+}: InlineChatProps) {
+  const { sendMessage, loadMessages } = useMessageStore();
+  const [input, setInput] = useState('');
   const [open, setOpen] = useState(false);
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const saved = localStorage.getItem(contextId);
-    if (saved) setMessages(JSON.parse(saved));
-  }, [contextId]);
-
-  useEffect(() => {
-    localStorage.setItem(contextId, JSON.stringify(messages));
-  }, [messages, contextId]);
+  // Always get messages fresh on render
+  const chatMessages: Message[] = loadMessages(contextId);
 
   useEffect(() => {
     if (open && chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, open]);
+  }, [chatMessages, open]);
 
-  function handleSend(e: FormEvent) {
+  function handleSend(e: React.FormEvent) {
     e.preventDefault();
     if (!input.trim()) return;
-    setMessages([
-      ...messages,
-      {
-        id: Date.now(),
-        sender: "me",
-        text: input,
-        timestamp: new Date().toLocaleTimeString(),
-      },
-    ]);
-    setInput("");
+    sendMessage(contextId, sender, input);
+    setInput('');
   }
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
+      {/* Floating open button */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
@@ -60,6 +45,8 @@ export function InlineChat({ contextId, contextLabel }: InlineChatProps) {
           💬
         </button>
       )}
+
+      {/* Chat box */}
       {open && (
         <div className="w-80 max-w-full bg-[#181f36] rounded-xl shadow-2xl flex flex-col h-96 border border-blue-800">
           <div className="flex items-center justify-between px-4 py-2 bg-[#141a2c] border-b border-blue-900">
@@ -69,26 +56,26 @@ export function InlineChat({ contextId, contextLabel }: InlineChatProps) {
               className="text-gray-400 hover:text-red-400 text-lg px-2 py-1 focus:outline-none"
               aria-label="Close chat"
               title="Close"
-            >×</button>
+            >
+              ×
+            </button>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-2">
-            {messages.length === 0 && (
+            {chatMessages.length === 0 && (
               <div className="text-gray-400 text-center mt-12">
                 No messages yet.
               </div>
             )}
-            {messages.map((msg) => (
+            {chatMessages.map((msg: Message) => (
               <div
                 key={msg.id}
-                className={`flex ${
-                  msg.sender === "me" ? "justify-end" : "justify-start"
-                }`}
+                className={`flex ${msg.sender === sender ? 'justify-end' : 'justify-start'}`}
               >
                 <div
                   className={`px-3 py-2 rounded-lg max-w-xs text-sm shadow ${
-                    msg.sender === "me"
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-700 text-gray-100"
+                    msg.sender === sender
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-700 text-gray-100'
                   }`}
                 >
                   {msg.text}
@@ -109,7 +96,6 @@ export function InlineChat({ contextId, contextLabel }: InlineChatProps) {
               placeholder="Type a message..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              autoComplete="off"
             />
             <button
               type="submit"

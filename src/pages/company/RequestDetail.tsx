@@ -12,10 +12,12 @@ export function CompanyRequestDetail() {
   const { id } = useParams<{ id: string }>();
   const { requests, updateRequestStatus } = useRequestsStore();
   const user = useUsersStore((s) =>
-    requests ? s.users.find((u) => {
-      const req = requests.find((r) => r.id === id);
-      return req ? u.id === req.userId : false;
-    }) : undefined
+    requests
+      ? s.users.find((u) => {
+          const req = requests.find((r) => r.id === id);
+          return req ? u.id === req.userId : false;
+        })
+      : undefined,
   );
 
   const request = useMemo(
@@ -110,10 +112,11 @@ export function CompanyRequestDetail() {
       </div>
       {/* Inline chat: Company chatting with Client */}
       {request && user && (
-      <InlineChat
-        contextId={`chat_${request.userId}_${request.companyId}`}
-        contextLabel={`Chat with ${user.fullName}`}
-      />
+        <InlineChat
+          contextId={`chat_${request.userId}_${request.companyId}`}
+          contextLabel={`Chat with ${request.userId}`}
+          sender="company"
+        />
       )}
     </DashboardLayout>
   );

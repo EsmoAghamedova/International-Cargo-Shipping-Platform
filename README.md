@@ -8,25 +8,11 @@ This project leverages cutting-edge technologies to deliver a seamless and effic
 
 ---
 
-## Screenshots
-
-> Add screenshots or GIFs to showcase the application's user interface and key features.
-
-Example:
-
-![Dashboard Screenshot](path/to/dashboard.png)
-*The main dashboard providing an overview of ongoing shipments.*
-
-![Shipment Tracking](path/to/tracking.gif)
-*Real-time tracking of cargo shipments.*
-
----
-
 ## Tech Stack
 
 - **Frontend:** [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
 - **Build Tool:** [Vite](https://vitejs.dev/)
-- **Styling:** [Styled Components](https://styled-components.com/)
+- **Styling:** [Styled Components](https://styled-components.com/), [Windi CSS](https://windicss.org)
 - **State Management:** [Zustand](https://github.com/pmndrs/zustand), [React Query](https://tanstack.com/query/latest)
 - **Routing:** [React Router](https://reactrouter.com/)
 - **Icons:** [Lucide React](https://lucide.dev/)
@@ -126,8 +112,7 @@ This project uses **GitHub Actions** for CI/CD.
 Workflow is defined in `.github/workflows/deploy.yml` and auto-deploys to [Netlify](https://www.netlify.com/) on pushes to `main`.
 
 **Deployment URL:**  
-`https://your-app-url.com`  
-*(Replace with your live URL)*
+`https://esmoaghamedova.github.io/International-Cargo-Shipping-Platform/`  
 
 ---
 

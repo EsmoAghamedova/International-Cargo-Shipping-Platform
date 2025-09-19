@@ -112,7 +112,8 @@ This project uses **GitHub Actions** for CI/CD.
 Workflow is defined in `.github/workflows/deploy.yml` and auto-deploys to [Netlify](https://www.netlify.com/) on pushes to `main`.
 
 **Deployment URL:**
-[https://esmoaghamedova.github.io/International-Cargo-Shipping-Platform/](https://esmoaghamedova.github.io/International-Cargo-Shipping-Platform/)
+
+`[https://esmoaghamedova.github.io/International-Cargo-Shipping-Platform/](https://esmoaghamedova.github.io/International-Cargo-Shipping-Platform/)`
 
 
 ---

@@ -16,7 +16,7 @@ export function TrackRequest() {
 
   return (
     <DashboardLayout role="USER">
-      <div className="max-w-2xl mx-auto p-6 space-y-6">
+      <div className="w-full px-2 sm:px-4 md:px-6 py-4 space-y-6">
         {/* Search box */}
         <Card className="p-4 bg-[#1a2338] border-0">
           <h1 className="text-2xl font-bold text-blue-400 mb-3">

@@ -50,8 +50,8 @@ export function RequestDetail() {
 
   return (
     <DashboardLayout role="USER">
-      <div className="max-w-2xl mx-auto p-6">
-        <Card>
+      <div className="w-full px-2 sm:px-4 md:px-6 py-4">
+        <Card className="w-full">
           <h1 className="text-2xl font-bold mb-3 text-white">
             {request.route.origin.city}, {request.route.origin.country} →{' '}
             {request.route.destination.city},{' '}

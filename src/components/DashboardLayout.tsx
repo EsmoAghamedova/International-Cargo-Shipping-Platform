@@ -41,7 +41,7 @@ export function DashboardLayout({
     }`;
 
   return (
-    <div className="min-h-screen bg-[#101728] flex">
+    <div className="min-h-screen bg-[#101728] flex flex-col md:flex-row">
       {/* Sidebar mobile overlay */}
       {sidebarOpen && (
         <div
@@ -81,9 +81,6 @@ export function DashboardLayout({
                   >
                     Create Request
                   </Link>
-                  {/* <Link to="/client/requests" className={linkClasses("/client/requests")} onClick={() => setSidebarOpen(false)}>
-                    My Requests
-                  </Link> */}
                   <Link
                     to="/client/track"
                     className={linkClasses('/client/track')}
@@ -159,9 +156,6 @@ export function DashboardLayout({
               >
                 Create Request
               </Link>
-              {/* <Link to="/client/requests" className={linkClasses("/client/requests")}>
-                My Requests
-              </Link> */}
               <Link to="/client/track" className={linkClasses('/client/track')}>
                 Track Parcel
               </Link>
@@ -204,7 +198,7 @@ export function DashboardLayout({
       </nav>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 ml-0 md:ml-64">
+      <div className="flex-1 flex flex-col min-w-0 md:ml-64">
         {/* Topbar for mobile */}
         <header className="md:hidden flex items-center justify-between bg-[#182235] px-4 py-3 border-b border-gray-800 sticky top-0 z-10">
           <span className="font-bold text-lg text-white">Cargo Platform</span>
@@ -216,8 +210,11 @@ export function DashboardLayout({
             <Menu size={28} />
           </button>
         </header>
-        <main className="flex-1 p-4 md:p-8 w-full max-w-5xl mx-auto">
-          {children}
+        <main className="flex-1 p-2 sm:p-4 md:p-8 w-full">
+          {/* Add a cargo-site effect: edge-to-edge and slight border for content */}
+          <div className="w-full h-full">
+            {children}
+          </div>
         </main>
       </div>
     </div>

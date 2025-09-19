@@ -7,12 +7,18 @@ export class CompanyService {
     useRequestsStore.getState().updateRequestStatus(requestId, 'ACCEPTED');
   }
 
-  static rejectRequest(requestId: string) {
-    useRequestsStore.getState().updateRequestStatus(requestId, 'REJECTED');
+  static rejectRequest(requestId: string, comment?: string) {
+    useRequestsStore
+      .getState()
+      .updateRequestStatus(requestId, 'REJECTED', comment);
   }
 
-  static updateTimeline(requestId: string, status: RequestStatus) {
-    useRequestsStore.getState().updateRequestStatus(requestId, status);
+  static updateTimeline(
+    requestId: string,
+    status: RequestStatus,
+    comment?: string,
+  ) {
+    useRequestsStore.getState().updateRequestStatus(requestId, status, comment);
   }
 
   static getRequestsForCompany(companyId: string): ParcelRequest[] {

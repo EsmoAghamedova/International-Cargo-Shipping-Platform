@@ -11,18 +11,14 @@ import { InlineChat } from '../../components/Chat';
 export function CompanyRequestDetail() {
   const { id } = useParams<{ id: string }>();
   const { requests, updateRequestStatus } = useRequestsStore();
-  const user = useUsersStore((s) =>
-    requests
-      ? s.users.find((u) => {
-          const req = requests.find((r) => r.id === id);
-          return req ? u.id === req.userId : false;
-        })
-      : undefined,
-  );
 
   const request = useMemo(
     () => requests.find((r) => r.id === id) ?? null,
     [requests, id],
+  );
+
+  const user = useUsersStore((s) =>
+    request ? s.users.find((u) => u.id === request.userId) : undefined,
   );
 
   const [newStatus, setNewStatus] = useState<RequestStatus | ''>('');
@@ -49,32 +45,33 @@ export function CompanyRequestDetail() {
       <div className="space-y-6">
         <header>
           <h1 className="text-2xl font-bold text-white">Request Details</h1>
-          <p className="text-gray-400">Tracking ID: {request!.trackingId}</p>
+          <p className="text-gray-400">Tracking ID: {request.trackingId}</p>
         </header>
 
+        {/* Shipment Info */}
         <Card className="p-6 bg-[#1a2338] border-0">
           <h2 className="text-xl font-semibold text-white mb-3">
             Shipment Information
           </h2>
           <p className="text-gray-300">
-            {request!.route.origin.city} → {request!.route.destination.city}
+            {request.route.origin.city} → {request.route.destination.city}
           </p>
           <p className="text-gray-400 text-sm">
-            {request!.parcel.weightKg}kg • {request!.parcel.kind} •{' '}
-            {request!.shippingType}
+            {request.parcel.weightKg}kg • {request.parcel.kind} •{' '}
+            {request.shippingType}
           </p>
           <div className="mt-2">
-            <Badge status={request!.status} />
+            <Badge status={request.status} />
           </div>
 
-          {request!.reviewComment && (
+          {request.reviewComment && (
             <p className="mt-3 text-yellow-400 italic">
-              💬 Company Comment: {request!.reviewComment}
+              💬 Company Comment: {request.reviewComment}
             </p>
           )}
         </Card>
 
-        {/* ---- Status Update Form ---- */}
+        {/* Update Form */}
         <Card className="p-6 bg-gray-800 border-0">
           <h2 className="text-lg font-semibold text-white mb-3">
             Update Request Status
@@ -110,14 +107,14 @@ export function CompanyRequestDetail() {
           </button>
         </Card>
       </div>
-      {/* Inline chat: Company chatting with Client */}
-      {request && user && (
-        <InlineChat
-          contextId={`chat_${request.userId}_${request.companyId}`}
-          contextLabel={`Chat with ${request.userId}`}
-          sender="company"
-        />
-      )}
+
+      {request && (
+  <InlineChat
+    contextId={`chat_${request.userId}_${request.companyId}`}
+    contextLabel={`Chat with ${user ? user.fullName : 'Client'}`}
+    sender="company"
+  />
+)}
     </DashboardLayout>
   );
 }

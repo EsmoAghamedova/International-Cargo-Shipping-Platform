@@ -1,12 +1,12 @@
+// src/pages/client/RequestDetail.tsx
 import { useParams } from 'react-router-dom';
 import { useRequestsStore } from '../../store/useRequestsStore';
 import { useCompaniesStore } from '../../store/useCompanyStore';
+import { DashboardLayout } from '../../components/DashboardLayout';
 import { Card } from '../../components/common/CardComponent';
 import { Badge } from '../../components/common/Badge';
-import { DashboardLayout } from '../../components/DashboardLayout';
 import { InlineChat } from '../../components/Chat';
 
-// სტატუსების label-ები
 const STATUS_LABELS: Record<string, string> = {
   PENDING_REVIEW: 'Pending Review',
   ACCEPTED: 'Accepted',
@@ -26,7 +26,7 @@ const STATUS_FLOW = [
 ] as const;
 
 export function RequestDetail() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const request = useRequestsStore((s) => s.requests.find((r) => r.id === id));
   const company = useCompaniesStore((s) =>
     request ? s.companies.find((c) => c.id === request.companyId) : undefined,
@@ -34,11 +34,13 @@ export function RequestDetail() {
 
   if (!request) {
     return (
-      <Card>
-        <p className="text-center text-red-500 mt-10 text-lg">
-          Request not found
-        </p>
-      </Card>
+      <DashboardLayout role="USER">
+        <Card>
+          <p className="text-center text-red-500 mt-10 text-lg">
+            ❌ Request not found
+          </p>
+        </Card>
+      </DashboardLayout>
     );
   }
 
@@ -109,6 +111,7 @@ export function RequestDetail() {
           </div>
         </Card>
       </div>
+
       {/* Inline chat: Client chatting with Company */}
       {request && company && (
         <InlineChat

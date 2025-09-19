@@ -1,10 +1,10 @@
 import { useRef, useEffect, useState } from 'react';
-import { useMessageStore, type Message } from '../store/useMessageStore';
+import { useMessageStore } from '../store/useMessageStore';
 
 interface InlineChatProps {
   contextId: string;
   contextLabel: string;
-  sender: 'client' | 'company'; // ვინ აგზავნის
+  sender: 'client' | 'company';
 }
 
 export function InlineChat({
@@ -12,13 +12,13 @@ export function InlineChat({
   contextLabel,
   sender,
 }: InlineChatProps) {
-  const { sendMessage, loadMessages } = useMessageStore();
+  const sendMessage = useMessageStore((s) => s.sendMessage);
+  // This will force re-render when the relevant messages array changes
+  const chatMessages = useMessageStore((s) => s.messages[contextId] || []);
+
   const [input, setInput] = useState('');
   const [open, setOpen] = useState(false);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
-
-  // Always get messages fresh on render
-  const chatMessages: Message[] = loadMessages(contextId);
 
   useEffect(() => {
     if (open && chatEndRef.current) {
@@ -35,7 +35,6 @@ export function InlineChat({
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      {/* Floating open button */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
@@ -46,7 +45,6 @@ export function InlineChat({
         </button>
       )}
 
-      {/* Chat box */}
       {open && (
         <div className="w-80 max-w-full bg-[#181f36] rounded-xl shadow-2xl flex flex-col h-96 border border-blue-800">
           <div className="flex items-center justify-between px-4 py-2 bg-[#141a2c] border-b border-blue-900">
@@ -66,10 +64,12 @@ export function InlineChat({
                 No messages yet.
               </div>
             )}
-            {chatMessages.map((msg: Message) => (
+            {chatMessages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.sender === sender ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${
+                  msg.sender === sender ? 'justify-end' : 'justify-start'
+                }`}
               >
                 <div
                   className={`px-3 py-2 rounded-lg max-w-xs text-sm shadow ${

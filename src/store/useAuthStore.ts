@@ -18,7 +18,16 @@ export const useAuthStore = create<AuthState>()(
       currentUser: null,
 
       login: (email) => {
-        const entity = AuthService.login(email);
+        // ვამოწმებთ localStorage-ში ჯერ
+        const usersRaw = localStorage.getItem('users');
+        const companiesRaw = localStorage.getItem('companies');
+        const users = usersRaw ? JSON.parse(usersRaw) : [];
+        const companies = companiesRaw ? JSON.parse(companiesRaw) : [];
+
+        const entity =
+          [...users, ...companies].find((e) => e.email === email) ??
+          AuthService.login(email); // fallback mock-იდან
+
         if (entity) set({ currentUser: entity });
         return entity;
       },

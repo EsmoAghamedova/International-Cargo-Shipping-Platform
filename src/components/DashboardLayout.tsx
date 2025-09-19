@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { useRequestsStore } from '../store/useRequestsStore';
 
 export function DashboardLayout({
   role,
@@ -25,6 +26,11 @@ export function DashboardLayout({
   function handleOverlayClick(e: React.MouseEvent<HTMLDivElement>) {
     if (e.target === e.currentTarget) setSidebarOpen(false);
   }
+
+  const { loadRequests } = useRequestsStore();
+  useEffect(() => {
+    loadRequests();
+  }, []);
 
   const linkClasses = (path: string) =>
     `flex items-center gap-2 px-4 py-2 rounded transition font-medium

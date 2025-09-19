@@ -20,8 +20,9 @@ export function CreateRequestPage() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [pricePreview, setPricePreview] = useState<any>(null);
 
+  // 🚀 გავასწორე: key იგივეა რაც store-ში (companies)
   useEffect(() => {
-    const saved = localStorage.getItem('registered_companies');
+    const saved = localStorage.getItem('companies-storage');
     const localCompanies: Company[] = saved ? JSON.parse(saved) : [];
     setCompanies([...mockCompanies, ...localCompanies]);
   }, []);
@@ -62,7 +63,7 @@ export function CreateRequestPage() {
         !companyId
       ) {
         setPricePreview(null);
-        return;
+        return null;
       }
 
       const result = PricingService.calculatePrice({
@@ -78,8 +79,10 @@ export function CreateRequestPage() {
       });
 
       setPricePreview(result);
+      return result; // ✅ ახლა აბრუნებს
     } catch {
       setPricePreview(null);
+      return null;
     }
   }
 
@@ -87,7 +90,7 @@ export function CreateRequestPage() {
     e.preventDefault();
     const form = e.currentTarget;
 
-    // Price calculation (reuse preview or recalc)
+    // ✅ ყოველთვის დააბრუნებს რაღაცას
     const priceResult = pricePreview ?? calculatePreview(form);
 
     const weightKg = parseFloat(

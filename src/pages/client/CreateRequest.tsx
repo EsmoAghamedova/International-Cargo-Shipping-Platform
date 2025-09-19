@@ -18,8 +18,9 @@ export function CreateRequestPage() {
   const navigate = useNavigate();
 
   const [companies, setCompanies] = useState<Company[]>([]);
-  const [pricePreview, setPricePreview] = useState<any>(null);
-
+  const [pricePreview, setPricePreview] = useState<ReturnType<
+    typeof PricingService.calculatePrice
+  > | null>(null);
   // 🚀 გავასწორე: key იგივეა რაც store-ში (companies)
   useEffect(() => {
     const saved = localStorage.getItem('companies-storage');

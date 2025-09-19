@@ -212,9 +212,7 @@ export function DashboardLayout({
         </header>
         <main className="flex-1 p-2 sm:p-4 md:p-8 w-full">
           {/* Add a cargo-site effect: edge-to-edge and slight border for content */}
-          <div className="w-full h-full">
-            {children}
-          </div>
+          <div className="w-full h-full">{children}</div>
         </main>
       </div>
     </div>

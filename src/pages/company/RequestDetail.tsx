@@ -109,12 +109,12 @@ export function CompanyRequestDetail() {
       </div>
 
       {request && (
-  <InlineChat
-    contextId={`chat_${request.userId}_${request.companyId}`}
-    contextLabel={`Chat with ${user ? user.fullName : 'Client'}`}
-    sender="company"
-  />
-)}
+        <InlineChat
+          contextId={`chat_${request.userId}_${request.companyId}`}
+          contextLabel={`Chat with ${user ? user.fullName : 'Client'}`}
+          sender="company"
+        />
+      )}
     </DashboardLayout>
   );
 }

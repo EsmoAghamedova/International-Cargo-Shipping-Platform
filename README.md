@@ -113,7 +113,7 @@ Workflow is defined in `.github/workflows/deploy.yml` and auto-deploys to [Netli
 
 **Deployment URL:**
 
-`[https://esmoaghamedova.github.io/International-Cargo-Shipping-Platform/](https://esmoaghamedova.github.io/International-Cargo-Shipping-Platform/)`
+`[https://esmoaghamedova.github.io/International-Cargo-Shipping-Platform/]`(https://esmoaghamedova.github.io/International-Cargo-Shipping-Platform/)
 
 
 ---

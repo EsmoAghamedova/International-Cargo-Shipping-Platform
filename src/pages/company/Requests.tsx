@@ -57,7 +57,7 @@ export function CompanyRequests() {
                   <Badge status={req.status} />
                 </div>
                 <Link
-                  to={`/company/requests/${req.id}`}
+                  to={`/company/request-detail/${req.id}`}
                   className="text-green-400 text-sm mt-2 inline-block hover:underline"
                 >
                   Manage →

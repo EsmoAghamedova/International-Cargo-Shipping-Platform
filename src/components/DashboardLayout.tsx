@@ -190,7 +190,7 @@ export function DashboardLayout({
           )}
         </div>
         <Link
-          to="/login"
+          to="/"
           className="mt-auto block px-4 py-2 rounded text-red-500 hover:bg-red-50 hover:text-red-700 transition"
         >
           Logout

@@ -14,11 +14,16 @@ export interface Company {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  hqAddress: Address;
+  regions: string[]; // ISO2
+  supportedTypes: ShippingType[];
   role: 'COMPANY_ADMIN';
+  logoUrl?: string;
   basePrice: number;
   pricePerKg: number;
-  fuelPct: number; // 0.1 = 10%
-  insurancePct: number; // 0.02 = 2%
+  fuelPct: number;
+  insurancePct: number;
 }
 
 // ორივე ერთად

@@ -1,5 +1,5 @@
 import { useAuthStore } from '../../store/useAuthStore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import type { User } from '../../types';
 import { v4 as uuid } from 'uuid';
 import { AuthService } from '../../services/AuthService';
@@ -29,6 +29,7 @@ export function RegisterUserPage() {
   }
 
   return (
+    <div>
     <form
       onSubmit={handleSubmit}
       className="flex flex-col gap-3 p-6 max-w-sm mx-auto bg-white rounded-xl shadow border border-gray-200"
@@ -48,5 +49,15 @@ export function RegisterUserPage() {
         Register
       </button>
     </form>
+    
+    <div className="text-center mt-4">
+            <p className="text-gray-500">
+              Do you have an account?{' '}
+              <Link to="/login" className="text-blue-600 hover:underline">
+                Login here
+              </Link>
+            </p>
+          </div>
+    </div>
   );
 }

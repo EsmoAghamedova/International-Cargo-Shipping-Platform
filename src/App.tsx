@@ -17,6 +17,7 @@ import { CompanyOrClientPage } from './pages/auth/companyOrClient';
 import { useRequestsStore } from './store/useRequestsStore';
 import { useEffect } from 'react';
 import { RequestDetail } from './pages/client/RequestDetail';
+// import { RegisterPage } from './pages/dev-only/StyleguidePage';
 
 function App() {
   const loadRequests = useRequestsStore((s) => s.loadRequests);

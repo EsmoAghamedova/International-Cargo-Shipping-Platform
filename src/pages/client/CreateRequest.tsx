@@ -7,6 +7,7 @@ import { DashboardLayout } from '../../components/DashboardLayout';
 import { useEffect, useState } from 'react';
 import { mockCompanies } from '../../mock/company.mock-data';
 import { PricingService } from '../../services/PricingService';
+import { countriesByContinent } from '../../services/DistanceService';
 
 function generateTrackingId() {
   return Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -145,7 +146,7 @@ export function CreateRequestPage() {
         widthCm,
         heightCm,
         kind,
-        declaredValue: priceResult?.total ?? 0,
+        declaredValue: Number(priceResult?.total ?? 0),
         fragile: false,
       },
       route: {
@@ -182,17 +183,19 @@ export function CreateRequestPage() {
 
   return (
     <DashboardLayout role="USER">
-      <h1 className="text-2xl font-bold text-white mb-4">Create Request</h1>
+      <h1 className="text-2xl font-bold text-blue-600 mb-4">Create Request</h1>
       <form
         onSubmit={handleSubmit}
         onChange={(e) => calculatePreview(e.currentTarget)}
-        className="bg-gray-800 shadow-md rounded-2xl p-8 max-w-2xl mx-auto flex flex-col gap-6"
+        className="bg-white shadow-md rounded-2xl p-8 max-w-2xl mx-auto flex flex-col gap-6 border border-gray-200"
       >
-        <h2 className="text-2xl font-bold mb-2">📦 Create Shipment Request</h2>
+        <h2 className="text-2xl font-bold mb-2 text-blue-600">
+          📦 Create Shipment Request
+        </h2>
 
         {/* Parcel Info */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-200">
+          <h3 className="text-lg font-semibold text-gray-700">
             Parcel Information
           </h3>
           <input
@@ -233,15 +236,18 @@ export function CreateRequestPage() {
 
         {/* Route Info */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-200">
+          <h3 className="text-lg font-semibold text-gray-700">
             Route Information
           </h3>
-          <input
-            name="originCountry"
-            placeholder="Origin Country"
-            className="w-full border p-3 rounded-lg"
-            required
-          />
+          <select name="originCountry" className="w-full border p-3 rounded-lg" required>
+  {Object.entries(countriesByContinent).map(([continent, countries]) => (
+    <optgroup key={continent} label={continent}>
+      {countries.map((c) => (
+        <option key={c} value={c}>{c}</option>
+      ))}
+    </optgroup>
+  ))}
+</select>
           <input
             name="originCity"
             placeholder="Origin City"
@@ -254,12 +260,15 @@ export function CreateRequestPage() {
             className="w-full border p-3 rounded-lg"
             required
           />
-          <input
-            name="destinationCountry"
-            placeholder="Destination Country"
-            className="w-full border p-3 rounded-lg"
-            required
-          />
+          <select name="destinationCountry" className="w-full border p-3 rounded-lg" required>
+  {Object.entries(countriesByContinent).map(([continent, countries]) => (
+    <optgroup key={continent} label={continent}>
+      {countries.map((c) => (
+        <option key={c} value={c}>{c}</option>
+      ))}
+    </optgroup>
+  ))}
+</select>
           <input
             name="destinationCity"
             placeholder="Destination City"
@@ -276,7 +285,7 @@ export function CreateRequestPage() {
 
         {/* Shipping Type */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-200 mb-2">
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">
             Shipping Type
           </h3>
           <select
@@ -293,7 +302,7 @@ export function CreateRequestPage() {
 
         {/* Company Select */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-200 mb-2">
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">
             Select Company
           </h3>
           <select
@@ -314,22 +323,22 @@ export function CreateRequestPage() {
         </div>
 
         {/* 💰 Price Preview */}
-        <div className="p-4 bg-gray-900 rounded-lg text-gray-200">
+        <div className="p-4 bg-gray-100 rounded-lg text-gray-700">
           <h3 className="text-lg font-semibold mb-2">💰 Price Preview</h3>
           {pricePreview ? (
             <ul className="space-y-1 text-sm">
               <li>Base: ${pricePreview.base.toFixed(2)}</li>
               <li>Fuel surcharge: ${pricePreview.fuelSurcharge.toFixed(2)}</li>
               <li>
-                Remote surcharge: ${pricePreview.remoteSurcharge.toFixed(2)}
+                Extra surcharges: ${pricePreview.extraSurcharges.toFixed(2)}
               </li>
               <li>Insurance: ${pricePreview.insurance.toFixed(2)}</li>
-              <li className="font-bold text-green-400">
+              <li className="font-bold text-green-600">
                 Total: ${pricePreview.total.toFixed(2)}
               </li>
             </ul>
           ) : (
-            <p className="text-gray-400">Fill details to see estimated price</p>
+            <p className="text-gray-500">Fill details to see estimated price</p>
           )}
         </div>
 

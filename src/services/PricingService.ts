@@ -1,10 +1,5 @@
 // src/services/PricingService.ts
-import {
-  mockPricing,
-  distanceFactors,
-  remotePct,
-} from '../mock/pricing.mock-data';
-import { mockCompanies } from '../mock/company.mock-data';
+import { DistanceService } from './DistanceService';
 import type { ShippingType } from '../types';
 
 export class PricingService {
@@ -30,70 +25,48 @@ export class PricingService {
       origin,
       destination,
       declaredValue,
-      companyId,
       includeInsurance = false,
       extraSurcharges = 0,
     } = params;
 
-    // 1. Volumetric weight
     const volumetricWeight = (lengthCm * widthCm * heightCm) / 5000;
     const chargeableWeight = Math.max(weightKg, volumetricWeight);
 
-    // 2. Distance factor
-    let distanceFactor = 1.0;
-    if (origin === 'EU' && destination === 'ASIA') {
-      distanceFactor = distanceFactors['EU-ASIA'];
-    } else if (origin === 'GLOBAL' && destination === 'REMOTE') {
-      distanceFactor = distanceFactors['GLOBAL-REMOTE'];
-    }
+    // Distance factor ვიღებთ DistanceService-იდან
+    const distanceFactor = DistanceService.getFactor(origin, destination);
 
-    // 3. ფასების წამოღება
-    // ჯერ localStorage → მერე mockCompanies → მერე default
-    const localPricingRaw = localStorage.getItem(
-      `company_pricing_${companyId}`,
-    );
-    const localPricing = localPricingRaw ? JSON.parse(localPricingRaw) : null;
+    // Shipping multiplier
+    const typeMultiplier: Record<ShippingType, number> = {
+      SEA: 0.7,
+      RAILWAY: 0.85,
+      ROAD: 1.0,
+      AIR: 1.6,
+    };
 
-    const company = mockCompanies.find((c) => c.id === companyId);
+    const basePrice = 10;
+    const pricePerKg = 2;
 
-    const basePrice = localPricing?.basePrice ?? company?.basePrice ?? 10;
-    const pricePerKg = localPricing?.pricePerKg ?? company?.pricePerKg ?? 2;
-    const fuelPct = localPricing?.fuelPct ?? company?.fuelPct ?? 0.1;
-    const insurancePct =
-      localPricing?.insurancePct ?? company?.insurancePct ?? 0.05;
-
-    // 4. Shipping rule
-    const rule = mockPricing.find((p) => p.shippingType === shippingType);
-    if (!rule)
-      throw new Error(`Pricing rule not found for type: ${shippingType}`);
-
-    // 5. Base price
     const base = basePrice + chargeableWeight * pricePerKg;
 
-    // 6. Surcharges
-    const fuelSurcharge = base * fuelPct;
-    const remoteSurcharge = base * remotePct;
-    const insurance = includeInsurance ? declaredValue * insurancePct : 0;
+    const fuelSurcharge = base * 0.1;
+    const insurance = includeInsurance ? declaredValue * 0.05 : 0;
 
-    // 7. Total
     const total =
-      base * rule.typeMultiplier * distanceFactor +
+      base * typeMultiplier[shippingType] * distanceFactor +
       fuelSurcharge +
-      remoteSurcharge +
       insurance +
       extraSurcharges;
 
     return {
       base,
       fuelSurcharge,
-      remoteSurcharge,
       insurance,
       extraSurcharges,
       total,
       breakdown: {
         volumetricWeight,
         chargeableWeight,
-        typeMultiplier: rule.typeMultiplier,
+        typeMultiplier: typeMultiplier[shippingType],
         distanceFactor,
       },
     };

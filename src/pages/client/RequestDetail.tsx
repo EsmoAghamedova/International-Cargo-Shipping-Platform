@@ -51,8 +51,8 @@ export function RequestDetail() {
   return (
     <DashboardLayout role="USER">
       <div className="w-full px-2 sm:px-4 md:px-6 py-4">
-        <Card className="w-full">
-          <h1 className="text-2xl font-bold mb-3 text-white">
+        <Card className="w-full bg-white border border-gray-200">
+          <h1 className="text-2xl font-bold mb-3 text-blue-600">
             {request.route.origin.city}, {request.route.origin.country} →{' '}
             {request.route.destination.city},{' '}
             {request.route.destination.country}
@@ -68,8 +68,8 @@ export function RequestDetail() {
                     key={status}
                     className={`p-3 rounded-md ${
                       status === 'REJECTED'
-                        ? 'bg-red-600 text-white font-semibold'
-                        : 'bg-gray-800 text-gray-300'
+                        ? 'bg-red-500 text-white font-semibold'
+                        : 'bg-gray-100 text-gray-400'
                     }`}
                   >
                     {STATUS_LABELS[status] || status}
@@ -81,8 +81,8 @@ export function RequestDetail() {
                   key={status}
                   className={`p-3 rounded-md ${
                     idx <= currentStatusIndex
-                      ? 'bg-blue-600 text-white font-semibold'
-                      : 'bg-gray-800 text-gray-300'
+                      ? 'bg-blue-500 text-white font-semibold'
+                      : 'bg-gray-100 text-gray-400'
                   }`}
                 >
                   {STATUS_LABELS[status] || status}
@@ -93,20 +93,20 @@ export function RequestDetail() {
 
           {/* Show rejection comment if exists */}
           {request.status === 'REJECTED' && request.reviewComment && (
-            <div className="bg-red-900 text-red-200 mt-4 p-4 rounded">
+            <div className="bg-red-100 text-red-700 mt-4 p-4 rounded">
               <span className="font-bold">Rejection Reason:</span>{' '}
               {request.reviewComment}
             </div>
           )}
 
           {/* დამატებითი ინფო */}
-          <div className="mt-6 text-sm text-gray-400">
+          <div className="mt-6 text-sm text-gray-700">
             <p>
               Parcel: {request.parcel.weightKg}kg • {request.parcel.kind} •
-              Declared Value: ${request.parcel.declaredValue}
+              Declared Value: ${Number(request.parcel.declaredValue).toFixed(2)}
             </p>
             {request.parcel.fragile && (
-              <p className="text-red-400 font-medium mt-1">⚠️ Fragile</p>
+              <p className="text-red-500 font-medium mt-1">⚠️ Fragile</p>
             )}
           </div>
         </Card>

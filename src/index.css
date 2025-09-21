@@ -4,11 +4,9 @@
   font-weight: 400;
 
   /* Base colors */
-  color-scheme: dark;
-  color: #f1f5f9;
-  /* text-gray-100 */
-  background-color: #0f172a;
-  /* slate-900 */
+  color: #1e293b;
+  /* slate-800 */
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,14 +17,14 @@
 /* Links */
 a {
   font-weight: 500;
-  color: #60a5fa;
-  /* blue-400 */
+  color: #2563eb;
+  /* blue-600 */
   text-decoration: none;
 }
 
 a:hover {
-  color: #93c5fd;
-  /* blue-300 */
+  color: #1d4ed8;
+  /* blue-700 */
 }
 
 /* Body */
@@ -34,10 +32,9 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #0f172a;
-  /* slate-900 */
-  color: #f1f5f9;
-  /* text-gray-100 */
+  background-color: #ffffff;
+  color: #1e293b;
+  /* slate-800 */
   display: flex;
   place-items: center;
 }
@@ -46,8 +43,8 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
-  color: #e2e8f0;
-  /* gray-200 */
+  color: #334155;
+  /* slate-700 */
 }
 
 /* Buttons */
@@ -58,16 +55,16 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #2563eb;
-  /* blue-600 */
+  background-color: #3b82f6;
+  /* blue-500 */
   color: white;
   cursor: pointer;
   transition: all 0.25s;
 }
 
 button:hover {
-  background-color: #1d4ed8;
-  /* blue-700 */
+  background-color: #2563eb;
+  /* blue-600 */
 }
 
 button:focus,

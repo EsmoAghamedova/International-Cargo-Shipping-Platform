@@ -31,16 +31,20 @@ export function RegisterUserPage() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-3 p-6 max-w-sm mx-auto"
+      className="flex flex-col gap-3 p-6 max-w-sm mx-auto bg-white rounded-xl shadow border border-gray-200"
     >
-      <h2 className="text-xl font-bold">Register User</h2>
+      <h2 className="text-xl font-bold text-blue-600">Register User</h2>
       <input
         name="fullName"
         placeholder="Full Name"
-        className="border p-2 rounded"
+        className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <input name="email" placeholder="Email" className="border p-2 rounded" />
-      <button type="submit" className="bg-green-500 text-white rounded p-2">
+      <input
+        name="email"
+        placeholder="Email"
+        className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <button type="submit" className="bg-green-500 text-white rounded p-2 hover:bg-green-600 transition">
         Register
       </button>
     </form>

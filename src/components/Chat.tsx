@@ -13,7 +13,6 @@ export function InlineChat({
   sender,
 }: InlineChatProps) {
   const sendMessage = useMessageStore((s) => s.sendMessage);
-  // This will force re-render when the relevant messages array changes
   const chatMessages = useMessageStore((s) => s.messages[contextId] || []);
 
   const [input, setInput] = useState('');
@@ -46,19 +45,19 @@ export function InlineChat({
       )}
 
       {open && (
-        <div className="w-80 max-w-full bg-[#181f36] rounded-xl shadow-2xl flex flex-col h-96 border border-blue-800">
-          <div className="flex items-center justify-between px-4 py-2 bg-[#141a2c] border-b border-blue-900">
-            <span className="font-semibold text-white">{contextLabel}</span>
+        <div className="w-80 max-w-full bg-white rounded-xl shadow-2xl flex flex-col h-96 border border-gray-200">
+          <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200 rounded-t-xl">
+            <span className="font-semibold text-blue-700">{contextLabel}</span>
             <button
               onClick={() => setOpen(false)}
-              className="text-gray-400 hover:text-red-400 text-lg px-2 py-1 focus:outline-none"
+              className="bg-gray-100 text-red-400 hover:text-white text-lg px-2 py-1 focus:outline-none"
               aria-label="Close chat"
               title="Close"
             >
               ×
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto p-4 space-y-2">
+          <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-white">
             {chatMessages.length === 0 && (
               <div className="text-gray-400 text-center mt-12">
                 No messages yet.
@@ -75,11 +74,11 @@ export function InlineChat({
                   className={`px-3 py-2 rounded-lg max-w-xs text-sm shadow ${
                     msg.sender === sender
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-700 text-gray-100'
+                      : 'bg-gray-100 text-gray-800 border border-gray-200'
                   }`}
                 >
                   {msg.text}
-                  <div className="text-xs text-gray-300 mt-1 text-right">
+                  <div className="text-xs text-white-500 mt-1 text-right">
                     {msg.timestamp}
                   </div>
                 </div>
@@ -89,17 +88,17 @@ export function InlineChat({
           </div>
           <form
             onSubmit={handleSend}
-            className="flex border-t border-gray-700 bg-[#151c2c]"
+            className="flex border-t border-gray-200 bg-gray-50 rounded-b-xl"
           >
             <input
-              className="flex-1 p-3 bg-transparent text-white outline-none"
+              className="flex-1 p-3 bg-white text-gray-800 outline-none"
               placeholder="Type a message..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
             <button
               type="submit"
-              className="px-5 bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+              className="px-5 bg-blue-600 text-white font-semibold hover:bg-blue-700 transition rounded-r-xl"
             >
               Send
             </button>

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export function HomePage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-white via-gray-50 to-gray-100">
       <h1 className="text-4xl font-bold text-blue-700 mb-4">
         International Cargo Shipping 🌍
       </h1>
@@ -13,14 +13,14 @@ export function HomePage() {
       <div className="flex gap-4">
         <Link
           to="/login"
-          className="px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
+          className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition border border-blue-500"
         >
           Login
         </Link>
 
         <Link
           to="/register"
-          className="px-6 py-3 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition"
+          className="px-6 py-3 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 transition border border-green-500"
         >
           Register
         </Link>

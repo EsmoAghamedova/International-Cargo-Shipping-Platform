@@ -49,31 +49,31 @@ export function CompanyPricingPage() {
     <DashboardLayout role="COMPANY_ADMIN">
       <div className="space-y-8">
         <header>
-          <h1 className="text-3xl font-bold text-blue-400">Company Pricing</h1>
-          <p className="text-gray-400 text-lg">
+          <h1 className="text-3xl font-bold text-blue-600">Company Pricing</h1>
+          <p className="text-gray-500 text-lg">
             Manage your pricing strategy for shipments
           </p>
         </header>
 
         {/* Current Pricing */}
-        <Card className="p-6 bg-[#1a2338] border-0">
-          <h2 className="text-xl font-semibold text-white mb-4">
+        <Card className="p-6 bg-white border border-gray-200">
+          <h2 className="text-xl font-semibold text-blue-700 mb-4">
             Current Pricing
           </h2>
-          <ul className="text-gray-300 space-y-3">
-            <li className="flex justify-between border-b border-gray-700 pb-2">
+          <ul className="text-gray-700 space-y-3">
+            <li className="flex justify-between border-b border-gray-200 pb-2">
               <span className="font-medium">Base Price</span>
               <span>${pricing.basePrice}</span>
             </li>
-            <li className="flex justify-between border-b border-gray-700 pb-2">
+            <li className="flex justify-between border-b border-gray-200 pb-2">
               <span className="font-medium">Price Per Kg</span>
               <span>${pricing.pricePerKg}</span>
             </li>
-            <li className="flex justify-between border-b border-gray-700 pb-2">
+            <li className="flex justify-between border-b border-gray-200 pb-2">
               <span className="font-medium">Fuel %</span>
               <span>{pricing.fuelPct * 100}%</span>
             </li>
-            <li className="flex justify-between border-b border-gray-700 pb-2">
+            <li className="flex justify-between border-b border-gray-200 pb-2">
               <span className="font-medium">Insurance %</span>
               <span>{pricing.insurancePct * 100}%</span>
             </li>
@@ -81,8 +81,8 @@ export function CompanyPricingPage() {
         </Card>
 
         {/* Update Pricing */}
-        <Card className="p-6 bg-[#1a2338] border-0">
-          <h2 className="text-xl font-semibold text-white mb-4">
+        <Card className="p-6 bg-white border border-gray-200">
+          <h2 className="text-xl font-semibold text-blue-700 mb-4">
             Update Pricing
           </h2>
           <form
@@ -95,7 +95,7 @@ export function CompanyPricingPage() {
               value={pricing.basePrice}
               onChange={handleChange}
               placeholder="Base Price"
-              className="w-full p-2 rounded bg-gray-900 text-white"
+              className="w-full p-2 rounded bg-gray-100 text-gray-800 border border-gray-300"
             />
             <input
               type="number"
@@ -103,7 +103,7 @@ export function CompanyPricingPage() {
               value={pricing.pricePerKg}
               onChange={handleChange}
               placeholder="Price per Kg"
-              className="w-full p-2 rounded bg-gray-900 text-white"
+              className="w-full p-2 rounded bg-gray-100 text-gray-800 border border-gray-300"
             />
             <input
               type="number"
@@ -112,7 +112,7 @@ export function CompanyPricingPage() {
               value={pricing.fuelPct}
               onChange={handleChange}
               placeholder="Fuel %"
-              className="w-full p-2 rounded bg-gray-900 text-white"
+              className="w-full p-2 rounded bg-gray-100 text-gray-800 border border-gray-300"
             />
             <input
               type="number"
@@ -121,7 +121,7 @@ export function CompanyPricingPage() {
               value={pricing.insurancePct}
               onChange={handleChange}
               placeholder="Insurance %"
-              className="w-full p-2 rounded bg-gray-900 text-white"
+              className="w-full p-2 rounded bg-gray-100 text-gray-800 border border-gray-300"
             />
 
             <button

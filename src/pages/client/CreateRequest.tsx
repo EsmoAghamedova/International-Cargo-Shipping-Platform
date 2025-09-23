@@ -14,6 +14,22 @@ function generateTrackingId() {
   return Math.random().toString(36).substring(2, 10).toUpperCase();
 }
 
+// --- helper: find continent by country ---
+function findContinentByCountry(country: string): string | null {
+  for (const [continent, countries] of Object.entries(countriesByContinent)) {
+    if (countries.includes(country)) return continent;
+  }
+  return null;
+}
+
+const steps = [
+  'Parcel Info',
+  'Route Info',
+  'Shipping Type',
+  'Select Company',
+  'Preview & Submit',
+];
+
 export function CreateRequestPage() {
   const currentUser = useAuthStore((s) => s.currentUser);
   const addRequest = useRequestsStore((s) => s.addRequest);
@@ -24,62 +40,64 @@ export function CreateRequestPage() {
     typeof PricingService.calculatePrice
   > | null>(null);
 
-  // form values for filtering companies
-  const [originCountry, setOriginCountry] = useState('');
-  const [destinationCountry, setDestinationCountry] = useState('');
-  const [shippingType, setShippingType] = useState<ShippingType | ''>('');
+  const [currentStep, setCurrentStep] = useState(0);
 
+  // --- form state ---
+  const [formData, setFormData] = useState({
+    weight: '',
+    length: '',
+    width: '',
+    height: '',
+    kind: 'DOCUMENTS' as 'DOCUMENTS' | 'GOODS',
+
+    originCountry: '',
+    originCity: '',
+    originStreet: '',
+    destinationCountry: '',
+    destinationCity: '',
+    destinationStreet: '',
+
+    shippingType: '' as ShippingType | '',
+    companyId: '',
+  });
+
+  // --- load companies ---
   useEffect(() => {
     const saved = localStorage.getItem('companies-storage');
     const localCompanies: Company[] = saved ? JSON.parse(saved) : [];
     setCompanies([...mockCompanies, ...localCompanies]);
   }, []);
 
-  function calculatePreview(form: HTMLFormElement) {
-    try {
-      const weightKg = parseFloat(
-        (form.elements.namedItem('weight') as HTMLInputElement).value,
-      );
-      const lengthCm = parseFloat(
-        (form.elements.namedItem('length') as HTMLInputElement).value,
-      );
-      const widthCm = parseFloat(
-        (form.elements.namedItem('width') as HTMLInputElement).value,
-      );
-      const heightCm = parseFloat(
-        (form.elements.namedItem('height') as HTMLInputElement).value,
-      );
-      const shippingType = (
-        form.elements.namedItem('shippingType') as HTMLSelectElement
-      ).value as ShippingType;
-      const companyId = (
-        form.elements.namedItem('companyId') as HTMLSelectElement
-      ).value;
-      const originCountry = (
-        form.elements.namedItem('originCountry') as HTMLInputElement
-      ).value;
-      const destinationCountry = (
-        form.elements.namedItem('destinationCountry') as HTMLInputElement
-      ).value;
+  // --- handle change ---
+  function updateField(field: string, value: string) {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  }
 
-      if (
-        !weightKg ||
-        !lengthCm ||
-        !widthCm ||
-        !heightCm ||
-        !shippingType ||
-        !companyId
-      ) {
+  // --- calculate preview ---
+  useEffect(() => {
+    try {
+      const {
+        weight,
+        length,
+        width,
+        height,
+        shippingType,
+        companyId,
+        originCountry,
+        destinationCountry,
+      } = formData;
+
+      if (!weight || !length || !width || !height || !shippingType || !companyId) {
         setPricePreview(null);
-        return null;
+        return;
       }
 
       const result = PricingService.calculatePrice({
-        shippingType,
-        weightKg,
-        lengthCm,
-        widthCm,
-        heightCm,
+        shippingType: shippingType as ShippingType,
+        weightKg: parseFloat(weight),
+        lengthCm: parseFloat(length),
+        widthCm: parseFloat(width),
+        heightCm: parseFloat(height),
         origin: originCountry || 'EU',
         destination: destinationCountry || 'ASIA',
         declaredValue: 0,
@@ -87,96 +105,49 @@ export function CreateRequestPage() {
       });
 
       setPricePreview(result);
-      return result;
     } catch {
       setPricePreview(null);
-      return null;
     }
-  }
+  }, [formData]);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
-
-    const priceResult = pricePreview ?? calculatePreview(form);
-
-    const weightKg = parseFloat(
-      (form.elements.namedItem('weight') as HTMLInputElement).value,
-    );
-    const lengthCm = parseFloat(
-      (form.elements.namedItem('length') as HTMLInputElement).value,
-    );
-    const widthCm = parseFloat(
-      (form.elements.namedItem('width') as HTMLInputElement).value,
-    );
-    const heightCm = parseFloat(
-      (form.elements.namedItem('height') as HTMLInputElement).value,
-    );
-    const kind = (form.elements.namedItem('type') as HTMLSelectElement)
-      .value as 'DOCUMENTS' | 'GOODS';
-    const shippingType = (
-      form.elements.namedItem('shippingType') as HTMLSelectElement
-    ).value as ShippingType;
-    const companyId = (
-      form.elements.namedItem('companyId') as HTMLSelectElement
-    ).value;
-
-    const originCountry = (
-      form.elements.namedItem('originCountry') as HTMLInputElement
-    ).value;
-    const originCity = (
-      form.elements.namedItem('originCity') as HTMLInputElement
-    ).value;
-    const originStreet = (
-      form.elements.namedItem('originStreet') as HTMLInputElement
-    ).value;
-
-    const destinationCountry = (
-      form.elements.namedItem('destinationCountry') as HTMLInputElement
-    ).value;
-    const destinationCity = (
-      form.elements.namedItem('destinationCity') as HTMLInputElement
-    ).value;
-    const destinationStreet = (
-      form.elements.namedItem('destinationStreet') as HTMLInputElement
-    ).value;
+  // --- submit ---
+  function handleSubmit() {
+    const {
+      weight,
+      length,
+      width,
+      height,
+      kind,
+      shippingType,
+      companyId,
+      originCountry,
+      originCity,
+      originStreet,
+      destinationCountry,
+      destinationCity,
+      destinationStreet,
+    } = formData;
 
     const newRequest: ParcelRequest = {
       id: uuid(),
       userId: currentUser!.id,
       companyId,
       parcel: {
-        weightKg,
-        lengthCm,
-        widthCm,
-        heightCm,
+        weightKg: parseFloat(weight),
+        lengthCm: parseFloat(length),
+        widthCm: parseFloat(width),
+        heightCm: parseFloat(height),
         kind,
-        declaredValue: Number(priceResult?.total ?? 0),
+        declaredValue: Number(pricePreview?.total ?? 0),
         fragile: false,
       },
       route: {
-        origin: {
-          country: originCountry,
-          city: originCity,
-          street: originStreet,
-        },
-        destination: {
-          country: destinationCountry,
-          city: destinationCity,
-          street: destinationStreet,
-        },
-        pickupAddress: {
-          country: originCountry,
-          city: originCity,
-          street: originStreet,
-        },
-        deliveryAddress: {
-          country: destinationCountry,
-          city: destinationCity,
-          street: destinationStreet,
-        },
+        origin: { country: originCountry, city: originCity, street: originStreet },
+        destination: { country: destinationCountry, city: destinationCity, street: destinationStreet },
+        pickupAddress: { country: originCountry, city: originCity, street: originStreet },
+        deliveryAddress: { country: destinationCountry, city: destinationCity, street: destinationStreet },
       },
-      shippingType,
+      shippingType: shippingType as ShippingType,
       status: 'PENDING_REVIEW',
       createdAt: new Date().toISOString(),
       trackingId: generateTrackingId(),
@@ -186,79 +157,188 @@ export function CreateRequestPage() {
     navigate('/client/dashboard');
   }
 
-  // filter companies
+  // --- filtered companies ---
   const filteredCompanies = companies.filter((c) => {
-    if (!shippingType || !originCountry || !destinationCountry) return true;
-    const supportsType = c.supportedTypes.includes(shippingType);
-    const supportsRegions =
-      c.regions.includes(originCountry) &&
-      c.regions.includes(destinationCountry);
-    return supportsType && supportsRegions;
+    const matchesType = formData.shippingType
+      ? c.supportedTypes.includes(formData.shippingType as ShippingType)
+      : true;
+
+    let matchesRegion = true;
+    if (formData.destinationCountry) {
+      const continent = findContinentByCountry(formData.destinationCountry);
+      matchesRegion = continent ? c.regions.includes(continent) : false;
+    }
+
+    return matchesType && matchesRegion;
   });
+
+  // --- validation per step ---
+  function isStepValid(step: number): boolean {
+    switch (step) {
+      case 0: // Parcel info
+        return !!(formData.weight && formData.length && formData.width && formData.height);
+      case 1: // Route info
+        return !!(
+          formData.originCountry &&
+          formData.originCity &&
+          formData.originStreet &&
+          formData.destinationCountry &&
+          formData.destinationCity &&
+          formData.destinationStreet
+        );
+      case 2: // Shipping type
+        return !!formData.shippingType;
+      case 3: // Company
+        return !!formData.companyId;
+      default:
+        return true;
+    }
+  }
 
   return (
     <DashboardLayout role="USER">
-      {/* Stepper (styled) */}
+      <h1 className="text-2xl font-bold text-blue-600 mb-4">Create Request</h1>
+
       <Stepper
-        steps={['Parcel Info', 'Route Info', 'Shipping', 'Company', 'Preview']}
-        currentStep={3}
+        steps={steps}
+        currentStep={currentStep}
+        onStepChange={(s) => setCurrentStep(s)}
       />
 
-      <h1 className="text-2xl font-bold text-blue-600 mb-4">Create Request</h1>
-      <form
-        onSubmit={handleSubmit}
-        onChange={(e) => calculatePreview(e.currentTarget)}
-        className="bg-white shadow-md rounded-2xl p-8 max-w-2xl mx-auto flex flex-col gap-6 border border-gray-200"
-      >
-        <h2 className="text-2xl font-bold mb-2 text-blue-600">
-          📦 Create Shipment Request
-        </h2>
+      <div className="bg-white shadow-md rounded-2xl p-8 max-w-2xl mx-auto flex flex-col gap-6 border border-gray-200">
+        {/* Step Content */}
+        {currentStep === 0 && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-700">Parcel Information</h3>
+            <input value={formData.weight} onChange={(e) => updateField('weight', e.target.value)} placeholder="Weight (kg)" className="w-full border p-3 rounded-lg" />
+            <div className="grid grid-cols-3 gap-3">
+              <input value={formData.length} onChange={(e) => updateField('length', e.target.value)} placeholder="Length (cm)" className="border p-3 rounded-lg" />
+              <input value={formData.width} onChange={(e) => updateField('width', e.target.value)} placeholder="Width (cm)" className="border p-3 rounded-lg" />
+              <input value={formData.height} onChange={(e) => updateField('height', e.target.value)} placeholder="Height (cm)" className="border p-3 rounded-lg" />
+            </div>
+            <select value={formData.kind} onChange={(e) => updateField('kind', e.target.value)} className="w-full border p-3 rounded-lg">
+              <option value="DOCUMENTS">Documents</option>
+              <option value="GOODS">Goods</option>
+            </select>
+          </div>
+        )}
 
-        {/* Parcel Info */}
-        {/* ... unchanged ... */}
+        {currentStep === 1 && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-700">Route Information</h3>
+            <select value={formData.originCountry} onChange={(e) => updateField('originCountry', e.target.value)} className="w-full border p-3 rounded-lg" required>
+              <option value="">Select Origin Country</option>
+              {Object.entries(countriesByContinent).map(([continent, countries]) => (
+                <optgroup key={continent} label={continent}>
+                  {countries.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+            <input value={formData.originCity} onChange={(e) => updateField('originCity', e.target.value)} placeholder="Origin City" className="w-full border p-3 rounded-lg" required/>
+            <input value={formData.originStreet} onChange={(e) => updateField('originStreet', e.target.value)} placeholder="Origin Street" className="w-full border p-3 rounded-lg" required/>
+            <select value={formData.destinationCountry} onChange={(e) => updateField('destinationCountry', e.target.value)} className="w-full border p-3 rounded-lg" required>
+              <option value="">Select Destination Country</option>
+              {Object.entries(countriesByContinent).map(([continent, countries]) => (
+                <optgroup key={continent} label={continent}>
+                  {countries.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+            <input value={formData.destinationCity} onChange={(e) => updateField('destinationCity', e.target.value)} placeholder="Destination City" className="w-full border p-3 rounded-lg" required/>
+            <input value={formData.destinationStreet} onChange={(e) => updateField('destinationStreet', e.target.value)} placeholder="Destination Street" className="w-full border p-3 rounded-lg" required/>
+          </div>
+        )}
 
-        {/* Route Info */}
-        {/* ... unchanged ... */}
+        {currentStep === 2 && (
+          <div>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">Shipping Type</h3>
+            <select value={formData.shippingType} onChange={(e) => updateField('shippingType', e.target.value)} className="w-full border p-3 rounded-lg" required>
+              <option value="">Select Type</option>
+              <option value="SEA">Sea</option>
+              <option value="RAILWAY">Railway</option>
+              <option value="ROAD">Road</option>
+              <option value="AIR">Air</option>
+            </select>
+          </div>
+        )}
 
-        {/* Shipping Type */}
-        {/* ... unchanged ... */}
+        {currentStep === 3 && (
+          <div>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">Select Company</h3>
+            <select value={formData.companyId} onChange={(e) => updateField('companyId', e.target.value)} className="w-full border p-3 rounded-lg" required>
+              <option value="">Select Company</option>
+              {filteredCompanies.length === 0 ? (
+                <option disabled>No companies available</option>
+              ) : (
+                filteredCompanies.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))
+              )}
+            </select>
+          </div>
+        )}
 
-        {/* Company Select */}
-        <div>
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">
-            Select Company
-          </h3>
-          <select
-            name="companyId"
-            className="w-full border p-3 rounded-lg"
-            required
-          >
-            {filteredCompanies.length === 0 ? (
-              <option disabled>No companies available for this route</option>
+        {currentStep === 4 && (
+          <div className="p-4 bg-gray-100 rounded-lg text-gray-700">
+            <h3 className="text-lg font-semibold mb-2">💰 Price Preview</h3>
+            {pricePreview ? (
+              <ul className="space-y-1 text-sm">
+                <li>Base: ${pricePreview.base.toFixed(2)}</li>
+                <li>Fuel surcharge: ${pricePreview.fuelSurcharge.toFixed(2)}</li>
+                <li>Extra surcharges: ${pricePreview.extraSurcharges.toFixed(2)}</li>
+                <li>Insurance: ${pricePreview.insurance.toFixed(2)}</li>
+                <li className="font-bold text-green-600">Total: ${pricePreview.total.toFixed(2)}</li>
+              </ul>
             ) : (
-              filteredCompanies.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))
+              <p className="text-gray-500">Fill details to see estimated price</p>
             )}
-          </select>
-          <p className="mt-2 text-sm text-gray-500">
-            ⚠️ Only companies that support your selected route and shipping type
-            are displayed here.
-          </p>
+          </div>
+        )}
+
+        {/* Navigation buttons */}
+        <div className="flex justify-between mt-6">
+          {currentStep > 0 && (
+            <button
+              type="button"
+              onClick={() => setCurrentStep((s) => s - 1)}
+              className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+            >
+              ← Previous
+            </button>
+          )}
+          {currentStep < steps.length - 1 ? (
+            <button
+              type="button"
+              onClick={() => setCurrentStep((s) => s + 1)}
+              disabled={!isStepValid(currentStep)} // 🚀 validation
+              className={`ml-auto px-4 py-2 rounded-lg transition ${
+                isStepValid(currentStep)
+                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              Next →
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={!isStepValid(currentStep)} // 🚀 last step too
+              className={`ml-auto px-4 py-2 rounded-lg transition ${
+                isStepValid(currentStep)
+                  ? 'bg-green-600 text-white hover:bg-green-700'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              🚀 Submit Request
+            </button>
+          )}
         </div>
-
-        {/* 💰 Price Preview */}
-        {/* ... unchanged ... */}
-
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 transition text-white font-semibold rounded-lg p-3 shadow-md"
-        >
-          🚀 Create Request
-        </button>
-      </form>
+      </div>
     </DashboardLayout>
   );
 }

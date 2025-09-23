@@ -22,7 +22,7 @@ export function TrackRequest() {
           <h1 className="text-2xl font-bold text-blue-600 mb-3">
             Track Your Parcel
           </h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 <sm:flex-col">
             <input
               type="text"
               placeholder="Enter Tracking ID..."
@@ -65,7 +65,7 @@ export function TrackRequest() {
                 </p>
                 <p className="text-gray-700">
                   Parcel: {request.parcel.weightKg}kg • {request.parcel.kind} •
-                  Value: ${request.parcel.declaredValue}
+                  Value: ${Number(request.parcel.declaredValue).toFixed(2)}
                 </p>
 
                 {request.parcel.fragile && (

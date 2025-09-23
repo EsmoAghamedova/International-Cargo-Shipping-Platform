@@ -27,7 +27,8 @@ const steps = [
   'Route Info',
   'Shipping Type',
   'Select Company',
-  'Preview & Submit',
+  'Preview',
+  'Payment',
 ];
 
 export function CreateRequestPage() {
@@ -41,6 +42,7 @@ export function CreateRequestPage() {
   > | null>(null);
 
   const [currentStep, setCurrentStep] = useState(0);
+  const [isPaid, setIsPaid] = useState(false);
 
   // --- form state ---
   const [formData, setFormData] = useState({
@@ -175,9 +177,9 @@ export function CreateRequestPage() {
   // --- validation per step ---
   function isStepValid(step: number): boolean {
     switch (step) {
-      case 0: // Parcel info
+      case 0:
         return !!(formData.weight && formData.length && formData.width && formData.height);
-      case 1: // Route info
+      case 1:
         return !!(
           formData.originCountry &&
           formData.originCity &&
@@ -186,10 +188,14 @@ export function CreateRequestPage() {
           formData.destinationCity &&
           formData.destinationStreet
         );
-      case 2: // Shipping type
+      case 2:
         return !!formData.shippingType;
-      case 3: // Company
+      case 3:
         return !!formData.companyId;
+      case 4:
+        return !!pricePreview;
+      case 5:
+        return isPaid;
       default:
         return true;
     }
@@ -299,7 +305,28 @@ export function CreateRequestPage() {
           </div>
         )}
 
-        {/* Navigation buttons */}
+        {currentStep === 5 && (
+          <div className="text-center space-y-4">
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">💳 Payment</h3>
+            <p className="text-gray-600">
+              Click the button below to simulate payment for <b>${pricePreview?.total.toFixed(2)}</b>
+            </p>
+            <button
+              type="button"
+              onClick={() => setIsPaid(true)}
+              className={`px-6 py-3 rounded-lg transition ${
+                isPaid
+                  ? 'bg-green-600 text-white cursor-default'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+              disabled={isPaid}
+            >
+              {isPaid ? '✅ Paid' : 'Pay Now'}
+            </button>
+          </div>
+        )}
+
+        {/* Navigation */}
         <div className="flex justify-between mt-6">
           {currentStep > 0 && (
             <button
@@ -314,7 +341,7 @@ export function CreateRequestPage() {
             <button
               type="button"
               onClick={() => setCurrentStep((s) => s + 1)}
-              disabled={!isStepValid(currentStep)} // 🚀 validation
+              disabled={!isStepValid(currentStep)}
               className={`ml-auto px-4 py-2 rounded-lg transition ${
                 isStepValid(currentStep)
                   ? 'bg-blue-600 text-white hover:bg-blue-700'
@@ -327,7 +354,7 @@ export function CreateRequestPage() {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={!isStepValid(currentStep)} // 🚀 last step too
+              disabled={!isStepValid(currentStep)}
               className={`ml-auto px-4 py-2 rounded-lg transition ${
                 isStepValid(currentStep)
                   ? 'bg-green-600 text-white hover:bg-green-700'

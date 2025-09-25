@@ -8,7 +8,7 @@ export function HomePage() {
         {/* Logo + Name */}
         <div className="flex items-center gap-3">
           <img
-            src="/logo.png"
+            src="../../public/logo.png"
             alt="Logo"
             className="h-10 w-10 object-contain sm:h-12 sm:w-12"
           />

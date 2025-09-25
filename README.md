@@ -32,12 +32,14 @@ This project leverages cutting-edge technologies to deliver a seamless and effic
 ### Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/EsmoAghamedova/International-Cargo-Shipping-Platform.git
    cd International-Cargo-Shipping-Platform
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
    # or
@@ -56,18 +58,18 @@ This project leverages cutting-edge technologies to deliver a seamless and effic
 
 The following scripts are defined in `package.json`:
 
-| Command            | Description                                                   |
-|--------------------|---------------------------------------------------------------|
-| `dev`              | Run development server                                        |
-| `host`             | Run dev server with host mode for network access              |
-| `build`            | Build the app for production (`tsc -b` + Vite)                |
-| `lint`             | Run ESLint for code style checks                              |
-| `lint:fix`         | Run ESLint and auto-fix issues                                |
-| `preview`          | Preview the production build locally                          |
-| `format`           | Format code using Prettier                                    |
-| `type-check`       | Type-check with TypeScript (no output files)                  |
-| `test`             | Run Vitest unit tests                                         |
-| `test:ci`          | Run Vitest tests in CI mode                                   |
+| Command      | Description                                      |
+| ------------ | ------------------------------------------------ |
+| `dev`        | Run development server                           |
+| `host`       | Run dev server with host mode for network access |
+| `build`      | Build the app for production (`tsc -b` + Vite)   |
+| `lint`       | Run ESLint for code style checks                 |
+| `lint:fix`   | Run ESLint and auto-fix issues                   |
+| `preview`    | Preview the production build locally             |
+| `format`     | Format code using Prettier                       |
+| `type-check` | Type-check with TypeScript (no output files)     |
+| `test`       | Run Vitest unit tests                            |
+| `test:ci`    | Run Vitest tests in CI mode                      |
 
 ---
 
@@ -115,7 +117,6 @@ Workflow is defined in `.github/workflows/deploy.yml` and auto-deploys to [Netli
 
 [https://esmoaghamedova.github.io/International-Cargo-Shipping-Platform/](https://esmoaghamedova.github.io/International-Cargo-Shipping-Platform/)
 
-
 ---
 
 ## Known Limitations & Future Work
@@ -153,7 +154,13 @@ module.exports = {
     project: ['./tsconfig.json'],
     tsconfigRootDir: __dirname,
   },
-  plugins: ['@typescript-eslint', 'react', 'react-hooks', 'jsx-a11y', 'prettier'],
+  plugins: [
+    '@typescript-eslint',
+    'react',
+    'react-hooks',
+    'jsx-a11y',
+    'prettier',
+  ],
   rules: {
     'no-unused-vars': 'warn',
     'react/react-in-jsx-scope': 'off',
@@ -166,11 +173,13 @@ module.exports = {
 };
 ```
 
-**Additional plugins:**  
+**Additional plugins:**
+
 - [`eslint-plugin-react-x`](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x)
 - [`eslint-plugin-react-dom`](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom)
 
-**Type-check:**  
+**Type-check:**
+
 ```bash
 npm run type-check
 ```
@@ -201,4 +210,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-*For questions or feedback, please open an issue or contact the maintainer.*
+_For questions or feedback, please open an issue or contact the maintainer._

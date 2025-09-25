@@ -5,17 +5,29 @@ export function HomePage() {
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-gray-50 to-gray-100">
       {/* Header */}
       <header className="w-full px-4 py-4 flex items-center justify-between bg-white border-b border-gray-200 shadow-sm">
-        <span className="text-2xl font-bold text-blue-700">Cargo Platform</span>
+        {/* Logo + Name */}
+        <div className="flex items-center gap-3">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="h-10 w-10 object-contain sm:h-12 sm:w-12"
+          />
+          <span className="hidden sm:block text-2xl font-bold text-blue-700 whitespace-nowrap">
+            Cargo Platform
+          </span>
+        </div>
+
+        {/* Navigation */}
         <nav className="flex gap-3">
           <Link
             to="/login"
-            className="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium shadow hover:bg-blue-700 transition"
+            className="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium shadow hover:bg-blue-700 transition text-sm sm:text-base"
           >
             Login
           </Link>
           <Link
             to="/register"
-            className="px-5 py-2 rounded-lg bg-green-600 text-white font-medium shadow hover:bg-green-700 transition"
+            className="px-5 py-2 rounded-lg bg-green-600 text-white font-medium shadow hover:bg-green-700 transition text-sm sm:text-base"
           >
             Register
           </Link>
@@ -23,12 +35,13 @@ export function HomePage() {
       </header>
 
       {/* Hero */}
-      <main className="flex-1 flex flex-col items-center justify-center text-center px-6">
-        <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500">
-          International Cargo Shipping 
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-6 pt-40 pb-40">
+        <h1 className="text-4xl leading-14 sm:leading-18 sm:text-5xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500">
+          International Cargo Shipping
         </h1>
         <p className="text-base sm:text-lg text-gray-600 max-w-2xl mb-8">
-          Fast. Reliable. Trackable. Manage your shipments across the globe with one platform.
+          Fast. Reliable. Trackable. Manage your shipments across the globe with
+          one platform.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">

@@ -35,7 +35,7 @@ export function CompanyRequests() {
     ? [...requests].filter((r) => r.status === sortStatus)
     : [...requests].sort(
         (a, b) =>
-          STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status)
+          STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status),
       );
 
   return (

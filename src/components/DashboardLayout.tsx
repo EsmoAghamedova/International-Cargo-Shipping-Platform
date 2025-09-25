@@ -201,7 +201,9 @@ export function DashboardLayout({
       <div className="flex-1 flex flex-col min-w-0 md:ml-64">
         {/* Topbar for mobile */}
         <header className="md:hidden flex items-center justify-between bg-white px-4 py-3 border-b border-gray-100 sticky top-0 z-10">
-          <span className="font-bold text-lg text-blue-600">Cargo Platform</span>
+          <span className="font-bold text-lg text-blue-600">
+            Cargo Platform
+          </span>
           <button
             className="text-gray-400 hover:text-blue-600 rounded bg-blue-50 p-2"
             onClick={() => setSidebarOpen(true)}

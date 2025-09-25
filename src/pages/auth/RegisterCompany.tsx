@@ -31,7 +31,9 @@ export function RegisterCompanyPage() {
     e.preventDefault();
     const form = e.currentTarget;
     const name = (form.elements.namedItem('name') as HTMLInputElement).value;
-    const contactEmail = (form.elements.namedItem('contactEmail') as HTMLInputElement).value;
+    const contactEmail = (
+      form.elements.namedItem('contactEmail') as HTMLInputElement
+    ).value;
     const phone = (form.elements.namedItem('phone') as HTMLInputElement).value;
 
     const hqAddress = {
@@ -50,10 +52,18 @@ export function RegisterCompanyPage() {
       supportedTypes: selectedTypes as ShippingType[],
       role: 'COMPANY_ADMIN',
       logoUrl: (form.elements.namedItem('logoUrl') as HTMLInputElement).value,
-      basePrice: parseFloat((form.elements.namedItem('basePrice') as HTMLInputElement).value),
-      pricePerKg: parseFloat((form.elements.namedItem('pricePerKg') as HTMLInputElement).value),
-      fuelPct: parseFloat((form.elements.namedItem('fuelPct') as HTMLInputElement).value),
-      insurancePct: parseFloat((form.elements.namedItem('insurancePct') as HTMLInputElement).value),
+      basePrice: parseFloat(
+        (form.elements.namedItem('basePrice') as HTMLInputElement).value,
+      ),
+      pricePerKg: parseFloat(
+        (form.elements.namedItem('pricePerKg') as HTMLInputElement).value,
+      ),
+      fuelPct: parseFloat(
+        (form.elements.namedItem('fuelPct') as HTMLInputElement).value,
+      ),
+      insurancePct: parseFloat(
+        (form.elements.namedItem('insurancePct') as HTMLInputElement).value,
+      ),
     };
 
     AuthService.registerCompany(newCompany);
@@ -76,91 +86,180 @@ export function RegisterCompanyPage() {
   }
 
   return (
-    <div>
-    <form
-  onSubmit={handleSubmit}
-  className="flex flex-col gap-4 p-6 max-w-2xl mx-auto bg-white rounded-xl shadow border border-gray-200"
->
-  <h2 className="text-2xl font-bold text-purple-600 mb-2">Register Company</h2>
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="w-full px-6 py-4 bg-white shadow flex items-center justify-between">
+        <Link
+          to="/"
+          className="text-lg font-bold text-blue-600 hover:underline"
+        >
+          Home
+        </Link>
+      </header>
 
-  {/* Basic info */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <input name="name" placeholder="Company Name" className="border p-2 rounded" required />
-    <input name="contactEmail" type="email" placeholder="Contact Email" className="border p-2 rounded" required />
-    <input name="phone" placeholder="Phone (optional)" className="border p-2 rounded md:col-span-2" />
-  </div>
+      {/* Main */}
+      <main className="flex flex-1 items-center justify-center px-4 pt-10">
+        <div className="w-full max-w-2xl">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-4 p-6 bg-white rounded-xl shadow border border-gray-200"
+          >
+            <h2 className="text-2xl font-bold text-purple-600 text-center mb-2">
+              Register Company
+            </h2>
 
-  {/* Address */}
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <input name="country" placeholder="Country" className="border p-2 rounded" required />
-    <input name="city" placeholder="City" className="border p-2 rounded" required />
-    <input name="street" placeholder="Street" className="border p-2 rounded" required />
-  </div>
+            {/* Basic info */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                name="name"
+                placeholder="Company Name"
+                className="border p-2 rounded"
+                required
+              />
+              <input
+                name="contactEmail"
+                type="email"
+                placeholder="Contact Email"
+                className="border p-2 rounded"
+                required
+              />
+              <input
+                name="phone"
+                placeholder="Phone (optional)"
+                className="border p-2 rounded md:col-span-2"
+              />
+            </div>
 
-  {/* Regions + Types */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div>
-      <label className="text-sm font-medium text-gray-600">Regions Served</label>
-      <div className="grid grid-cols-2 gap-2 mt-2">
-        {REGION_OPTIONS.map((opt) => (
-          <label key={opt.value} className="flex items-center gap-2 text-sm">
+            {/* Address */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <input
+                name="country"
+                placeholder="Country"
+                className="border p-2 rounded"
+                required
+              />
+              <input
+                name="city"
+                placeholder="City"
+                className="border p-2 rounded"
+                required
+              />
+              <input
+                name="street"
+                placeholder="Street"
+                className="border p-2 rounded"
+                required
+              />
+            </div>
+
+            {/* Regions + Types */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="text-sm font-medium text-gray-600">
+                  Regions Served
+                </label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {REGION_OPTIONS.map((opt) => (
+                    <label
+                      key={opt.value}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <input
+                        type="checkbox"
+                        value={opt.value}
+                        checked={selectedRegions.includes(opt.value)}
+                        onChange={handleRegionChange}
+                        className="accent-purple-600"
+                      />
+                      {opt.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-600">
+                  Supported Shipping Types
+                </label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {TYPE_OPTIONS.map((opt) => (
+                    <label
+                      key={opt.value}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <input
+                        type="checkbox"
+                        value={opt.value}
+                        checked={selectedTypes.includes(opt.value)}
+                        onChange={handleTypeChange}
+                        className="accent-purple-600"
+                      />
+                      {opt.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Pricing */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                name="basePrice"
+                type="number"
+                step="0.01"
+                placeholder="Base Price"
+                className="border p-2 rounded"
+                required
+              />
+              <input
+                name="pricePerKg"
+                type="number"
+                step="0.01"
+                placeholder="Price per Kg"
+                className="border p-2 rounded"
+                required
+              />
+              <input
+                name="fuelPct"
+                type="number"
+                step="0.01"
+                placeholder="Fuel %"
+                className="border p-2 rounded"
+                required
+              />
+              <input
+                name="insurancePct"
+                type="number"
+                step="0.01"
+                placeholder="Insurance %"
+                className="border p-2 rounded"
+                required
+              />
+            </div>
+
             <input
-              type="checkbox"
-              value={opt.value}
-              checked={selectedRegions.includes(opt.value)}
-              onChange={handleRegionChange}
-              className="accent-purple-600"
+              name="logoUrl"
+              placeholder="Logo URL (optional)"
+              className="border p-2 rounded"
             />
-            {opt.label}
-          </label>
-        ))}
-      </div>
+
+            <button
+              type="submit"
+              className="bg-purple-500 text-white rounded p-2 hover:bg-purple-600 transition w-full"
+            >
+              Register
+            </button>
+          </form>
+
+          <div className="text-center mt-4">
+            <p className="text-gray-500">
+              Do you have an account?{' '}
+              <Link to="/login" className="text-blue-600 hover:underline">
+                Login here
+              </Link>
+            </p>
+          </div>
+        </div>
+      </main>
     </div>
-    <div>
-      <label className="text-sm font-medium text-gray-600">Supported Shipping Types</label>
-      <div className="grid grid-cols-2 gap-2 mt-2">
-        {TYPE_OPTIONS.map((opt) => (
-          <label key={opt.value} className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              value={opt.value}
-              checked={selectedTypes.includes(opt.value)}
-              onChange={handleTypeChange}
-              className="accent-purple-600"
-            />
-            {opt.label}
-          </label>
-        ))}
-      </div>
-    </div>
-  </div>
-
-  {/* Pricing */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <input name="basePrice" type="number" step="0.01" placeholder="Base Price" className="border p-2 rounded" required />
-    <input name="pricePerKg" type="number" step="0.01" placeholder="Price per Kg" className="border p-2 rounded" required />
-    <input name="fuelPct" type="number" step="0.01" placeholder="Fuel %" className="border p-2 rounded" required />
-    <input name="insurancePct" type="number" step="0.01" placeholder="Insurance %" className="border p-2 rounded" required />
-  </div>
-
-  <input name="logoUrl" placeholder="Logo URL (optional)" className="border p-2 rounded" />
-
-  <button
-    type="submit"
-    className="bg-purple-500 text-white rounded p-2 hover:bg-purple-600 transition w-full"
-  >
-    Register
-  </button>
-</form>
-<div className="text-center mt-4">
-        <p className="text-gray-500">
-          Do you have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline">
-            Login here
-          </Link>
-        </p>
-      </div>
-</div>
-
   );
 }

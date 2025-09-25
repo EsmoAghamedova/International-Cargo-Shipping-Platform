@@ -51,7 +51,7 @@ export function CompanySettingsPage() {
 
   function handleCheckboxChange(
     e: React.ChangeEvent<HTMLInputElement>,
-    type: 'regions' | 'supportedTypes'
+    type: 'regions' | 'supportedTypes',
   ) {
     const { value, checked } = e.target;
     setForm((prev) => ({
@@ -203,7 +203,9 @@ export function CompanySettingsPage() {
                   <input
                     type="checkbox"
                     value={t.value}
-                    checked={form.supportedTypes.includes(t.value as ShippingType)}
+                    checked={form.supportedTypes.includes(
+                      t.value as ShippingType,
+                    )}
                     onChange={(e) => handleCheckboxChange(e, 'supportedTypes')}
                     className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
                   />

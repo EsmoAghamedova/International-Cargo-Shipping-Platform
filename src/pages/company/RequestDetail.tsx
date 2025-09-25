@@ -57,7 +57,9 @@ export function CompanyRequestDetail() {
             {request.route.origin.city} → {request.route.destination.city}
           </p>
           <p className="text-gray-500 text-sm">
-            {request.parcel.weightKg}kg • {request.parcel.kind} • {request.shippingType} • Declared Value: ${Number(request.parcel.declaredValue).toFixed(2)}
+            {request.parcel.weightKg}kg • {request.parcel.kind} •{' '}
+            {request.shippingType} • Declared Value: $
+            {Number(request.parcel.declaredValue).toFixed(2)}
           </p>
           <div className="mt-2">
             <Badge status={request.status} />

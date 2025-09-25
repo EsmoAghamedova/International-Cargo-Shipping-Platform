@@ -89,7 +89,14 @@ export function CreateRequestPage() {
         destinationCountry,
       } = formData;
 
-      if (!weight || !length || !width || !height || !shippingType || !companyId) {
+      if (
+        !weight ||
+        !length ||
+        !width ||
+        !height ||
+        !shippingType ||
+        !companyId
+      ) {
         setPricePreview(null);
         return;
       }
@@ -144,10 +151,26 @@ export function CreateRequestPage() {
         fragile: false,
       },
       route: {
-        origin: { country: originCountry, city: originCity, street: originStreet },
-        destination: { country: destinationCountry, city: destinationCity, street: destinationStreet },
-        pickupAddress: { country: originCountry, city: originCity, street: originStreet },
-        deliveryAddress: { country: destinationCountry, city: destinationCity, street: destinationStreet },
+        origin: {
+          country: originCountry,
+          city: originCity,
+          street: originStreet,
+        },
+        destination: {
+          country: destinationCountry,
+          city: destinationCity,
+          street: destinationStreet,
+        },
+        pickupAddress: {
+          country: originCountry,
+          city: originCity,
+          street: originStreet,
+        },
+        deliveryAddress: {
+          country: destinationCountry,
+          city: destinationCity,
+          street: destinationStreet,
+        },
       },
       shippingType: shippingType as ShippingType,
       status: 'PENDING_REVIEW',
@@ -178,7 +201,12 @@ export function CreateRequestPage() {
   function isStepValid(step: number): boolean {
     switch (step) {
       case 0:
-        return !!(formData.weight && formData.length && formData.width && formData.height);
+        return !!(
+          formData.weight &&
+          formData.length &&
+          formData.width &&
+          formData.height
+        );
       case 1:
         return !!(
           formData.originCountry &&
@@ -215,14 +243,40 @@ export function CreateRequestPage() {
         {/* Step Content */}
         {currentStep === 0 && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-700">Parcel Information</h3>
-            <input value={formData.weight} onChange={(e) => updateField('weight', e.target.value)} placeholder="Weight (kg)" className="w-full border p-3 rounded-lg" />
+            <h3 className="text-lg font-semibold text-gray-700">
+              Parcel Information
+            </h3>
+            <input
+              value={formData.weight}
+              onChange={(e) => updateField('weight', e.target.value)}
+              placeholder="Weight (kg)"
+              className="w-full border p-3 rounded-lg"
+            />
             <div className="grid grid-cols-3 gap-3">
-              <input value={formData.length} onChange={(e) => updateField('length', e.target.value)} placeholder="Length (cm)" className="border p-3 rounded-lg" />
-              <input value={formData.width} onChange={(e) => updateField('width', e.target.value)} placeholder="Width (cm)" className="border p-3 rounded-lg" />
-              <input value={formData.height} onChange={(e) => updateField('height', e.target.value)} placeholder="Height (cm)" className="border p-3 rounded-lg" />
+              <input
+                value={formData.length}
+                onChange={(e) => updateField('length', e.target.value)}
+                placeholder="Length (cm)"
+                className="border p-3 rounded-lg"
+              />
+              <input
+                value={formData.width}
+                onChange={(e) => updateField('width', e.target.value)}
+                placeholder="Width (cm)"
+                className="border p-3 rounded-lg"
+              />
+              <input
+                value={formData.height}
+                onChange={(e) => updateField('height', e.target.value)}
+                placeholder="Height (cm)"
+                className="border p-3 rounded-lg"
+              />
             </div>
-            <select value={formData.kind} onChange={(e) => updateField('kind', e.target.value)} className="w-full border p-3 rounded-lg">
+            <select
+              value={formData.kind}
+              onChange={(e) => updateField('kind', e.target.value)}
+              className="w-full border p-3 rounded-lg"
+            >
               <option value="DOCUMENTS">Documents</option>
               <option value="GOODS">Goods</option>
             </select>
@@ -231,38 +285,91 @@ export function CreateRequestPage() {
 
         {currentStep === 1 && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-700">Route Information</h3>
-            <select value={formData.originCountry} onChange={(e) => updateField('originCountry', e.target.value)} className="w-full border p-3 rounded-lg" required>
+            <h3 className="text-lg font-semibold text-gray-700">
+              Route Information
+            </h3>
+            <select
+              value={formData.originCountry}
+              onChange={(e) => updateField('originCountry', e.target.value)}
+              className="w-full border p-3 rounded-lg"
+              required
+            >
               <option value="">Select Origin Country</option>
-              {Object.entries(countriesByContinent).map(([continent, countries]) => (
-                <optgroup key={continent} label={continent}>
-                  {countries.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </optgroup>
-              ))}
+              {Object.entries(countriesByContinent).map(
+                ([continent, countries]) => (
+                  <optgroup key={continent} label={continent}>
+                    {countries.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </optgroup>
+                ),
+              )}
             </select>
-            <input value={formData.originCity} onChange={(e) => updateField('originCity', e.target.value)} placeholder="Origin City" className="w-full border p-3 rounded-lg" required/>
-            <input value={formData.originStreet} onChange={(e) => updateField('originStreet', e.target.value)} placeholder="Origin Street" className="w-full border p-3 rounded-lg" required/>
-            <select value={formData.destinationCountry} onChange={(e) => updateField('destinationCountry', e.target.value)} className="w-full border p-3 rounded-lg" required>
+            <input
+              value={formData.originCity}
+              onChange={(e) => updateField('originCity', e.target.value)}
+              placeholder="Origin City"
+              className="w-full border p-3 rounded-lg"
+              required
+            />
+            <input
+              value={formData.originStreet}
+              onChange={(e) => updateField('originStreet', e.target.value)}
+              placeholder="Origin Street"
+              className="w-full border p-3 rounded-lg"
+              required
+            />
+            <select
+              value={formData.destinationCountry}
+              onChange={(e) =>
+                updateField('destinationCountry', e.target.value)
+              }
+              className="w-full border p-3 rounded-lg"
+              required
+            >
               <option value="">Select Destination Country</option>
-              {Object.entries(countriesByContinent).map(([continent, countries]) => (
-                <optgroup key={continent} label={continent}>
-                  {countries.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </optgroup>
-              ))}
+              {Object.entries(countriesByContinent).map(
+                ([continent, countries]) => (
+                  <optgroup key={continent} label={continent}>
+                    {countries.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </optgroup>
+                ),
+              )}
             </select>
-            <input value={formData.destinationCity} onChange={(e) => updateField('destinationCity', e.target.value)} placeholder="Destination City" className="w-full border p-3 rounded-lg" required/>
-            <input value={formData.destinationStreet} onChange={(e) => updateField('destinationStreet', e.target.value)} placeholder="Destination Street" className="w-full border p-3 rounded-lg" required/>
+            <input
+              value={formData.destinationCity}
+              onChange={(e) => updateField('destinationCity', e.target.value)}
+              placeholder="Destination City"
+              className="w-full border p-3 rounded-lg"
+              required
+            />
+            <input
+              value={formData.destinationStreet}
+              onChange={(e) => updateField('destinationStreet', e.target.value)}
+              placeholder="Destination Street"
+              className="w-full border p-3 rounded-lg"
+              required
+            />
           </div>
         )}
 
         {currentStep === 2 && (
           <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Shipping Type</h3>
-            <select value={formData.shippingType} onChange={(e) => updateField('shippingType', e.target.value)} className="w-full border p-3 rounded-lg" required>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              Shipping Type
+            </h3>
+            <select
+              value={formData.shippingType}
+              onChange={(e) => updateField('shippingType', e.target.value)}
+              className="w-full border p-3 rounded-lg"
+              required
+            >
               <option value="">Select Type</option>
               <option value="SEA">Sea</option>
               <option value="RAILWAY">Railway</option>
@@ -274,14 +381,23 @@ export function CreateRequestPage() {
 
         {currentStep === 3 && (
           <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Select Company</h3>
-            <select value={formData.companyId} onChange={(e) => updateField('companyId', e.target.value)} className="w-full border p-3 rounded-lg" required>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              Select Company
+            </h3>
+            <select
+              value={formData.companyId}
+              onChange={(e) => updateField('companyId', e.target.value)}
+              className="w-full border p-3 rounded-lg"
+              required
+            >
               <option value="">Select Company</option>
               {filteredCompanies.length === 0 ? (
                 <option disabled>No companies available</option>
               ) : (
                 filteredCompanies.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
                 ))
               )}
             </select>
@@ -294,22 +410,33 @@ export function CreateRequestPage() {
             {pricePreview ? (
               <ul className="space-y-1 text-sm">
                 <li>Base: ${pricePreview.base.toFixed(2)}</li>
-                <li>Fuel surcharge: ${pricePreview.fuelSurcharge.toFixed(2)}</li>
-                <li>Extra surcharges: ${pricePreview.extraSurcharges.toFixed(2)}</li>
+                <li>
+                  Fuel surcharge: ${pricePreview.fuelSurcharge.toFixed(2)}
+                </li>
+                <li>
+                  Extra surcharges: ${pricePreview.extraSurcharges.toFixed(2)}
+                </li>
                 <li>Insurance: ${pricePreview.insurance.toFixed(2)}</li>
-                <li className="font-bold text-green-600">Total: ${pricePreview.total.toFixed(2)}</li>
+                <li className="font-bold text-green-600">
+                  Total: ${pricePreview.total.toFixed(2)}
+                </li>
               </ul>
             ) : (
-              <p className="text-gray-500">Fill details to see estimated price</p>
+              <p className="text-gray-500">
+                Fill details to see estimated price
+              </p>
             )}
           </div>
         )}
 
         {currentStep === 5 && (
           <div className="text-center space-y-4">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">💳 Payment</h3>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              💳 Payment
+            </h3>
             <p className="text-gray-600">
-              Click the button below to simulate payment for <b>${pricePreview?.total.toFixed(2)}</b>
+              Click the button below to simulate payment for{' '}
+              <b>${pricePreview?.total.toFixed(2)}</b>
             </p>
             <button
               type="button"

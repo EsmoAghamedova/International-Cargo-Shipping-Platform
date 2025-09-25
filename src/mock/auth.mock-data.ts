@@ -24,7 +24,7 @@ export const mockAuthEntities: AuthEntity[] = [
     pricePerKg: 3,
     fuelPct: 0.12, // 12%
     insurancePct: 0.02, // 2%
-hqAddress: {
+    hqAddress: {
       country: 'USA',
       city: 'New York',
       street: '123 5th Ave',

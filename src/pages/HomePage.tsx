@@ -8,7 +8,7 @@ export function HomePage() {
         {/* Logo + Name */}
         <div className="flex items-center gap-3">
           <img
-            src="/public/logo.png"
+            src="https://cdn-icons-png.flaticon.com/512/5628/5628351.png"
             alt="Logo"
             className="h-10 w-10 object-contain sm:h-12 sm:w-12"
           />

@@ -229,6 +229,13 @@ export function CreateRequestPage() {
     }
   }
 
+  const [paymentMethod, setPaymentMethod] = useState<'paypal' | 'card'>(
+    'paypal',
+  );
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardCvc, setCardCvc] = useState('');
+
   return (
     <DashboardLayout role="USER">
       <h1 className="text-2xl font-bold text-blue-600 mb-4">Create Request</h1>
@@ -430,26 +437,111 @@ export function CreateRequestPage() {
         )}
 
         {currentStep === 5 && (
-          <div className="text-center space-y-4">
+          <div className="text-center space-y-6">
             <h3 className="text-lg font-semibold text-gray-700 mb-2">
               💳 Payment
             </h3>
             <p className="text-gray-600">
-              Click the button below to simulate payment for{' '}
-              <b>${pricePreview?.total.toFixed(2)}</b>
+              Total amount: <b>${pricePreview?.total.toFixed(2)}</b>
             </p>
-            <button
-              type="button"
-              onClick={() => setIsPaid(true)}
-              className={`px-6 py-3 rounded-lg transition ${
-                isPaid
-                  ? 'bg-green-600 text-white cursor-default'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
-              disabled={isPaid}
-            >
-              {isPaid ? '✅ Paid' : 'Pay Now'}
-            </button>
+
+            {/* Tab selector */}
+            <div className="flex justify-center gap-4 mb-4">
+              <button
+                type="button"
+                onClick={() => !isPaid && setPaymentMethod('paypal')}
+                className={`px-4 py-2 rounded-lg transition border ${
+                  paymentMethod === 'paypal'
+                    ? 'bg-yellow-400 text-white border-yellow-500'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                } ${isPaid && paymentMethod !== 'paypal' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={isPaid && paymentMethod !== 'paypal'}
+              >
+                PayPal
+              </button>
+              <button
+                type="button"
+                onClick={() => !isPaid && setPaymentMethod('card')}
+                className={`px-4 py-2 rounded-lg transition border ${
+                  paymentMethod === 'card'
+                    ? 'bg-yellow-400 text-white border-yellow-500'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                } ${isPaid && paymentMethod !== 'card' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={isPaid && paymentMethod !== 'card'}
+              >
+                Credit Card
+              </button>
+            </div>
+
+            {/* Tab content */}
+            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 max-w-md mx-auto space-y-4">
+              {paymentMethod === 'paypal' && (
+                <>
+                  <p className="text-gray-600">
+                    Click the button below to simulate PayPal payment:
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setIsPaid(true)}
+                    className={`px-6 py-3 rounded-lg transition w-full ${
+                      isPaid && paymentMethod === 'paypal'
+                        ? 'bg-green-600 text-white cursor-default'
+                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                    }`}
+                    disabled={isPaid}
+                  >
+                    {isPaid && paymentMethod === 'paypal'
+                      ? '✅ Paid with PayPal'
+                      : 'Pay with PayPal'}
+                  </button>
+                </>
+              )}
+
+              {paymentMethod === 'card' && (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Card Number"
+                    className="w-full border p-3 rounded-lg"
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(e.target.value)}
+                    disabled={isPaid}
+                  />
+                  <div className="flex gap-3">
+                    <input
+                      type="text"
+                      placeholder="MM/YY"
+                      className="w-1/2 border p-3 rounded-lg"
+                      value={cardExpiry}
+                      onChange={(e) => setCardExpiry(e.target.value)}
+                      disabled={isPaid}
+                    />
+                    <input
+                      type="text"
+                      placeholder="CVC"
+                      className="w-1/2 border p-3 rounded-lg"
+                      value={cardCvc}
+                      onChange={(e) => setCardCvc(e.target.value)}
+                      disabled={isPaid}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsPaid(true)}
+                    className={`px-6 py-3 rounded-lg transition w-full ${
+                      isPaid && paymentMethod === 'card'
+                        ? 'bg-green-600 text-white cursor-default'
+                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                    }`}
+                    disabled={isPaid || !cardNumber || !cardExpiry || !cardCvc}
+                  >
+                    {isPaid && paymentMethod === 'card'
+                      ? '✅ Paid with Card'
+                      : 'Pay with Card'}
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         )}
 

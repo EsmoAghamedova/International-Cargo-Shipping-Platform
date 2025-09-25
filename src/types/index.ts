@@ -1,5 +1,3 @@
-// src/types/index.ts
-
 // მომხმარებელი
 export interface User {
   id: string;

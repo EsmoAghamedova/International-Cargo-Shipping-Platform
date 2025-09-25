@@ -1,4 +1,3 @@
-// src/pages/company/Dashboard.tsx
 import { useAuthStore } from '../../store/useAuthStore';
 import { useRequestsStore } from '../../store/useRequestsStore';
 import { DashboardLayout } from '../../components/DashboardLayout';
@@ -10,12 +9,14 @@ import { useEffect } from 'react';
 export function CompanyDashboard() {
   const currentUser = useAuthStore((s) => s.currentUser);
   const requests = useRequestsStore((s) =>
-    s.requests.filter((r) => r.companyId === currentUser?.id),
-  );
+  s.requests.filter(
+    (r) => r.companyId === currentUser?.id && r.status === 'PENDING_REVIEW'
+  )
+);
   const loadRequests = useRequestsStore((s) => s.loadRequests);
 
   useEffect(() => {
-    loadRequests(); // მხოლოდ აქ მოვახმოთ
+    loadRequests(); 
   }, [loadRequests]);
 
   if (!currentUser) {

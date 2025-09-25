@@ -1,4 +1,3 @@
-// src/pages/client/RequestDetail.tsx
 import { useParams } from 'react-router-dom';
 import { useRequestsStore } from '../../store/useRequestsStore';
 import { useCompaniesStore } from '../../store/useCompanyStore';

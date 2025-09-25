@@ -1,4 +1,3 @@
-// src/pages/company/Settings.tsx
 import { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { DashboardLayout } from '../../components/DashboardLayout';

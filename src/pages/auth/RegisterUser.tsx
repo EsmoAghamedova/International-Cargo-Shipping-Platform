@@ -23,7 +23,7 @@ export function RegisterUserPage() {
       role: 'USER',
     };
 
-    AuthService.registerUser(newUser); // 👈 DB-ში ჩაწერა
+    AuthService.registerUser(newUser); 
     setCurrent(newUser); // 👈 localStorage-ში ჩაწერა
     navigate('/client/dashboard');
   }

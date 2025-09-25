@@ -1,5 +1,3 @@
-// src/pages/company/Requests.tsx
-
 import { useAuthStore } from '../../store/useAuthStore';
 import { useRequestsStore } from '../../store/useRequestsStore';
 import { Badge } from '../../components/common/Badge';

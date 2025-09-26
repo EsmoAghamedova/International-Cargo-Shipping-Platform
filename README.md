@@ -53,7 +53,7 @@ This project leverages cutting-edge technologies to deliver a seamless and effic
 - **Frontend:** [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
 - **Build Tool:** [Vite](https://vitejs.dev/)
 - **Styling:** [Styled Components](https://styled-components.com/), [Windi CSS](https://windicss.org)
-- **State Management:** [Zustand](https://github.com/pmndrs/zustand), [React Query](https://tanstack.com/query/latest)
+- **State Management:** [Zustand](https://github.com/pmndrs/zustand)
 - **Routing:** [React Router](https://reactrouter.com/)
 - **Icons:** [Lucide React](https://lucide.dev/)
 - **Utilities:** [uuid](https://github.com/uuidjs/uuid)
@@ -124,9 +124,6 @@ The following scripts are defined in `package.json`:
 
 - **Store:**  
   State management via `Zustand` in `src/store`.
-
-- **Query:**  
-  Asynchronous state management with React Query.
 
 ---
 

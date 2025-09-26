@@ -86,83 +86,81 @@ export function RequestDetail() {
 
           {/* Status flow */}
           <ul className="mt-6 space-y-3">
-  {STATUS_FLOW.map((status, idx) => {
-    const isRejected = status === 'REJECTED';
-    const isPassed = idx < currentStatusIndex && !isRejected;
-    const isCurrent = idx === currentStatusIndex;
+            {STATUS_FLOW.map((status, idx) => {
+              const isRejected = status === 'REJECTED';
+              const isPassed = idx < currentStatusIndex && !isRejected;
+              const isCurrent = idx === currentStatusIndex;
 
-    return (
-      <li
-        key={status}
-        className={`p-3 rounded-md ${
-          isRejected
-            ? 'bg-red-600 text-white font-semibold'
-            : isPassed
-              ? 'bg-gray-100 text-red-300 font-medium'
-              : isCurrent
-                ? 'bg-red-200 text-red-700 font-semibold'
-                : 'bg-gray-100 text-gray-400'
-        }`}
-      >
-        {STATUS_LABELS[status] || status}
-      </li>
-    );
-  })}
-</ul>
-
+              return (
+                <li
+                  key={status}
+                  className={`p-3 rounded-md ${
+                    isRejected
+                      ? 'bg-red-600 text-white font-semibold'
+                      : isPassed
+                        ? 'bg-gray-100 text-red-300 font-medium'
+                        : isCurrent
+                          ? 'bg-red-200 text-red-700 font-semibold'
+                          : 'bg-gray-100 text-gray-400'
+                  }`}
+                >
+                  {STATUS_LABELS[status] || status}
+                </li>
+              );
+            })}
+          </ul>
 
           {/* Timeline */}
           <div className="mt-6">
-  <h2 className="text-lg font-semibold mb-2">Status Timeline</h2>
-  <ul className="border-l-2 border-blue-500">
-    {statusHistory.map((item: StatusHistoryItem, idx: number) => {
-      const isCurrent = item.status === request.status;
-      const isRejected = item.status === 'REJECTED';
-      const isPassed = idx < currentStatusIndex && !isRejected;
+            <h2 className="text-lg font-semibold mb-2">Status Timeline</h2>
+            <ul className="border-l-2 border-blue-500">
+              {statusHistory.map((item: StatusHistoryItem, idx: number) => {
+                const isCurrent = item.status === request.status;
+                const isRejected = item.status === 'REJECTED';
+                const isPassed = idx < currentStatusIndex && !isRejected;
 
-      return (
-        <li key={idx} className="mb-4 ml-4 relative">
-          <span
-            className={`absolute -left-3 top-0 w-6 h-6 rounded-full border-2 border-white ${
-              isRejected
-                ? 'bg-red-600'
-                : isPassed
-                  ? 'bg-red-100'
-                  : isCurrent
-                    ? 'bg-red-200'
-                    : 'bg-gray-300'
-            }`}
-          ></span>
-          <div className="ml-2">
-            <p
-              className={`font-medium ${
-                isRejected
-                  ? 'text-red-700'
-                  : isPassed
-                    ? 'text-red-400'
-                    : isCurrent
-                      ? 'text-red-600'
-                      : 'text-gray-500'
-              }`}
-            >
-              {STATUS_LABELS[item.status] || item.status}{' '}
-              {item.updatedBy === 'COMPANY' && '🏢'}
-            </p>
-            <p className="text-xs text-gray-500">
-              {new Date(item.updatedAt).toLocaleString()}
-            </p>
-            {item.comment && (
-              <p className="text-sm text-gray-700 mt-1">
-                💬 {item.comment}
-              </p>
-            )}
+                return (
+                  <li key={idx} className="mb-4 ml-4 relative">
+                    <span
+                      className={`absolute -left-3 top-0 w-6 h-6 rounded-full border-2 border-white ${
+                        isRejected
+                          ? 'bg-red-600'
+                          : isPassed
+                            ? 'bg-red-100'
+                            : isCurrent
+                              ? 'bg-red-200'
+                              : 'bg-gray-300'
+                      }`}
+                    ></span>
+                    <div className="ml-2">
+                      <p
+                        className={`font-medium ${
+                          isRejected
+                            ? 'text-red-700'
+                            : isPassed
+                              ? 'text-red-400'
+                              : isCurrent
+                                ? 'text-red-600'
+                                : 'text-gray-500'
+                        }`}
+                      >
+                        {STATUS_LABELS[item.status] || item.status}{' '}
+                        {item.updatedBy === 'COMPANY' && '🏢'}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(item.updatedAt).toLocaleString()}
+                      </p>
+                      {item.comment && (
+                        <p className="text-sm text-gray-700 mt-1">
+                          💬 {item.comment}
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        </li>
-      );
-    })}
-  </ul>
-</div>
-
 
           {/* Rejection comment */}
           {request.status === 'REJECTED' && request.reviewComment && (

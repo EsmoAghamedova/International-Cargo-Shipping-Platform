@@ -80,25 +80,4 @@ button:focus-visible {
     /* slate-800 */
     background-color: #ffffff;
   }
-
-  a {
-    color: #2563eb;
-    /* blue-600 */
-  }
-
-  a:hover {
-    color: #1d4ed8;
-    /* blue-700 */
-  }
-
-  button {
-    background-color: #3b82f6;
-    /* blue-500 */
-    color: white;
-  }
-
-  button:hover {
-    background-color: #2563eb;
-    /* blue-600 */
-  }
 }

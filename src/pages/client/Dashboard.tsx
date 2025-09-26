@@ -13,7 +13,7 @@ export function ClientDashboard() {
   );
   const loadRequests = useRequestsStore((s) => s.loadRequests);
 
-  // ჩავტვირთოთ mock + localStorage
+  // ჩავტვირთოს mock + localStorage
   useEffect(() => {
     loadRequests();
   }, [loadRequests]);

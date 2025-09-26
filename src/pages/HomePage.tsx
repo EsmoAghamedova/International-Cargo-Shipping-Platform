@@ -21,13 +21,13 @@ export function HomePage() {
         <nav className="flex gap-3">
           <Link
             to="/login"
-            className="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium shadow hover:bg-blue-700 transition text-sm sm:text-base"
+            className="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium shadow hover:bg-blue-700 hover:text-white transition text-sm sm:text-base"
           >
             Login
           </Link>
           <Link
             to="/register"
-            className="px-5 py-2 rounded-lg bg-green-600 text-white font-medium shadow hover:bg-green-700 transition text-sm sm:text-base"
+            className="px-5 py-2 rounded-lg bg-green-600 text-white font-medium shadow hover:bg-green-700 hover:text-white transition text-sm sm:text-base"
           >
             Register
           </Link>
@@ -47,13 +47,13 @@ export function HomePage() {
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center">
           <Link
             to="/login"
-            className="px-8 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 transition w-full sm:w-auto"
+            className="px-8 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 hover:text-white no-underline transition w-full sm:w-auto"
           >
             Login
           </Link>
           <Link
             to="/register"
-            className="px-8 py-3 rounded-xl bg-green-600 text-white font-semibold shadow hover:bg-green-700 transition w-full sm:w-auto"
+            className="px-8 py-3 rounded-xl bg-green-600 text-white font-semibold shadow hover:bg-green-700 hover:text-white no-underline transition w-full sm:w-auto"
           >
             Register
           </Link>

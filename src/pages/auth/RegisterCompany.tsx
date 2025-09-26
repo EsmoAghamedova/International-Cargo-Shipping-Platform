@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { AuthService } from '../../services/AuthService';
 import { useState } from 'react';
 
+// Region options (checkboxes)
 const REGION_OPTIONS = [
   { value: 'EU', label: 'Europe' },
   { value: 'ASIA', label: 'Asia' },
@@ -14,6 +15,7 @@ const REGION_OPTIONS = [
   { value: 'OC', label: 'Oceania' },
 ];
 
+// Shipping type options (checkboxes)
 const TYPE_OPTIONS = [
   { value: 'AIR', label: 'Air' },
   { value: 'SEA', label: 'Sea' },
@@ -22,35 +24,43 @@ const TYPE_OPTIONS = [
 ];
 
 export function RegisterCompanyPage() {
+  // Track selected regions & shipping types
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+
+  // Access global store and router navigation
   const setCurrent = useAuthStore((s) => s.setCurrent);
   const navigate = useNavigate();
 
+  // Handle form submit
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
+
+    // Get form values
     const name = (form.elements.namedItem('name') as HTMLInputElement).value;
     const contactEmail = (
       form.elements.namedItem('contactEmail') as HTMLInputElement
     ).value;
     const phone = (form.elements.namedItem('phone') as HTMLInputElement).value;
 
+    // HQ address
     const hqAddress = {
       country: (form.elements.namedItem('country') as HTMLInputElement).value,
       city: (form.elements.namedItem('city') as HTMLInputElement).value,
       street: (form.elements.namedItem('street') as HTMLInputElement).value,
     };
 
+    // Build new company object
     const newCompany: Company = {
-      id: uuid(),
+      id: uuid(), // unique ID
       name,
       email: contactEmail,
       phone,
       hqAddress,
-      regions: selectedRegions,
-      supportedTypes: selectedTypes as ShippingType[],
-      role: 'COMPANY_ADMIN',
+      regions: selectedRegions, // selected regions from checkboxes
+      supportedTypes: selectedTypes as ShippingType[], // selected shipping types
+      role: 'COMPANY_ADMIN', // role for access
       logoUrl: (form.elements.namedItem('logoUrl') as HTMLInputElement).value,
       basePrice: parseFloat(
         (form.elements.namedItem('basePrice') as HTMLInputElement).value,
@@ -66,11 +76,15 @@ export function RegisterCompanyPage() {
       ),
     };
 
+    // Register company via service & set as current logged-in
     AuthService.registerCompany(newCompany);
     setCurrent(newCompany);
+
+    // Redirect to dashboard
     navigate('/company/dashboard');
   }
 
+  // Handle region checkbox change
   function handleRegionChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { value, checked } = e.target;
     setSelectedRegions((prev) =>
@@ -78,6 +92,7 @@ export function RegisterCompanyPage() {
     );
   }
 
+  // Handle shipping type checkbox change
   function handleTypeChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { value, checked } = e.target;
     setSelectedTypes((prev) =>
@@ -87,7 +102,7 @@ export function RegisterCompanyPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
+      {/* Header with Home link */}
       <header className="w-full px-6 py-4 bg-white shadow flex items-center justify-between">
         <Link
           to="/"
@@ -97,117 +112,128 @@ export function RegisterCompanyPage() {
         </Link>
       </header>
 
-      {/* Main */}
+      {/* Main form */}
       <main className="flex flex-1 items-center justify-center px-4 pt-10">
         <div className="w-full max-w-2xl">
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-4 p-6 bg-white rounded-xl shadow border border-gray-200"
+            className="flex flex-col gap-3 p-6 bg-white rounded-xl shadow border border-gray-200"
           >
-            <h2 className="text-2xl font-bold text-purple-600 text-center mb-2">
+            {/* Title */}
+            <h2 className="text-xl font-bold text-blue-600 text-center">
               Register Company
             </h2>
 
-            {/* Basic info */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Basic company info */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <input
                 name="name"
                 placeholder="Company Name"
-                className="border p-2 rounded"
+                className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
               <input
                 name="contactEmail"
                 type="email"
                 placeholder="Contact Email"
-                className="border p-2 rounded"
+                className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
               <input
                 name="phone"
                 placeholder="Phone (optional)"
-                className="border p-2 rounded md:col-span-2"
+                className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded md:col-span-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
-            {/* Address */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Address fields */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <input
                 name="country"
                 placeholder="Country"
-                className="border p-2 rounded"
+                className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
               <input
                 name="city"
                 placeholder="City"
-                className="border p-2 rounded"
+                className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
               <input
                 name="street"
                 placeholder="Street"
-                className="border p-2 rounded"
+                className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
-            {/* Regions + Types */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-sm font-medium text-gray-600">
-                  Regions Served
-                </label>
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  {REGION_OPTIONS.map((opt) => (
-                    <label
-                      key={opt.value}
-                      className="flex items-center gap-2 text-sm"
-                    >
-                      <input
-                        type="checkbox"
-                        value={opt.value}
-                        checked={selectedRegions.includes(opt.value)}
-                        onChange={handleRegionChange}
-                        className="accent-purple-600"
-                      />
-                      {opt.label}
-                    </label>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-600">
-                  Supported Shipping Types
-                </label>
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  {TYPE_OPTIONS.map((opt) => (
-                    <label
-                      key={opt.value}
-                      className="flex items-center gap-2 text-sm"
-                    >
-                      <input
-                        type="checkbox"
-                        value={opt.value}
-                        checked={selectedTypes.includes(opt.value)}
-                        onChange={handleTypeChange}
-                        className="accent-purple-600"
-                      />
-                      {opt.label}
-                    </label>
-                  ))}
-                </div>
+            {/* Regions checkboxes */}
+            <div>
+              <label className="text-sm font-semibold text-blue-600">
+                Regions Served
+              </label>
+              <div className="flex flex-wrap gap-3 mt-2">
+                {REGION_OPTIONS.map((opt) => (
+                  <label
+                    key={opt.value}
+                    className={`flex items-center gap-2 text-sm px-4 py-2 rounded-full cursor-pointer transition 
+          ${
+            selectedRegions.includes(opt.value)
+              ? 'bg-blue-600 text-white'
+              : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+          }`}
+                  >
+                    <input
+                      type="checkbox"
+                      value={opt.value}
+                      checked={selectedRegions.includes(opt.value)}
+                      onChange={handleRegionChange}
+                      className="hidden" // hide the actual checkbox
+                    />
+                    {opt.label}
+                  </label>
+                ))}
               </div>
             </div>
 
-            {/* Pricing */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Shipping types checkboxes */}
+            <div>
+              <label className="text-sm font-semibold text-blue-600">
+                Supported Shipping Types
+              </label>
+              <div className="flex flex-wrap gap-3 mt-2">
+                {TYPE_OPTIONS.map((opt) => (
+                  <label
+                    key={opt.value}
+                    className={`flex items-center gap-2 text-sm px-4 py-2 rounded-full cursor-pointer transition 
+          ${
+            selectedTypes.includes(opt.value)
+              ? 'bg-blue-600 text-white'
+              : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+          }`}
+                  >
+                    <input
+                      type="checkbox"
+                      value={opt.value}
+                      checked={selectedTypes.includes(opt.value)}
+                      onChange={handleTypeChange}
+                      className="hidden" // hide the actual checkbox
+                    />
+                    {opt.label}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Pricing details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <input
                 name="basePrice"
                 type="number"
                 step="0.01"
                 placeholder="Base Price"
-                className="border p-2 rounded"
+                className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
               <input
@@ -215,7 +241,7 @@ export function RegisterCompanyPage() {
                 type="number"
                 step="0.01"
                 placeholder="Price per Kg"
-                className="border p-2 rounded"
+                className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
               <input
@@ -223,7 +249,7 @@ export function RegisterCompanyPage() {
                 type="number"
                 step="0.01"
                 placeholder="Fuel %"
-                className="border p-2 rounded"
+                className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
               <input
@@ -231,25 +257,28 @@ export function RegisterCompanyPage() {
                 type="number"
                 step="0.01"
                 placeholder="Insurance %"
-                className="border p-2 rounded"
+                className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
+            {/* Optional logo */}
             <input
               name="logoUrl"
               placeholder="Logo URL (optional)"
-              className="border p-2 rounded"
+              className="border border-gray-300 bg-gray-50 text-gray-800 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
+            {/* Submit button */}
             <button
               type="submit"
-              className="bg-purple-500 text-white rounded p-2 hover:bg-purple-600 transition w-full"
+              className="bg-blue-600 text-white rounded p-2 hover:bg-blue-700 transition"
             >
               Register
             </button>
           </form>
 
+          {/* Link to login if already registered */}
           <div className="text-center mt-4">
             <p className="text-gray-500">
               Do you have an account?{' '}

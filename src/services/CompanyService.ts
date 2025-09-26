@@ -1,4 +1,3 @@
-// src/services/CompanyService.ts
 import type { ParcelRequest, RequestStatus } from '../types';
 import { useRequestsStore } from '../store/useRequestsStore';
 

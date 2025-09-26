@@ -9,14 +9,14 @@ import { useEffect } from 'react';
 export function CompanyDashboard() {
   const currentUser = useAuthStore((s) => s.currentUser);
   const requests = useRequestsStore((s) =>
-  s.requests.filter(
-    (r) => r.companyId === currentUser?.id && r.status === 'PENDING_REVIEW'
-  )
-);
+    s.requests.filter(
+      (r) => r.companyId === currentUser?.id && r.status === 'PENDING_REVIEW',
+    ),
+  );
   const loadRequests = useRequestsStore((s) => s.loadRequests);
 
   useEffect(() => {
-    loadRequests(); 
+    loadRequests();
   }, [loadRequests]);
 
   if (!currentUser) {

@@ -8,12 +8,52 @@ This project leverages cutting-edge technologies to deliver a seamless and effic
 
 ---
 
+## Screen Shots
+
+### 🚢 Home & Auth page
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/aea3ae60-1fd3-47c6-9642-315011404959" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/a2165d90-5c6e-4045-9cfb-ebf9cfac71ae" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/82bf996c-3a27-4f79-addd-abc7938b1521" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/0fd0541e-4cfa-4187-9cd9-3be3157bb922" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/1390933d-40be-4a56-b7ec-da882ad0cbac" />
+
+### 👩‍🦱Client Side
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/910492a3-4088-4ba0-8480-55ccafa982d9" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/04abd69f-3c59-4100-9cec-636ca21c8a0c" />
+</br>
+
+```Create Requst Stepper Design```
+
+</br>
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/a19c4816-35c2-4af8-b07b-aeaac5d0aca7" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/7c496d28-08cc-4646-acbf-aff2e459b49f" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/9d7d2f5c-ae57-44e3-a7b0-a16c3273bd6f" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/6cda858f-d6c0-4d11-b200-9bd25eeb42e4" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/8557e1db-7863-4779-a0f4-cd09ae523766" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/a0df75fc-efad-45cb-8934-979f4e7337dc" />
+
+
+### 🧑‍💼Company Side
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/e849deb3-25ef-4ca3-bf30-6b83f7da62da" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/bd0f2d97-fb26-4c2f-9c9b-da9eef1d24ab" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/013e53d6-48bf-4202-9745-bce209d6300d" />
+<img width="500" height="300" alt="image" src="https://github.com/user-attachments/assets/bc6ffc11-2b38-4441-b022-9070b30038e1" />
+
+### 📱Responsie design examples
+<img width="200" height="400" alt="image" src="https://github.com/user-attachments/assets/add144d6-7aba-4574-9ba4-3464c9cca1e4" />
+<img width="200" height="400" alt="image" src="https://github.com/user-attachments/assets/b06d0c39-db87-43f2-b52c-c5061abb3179" />
+<img width="200" height="400" alt="image" src="https://github.com/user-attachments/assets/489bfe19-3bca-43a4-b7a4-337ee83fe03a" />
+<img width="200" height="400" alt="image" src="https://github.com/user-attachments/assets/33b70329-1495-41a9-8317-857f2480490b" />
+
+
+---
+
 ## Tech Stack
 
 - **Frontend:** [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
 - **Build Tool:** [Vite](https://vitejs.dev/)
 - **Styling:** [Styled Components](https://styled-components.com/), [Windi CSS](https://windicss.org)
-- **State Management:** [Zustand](https://github.com/pmndrs/zustand), [React Query](https://tanstack.com/query/latest)
+- **State Management:** [Zustand](https://github.com/pmndrs/zustand)
 - **Routing:** [React Router](https://reactrouter.com/)
 - **Icons:** [Lucide React](https://lucide.dev/)
 - **Utilities:** [uuid](https://github.com/uuidjs/uuid)
@@ -85,9 +125,6 @@ The following scripts are defined in `package.json`:
 - **Store:**  
   State management via `Zustand` in `src/store`.
 
-- **Query:**  
-  Asynchronous state management with React Query.
-
 ---
 
 ## Pricing Algorithm
@@ -111,7 +148,7 @@ The platform calculates shipping costs based on:
 ## CI/CD & Deployment
 
 This project uses **GitHub Actions** for CI/CD.  
-Workflow is defined in `.github/workflows/deploy.yml` and auto-deploys to [Netlify](https://www.netlify.com/) on pushes to `main`.
+Workflow is defined in `.github/workflows/deploy.yml` and auto-deploys to Github Page on pushes to `master`.
 
 **Deployment URL:**
 

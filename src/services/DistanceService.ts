@@ -9,13 +9,42 @@ export type Continent =
   | 'REMOTE';
 
 export const countriesByContinent: Record<Continent, string[]> = {
-  EU: ['Georgia', 'Germany', 'France', 'Italy', 'Spain', 'Poland'],
-  ASIA: ['China', 'Japan', 'South Korea', 'India', 'Azerbaijan'],
+  EU: [
+    'Germany',
+    'France',
+    'Italy',
+    'Spain',
+    'Poland',
+    'Netherlands',
+    'Belgium',
+    'Sweden',
+    'Denmark',
+    'Finland',
+    'Austria',
+    'Portugal',
+    'Greece',
+    'Ireland',
+  ],
+  ASIA: [
+    'China',
+    'Japan',
+    'South Korea',
+    'India',
+    'Singapore',
+    'Malaysia',
+    'Thailand',
+    'Vietnam',
+    'Indonesia',
+    'Philippines',
+    'United Arab Emirates',
+    'Saudi Arabia',
+    'Israel',
+  ],
   N_AMERICA: ['USA', 'Canada', 'Mexico'],
-  S_AMERICA: ['Brazil', 'Argentina', 'Chile'],
-  AFRICA: ['Nigeria', 'South Africa', 'Egypt'],
-  OCEANIA: ['Australia', 'New Zealand'],
-  REMOTE: ['Greenland', 'Iceland'], // მაგალითისთვის
+  S_AMERICA: ['Brazil', 'Argentina', 'Chile', 'Colombia', 'Peru'],
+  AFRICA: ['South Africa', 'Egypt', 'Nigeria', 'Morocco', 'Kenya'],
+  OCEANIA: ['Australia', 'New Zealand', 'Fiji'],
+  REMOTE: ['Greenland', 'Iceland'],
 };
 
 export const distanceFactors: Record<string, number> = {

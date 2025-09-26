@@ -54,9 +54,9 @@ export function RequestDetail() {
     request.status as (typeof STATUS_FLOW)[number],
   );
 
-
-  const statusHistory: StatusHistoryItem[] =
-  (request as { statusHistory?: StatusHistoryItem[] }).statusHistory ?? [
+  const statusHistory: StatusHistoryItem[] = (
+    request as { statusHistory?: StatusHistoryItem[] }
+  ).statusHistory ?? [
     {
       status: 'PENDING_REVIEW',
       updatedAt: request.createdAt,

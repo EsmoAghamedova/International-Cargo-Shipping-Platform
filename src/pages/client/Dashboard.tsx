@@ -28,7 +28,10 @@ export function ClientDashboard() {
       <div className="w-full px-2 sm:px-4 md:px-6 py-4 space-y-8">
         <header className="space-y-2">
           <h1 className="text-3xl md:text-4xl font-bold text-blue-400">
-            Welcome, {currentUser.role === 'USER' ? currentUser.fullName : currentUser.name}
+            Welcome,{' '}
+            {currentUser.role === 'USER'
+              ? currentUser.fullName
+              : currentUser.name}
           </h1>
           <p className="text-gray-400 text-lg">
             Here are your recent parcel requests:
@@ -60,10 +63,12 @@ export function ClientDashboard() {
                       {req.route.origin.city} → {req.route.destination.city}
                     </h2>
                     <p className="text-sm text-gray-700">
-                      {req.parcel.weightKg}kg • {req.parcel.kind} • {req.shippingType}
+                      {req.parcel.weightKg}kg • {req.parcel.kind} •{' '}
+                      {req.shippingType}
                     </p>
                     <p className="text-xs text-gray-500">
-                      Tracking ID: <span className="font-mono">{req.trackingId}</span>
+                      Tracking ID:{' '}
+                      <span className="font-mono">{req.trackingId}</span>
                     </p>
                   </div>
                   <Badge status={req.status} />

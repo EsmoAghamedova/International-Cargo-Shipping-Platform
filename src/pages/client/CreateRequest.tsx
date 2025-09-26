@@ -9,6 +9,7 @@ import { mockCompanies } from '../../mock/company.mock-data';
 import { PricingService } from '../../services/PricingService';
 import { countriesByContinent } from '../../services/DistanceService';
 import { Stepper } from '../../components/common/Stepper';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 function generateTrackingId() {
   return Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -35,6 +36,7 @@ export function CreateRequestPage() {
   const currentUser = useAuthStore((s) => s.currentUser);
   const addRequest = useRequestsStore((s) => s.addRequest);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [companies, setCompanies] = useState<Company[]>([]);
   const [pricePreview, setPricePreview] = useState<ReturnType<
@@ -44,21 +46,18 @@ export function CreateRequestPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isPaid, setIsPaid] = useState(false);
 
-  // --- form state ---
   const [formData, setFormData] = useState({
     weight: '',
     length: '',
     width: '',
     height: '',
     kind: 'DOCUMENTS' as 'DOCUMENTS' | 'GOODS',
-
     originCountry: '',
     originCity: '',
     originStreet: '',
     destinationCountry: '',
     destinationCity: '',
     destinationStreet: '',
-
     shippingType: '' as ShippingType | '',
     companyId: '',
   });
@@ -70,12 +69,10 @@ export function CreateRequestPage() {
     setCompanies([...mockCompanies, ...localCompanies]);
   }, []);
 
-  // --- handle change ---
   function updateField(field: string, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
-  // --- calculate preview ---
   useEffect(() => {
     try {
       const {
@@ -119,8 +116,23 @@ export function CreateRequestPage() {
     }
   }, [formData]);
 
-  // --- submit ---
+  // --- React Query mutation for submitting request ---
+  const createRequestMutation = useMutation({
+    mutationFn: async (newRequest: ParcelRequest) => {
+      // simulate delay if needed
+      await new Promise((res) => setTimeout(res, 500));
+      addRequest(newRequest); // update Zustand store
+      return newRequest;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['requests'] });
+      navigate('/client/dashboard');
+    },
+  });
+
   function handleSubmit() {
+    if (!currentUser) return;
+
     const {
       weight,
       length,
@@ -139,7 +151,7 @@ export function CreateRequestPage() {
 
     const newRequest: ParcelRequest = {
       id: uuid(),
-      userId: currentUser!.id,
+      userId: currentUser.id,
       companyId,
       parcel: {
         weightKg: parseFloat(weight),
@@ -178,11 +190,9 @@ export function CreateRequestPage() {
       trackingId: generateTrackingId(),
     };
 
-    addRequest(newRequest);
-    navigate('/client/dashboard');
+    createRequestMutation.mutate(newRequest);
   }
 
-  // --- filtered companies ---
   const filteredCompanies = companies.filter((c) => {
     const matchesType = formData.shippingType
       ? c.supportedTypes.includes(formData.shippingType as ShippingType)
@@ -197,7 +207,6 @@ export function CreateRequestPage() {
     return matchesType && matchesRegion;
   });
 
-  // --- validation per step ---
   function isStepValid(step: number): boolean {
     switch (step) {
       case 0:
@@ -573,14 +582,18 @@ export function CreateRequestPage() {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={!isStepValid(currentStep)}
+              disabled={
+                !isStepValid(currentStep) || createRequestMutation.isPending
+              }
               className={`ml-auto px-4 py-2 rounded-lg transition ${
                 isStepValid(currentStep)
                   ? 'bg-green-600 text-white hover:bg-green-700'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
-              🚀 Submit Request
+              {createRequestMutation.isPending
+                ? 'Submitting...'
+                : '🚀 Submit Request'}
             </button>
           )}
         </div>

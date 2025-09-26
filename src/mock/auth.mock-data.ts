@@ -104,5 +104,5 @@ export const mockAuthEntities: AuthEntity[] = [
     regions: ['EU'],
     supportedTypes: ['ROAD'],
     logoUrl: 'https://logo.clearbit.com/localexpress.ge',
-  }
+  },
 ];

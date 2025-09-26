@@ -3,45 +3,55 @@ import { useNavigate, Link } from 'react-router-dom';
 import type { User } from '../../types';
 import { v4 as uuid } from 'uuid';
 import { AuthService } from '../../services/AuthService';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { FormEvent } from 'react';
 
 export function RegisterUserPage() {
-  // Access store function to set current user
   const setCurrent = useAuthStore((s) => s.setCurrent);
-  // Router navigation
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  // Handle form submission
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault(); // stop page refresh
+  // React Query mutation for registering a user
+  const registerUserMutation = useMutation({
+    mutationFn: async (user: User) => {
+      // simulate latency
+      await new Promise((res) => setTimeout(res, 500));
+      AuthService.registerUser(user); // save in mock backend
+      return user;
+    },
+    onSuccess: (user) => {
+      // update Zustand store
+      setCurrent(user);
+      // optionally invalidate users query if you have one
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      // redirect to dashboard
+      navigate('/client/dashboard');
+    },
+  });
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     const form = e.currentTarget;
 
-    // Get form input values
     const fullName = (form.elements.namedItem('fullName') as HTMLInputElement)
       .value;
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
 
-    // Create new User object
     const newUser: User = {
-      id: uuid(), // generate unique ID
+      id: uuid(),
       fullName,
       email,
-      addresses: [], // starts with no saved addresses
-      role: 'USER', // role = client
+      addresses: [],
+      role: 'USER',
     };
 
-    // Save to "backend service" (mocked AuthService)
-    AuthService.registerUser(newUser);
-
-    // Save to local store (so user stays logged in)
-    setCurrent(newUser);
-
-    // Redirect user to their dashboard
-    navigate('/client/dashboard');
+    // trigger React Query mutation
+    registerUserMutation.mutate(newUser);
   }
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header with home link */}
+      {/* Header */}
       <header className="w-full px-6 py-4 bg-white shadow flex items-center justify-between">
         <Link
           to="/"
@@ -51,19 +61,17 @@ export function RegisterUserPage() {
         </Link>
       </header>
 
-      {/* Centered registration form */}
+      {/* Registration form */}
       <main className="flex flex-1 items-center justify-center px-4">
         <div className="w-full max-w-sm">
           <form
             onSubmit={handleSubmit}
             className="flex flex-col gap-3 p-6 bg-white rounded-xl shadow border border-gray-200"
           >
-            {/* Title */}
             <h2 className="text-xl font-bold text-blue-600 text-center">
               Register User
             </h2>
 
-            {/* Full name input */}
             <input
               name="fullName"
               placeholder="Full Name"
@@ -71,7 +79,6 @@ export function RegisterUserPage() {
               required
             />
 
-            {/* Email input */}
             <input
               name="email"
               placeholder="Email"
@@ -79,16 +86,15 @@ export function RegisterUserPage() {
               required
             />
 
-            {/* Submit button */}
             <button
               type="submit"
-              className="bg-green-500 text-white rounded p-2 hover:bg-green-600 transition"
+              disabled={registerUserMutation.isPending}
+              className="bg-green-500 text-white rounded p-2 hover:bg-green-600 transition disabled:opacity-50"
             >
-              Register
+              {registerUserMutation.isPending ? 'Registering...' : 'Register'}
             </button>
           </form>
 
-          {/* Already have account link */}
           <div className="text-center mt-4">
             <p className="text-gray-500">
               Do you have an account?{' '}

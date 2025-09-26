@@ -24,13 +24,6 @@ const STATUS_FLOW = [
   'REJECTED',
 ] as const;
 
-interface StatusHistoryItem {
-  status: string;
-  updatedAt: string;
-  updatedBy?: 'COMPANY' | 'SYSTEM';
-  comment?: string;
-}
-
 export function RequestDetail() {
   const { id } = useParams<{ id: string }>();
   const request = useRequestsStore((s) => s.requests.find((r) => r.id === id));
@@ -54,56 +47,51 @@ export function RequestDetail() {
     request.status as (typeof STATUS_FLOW)[number],
   );
 
-  const statusHistory: StatusHistoryItem[] = (
-    request as { statusHistory?: StatusHistoryItem[] }
-  ).statusHistory ?? [
-    {
-      status: 'PENDING_REVIEW',
-      updatedAt: request.createdAt,
-      updatedBy: 'SYSTEM',
-    },
-    {
-      status: 'ACCEPTED',
-      updatedAt: new Date(Date.now() - 3600 * 1000 * 24).toISOString(),
-      updatedBy: 'COMPANY',
-    },
-    {
-      status: request.status,
-      updatedAt: new Date().toISOString(),
-      updatedBy: 'COMPANY',
-    },
-  ];
-
   return (
     <DashboardLayout role="USER">
       <div className="w-full px-2 sm:px-4 md:px-6 py-4">
         <Card className="w-full bg-white border border-gray-200">
           <h1 className="text-2xl font-bold mb-3 text-blue-600">
             {request.route.origin.city}, {request.route.origin.country} →{' '}
-            {request.route.destination.city},{' '}
-            {request.route.destination.country}
+            {request.route.destination.city}, {request.route.destination.country}
           </h1>
           <Badge status={request.status} />
 
           {/* Status flow */}
           <ul className="mt-6 space-y-3">
             {STATUS_FLOW.map((status, idx) => {
-              const isRejected = status === 'REJECTED';
-              const isPassed = idx < currentStatusIndex && !isRejected;
               const isCurrent = idx === currentStatusIndex;
+              const isRejected = request.status === 'REJECTED';
+              let bgColor = 'bg-gray-100';
+              let textColor = 'text-gray-400';
+              let fontWeight = 'font-medium';
+
+              if (isRejected) {
+                if (idx < currentStatusIndex) {
+                  // previous statuses = light red
+                  bgColor = 'bg-red-100';
+                  textColor = 'text-red-500';
+                } else if (isCurrent) {
+                  // rejected status = dark red
+                  bgColor = 'bg-red-600';
+                  textColor = 'text-white';
+                  fontWeight = 'font-semibold';
+                }
+              } else {
+                if (isCurrent) {
+                  bgColor = 'bg-blue-200';
+                  textColor = 'text-blue-700';
+                  fontWeight = 'font-semibold';
+                } else if (idx < currentStatusIndex) {
+                  bgColor = 'bg-green-100';
+                  textColor = 'text-green-700';
+                }
+              }
 
               return (
                 <li
                   key={status}
-                  className={`p-3 rounded-md ${
-                    isRejected
-                      ? 'bg-red-600 text-white font-semibold'
-                      : isPassed
-                        ? 'bg-gray-100 text-red-300 font-medium'
-                        : isCurrent
-                          ? 'bg-red-200 text-red-700 font-semibold'
-                          : 'bg-gray-100 text-gray-400'
-                  }`}
+                  className={`p-3 rounded-md ${bgColor} ${textColor} ${fontWeight}`}
                 >
                   {STATUS_LABELS[status] || status}
                 </li>
@@ -111,63 +99,10 @@ export function RequestDetail() {
             })}
           </ul>
 
-          {/* Timeline */}
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold mb-2">Status Timeline</h2>
-            <ul className="border-l-2 border-blue-500">
-              {statusHistory.map((item: StatusHistoryItem, idx: number) => {
-                const isCurrent = item.status === request.status;
-                const isRejected = item.status === 'REJECTED';
-                const isPassed = idx < currentStatusIndex && !isRejected;
-
-                return (
-                  <li key={idx} className="mb-4 ml-4 relative">
-                    <span
-                      className={`absolute -left-3 top-0 w-6 h-6 rounded-full border-2 border-white ${
-                        isRejected
-                          ? 'bg-red-600'
-                          : isPassed
-                            ? 'bg-red-100'
-                            : isCurrent
-                              ? 'bg-red-200'
-                              : 'bg-gray-300'
-                      }`}
-                    ></span>
-                    <div className="ml-2">
-                      <p
-                        className={`font-medium ${
-                          isRejected
-                            ? 'text-red-700'
-                            : isPassed
-                              ? 'text-red-400'
-                              : isCurrent
-                                ? 'text-red-600'
-                                : 'text-gray-500'
-                        }`}
-                      >
-                        {STATUS_LABELS[item.status] || item.status}{' '}
-                        {item.updatedBy === 'COMPANY' && '🏢'}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(item.updatedAt).toLocaleString()}
-                      </p>
-                      {item.comment && (
-                        <p className="text-sm text-gray-700 mt-1">
-                          💬 {item.comment}
-                        </p>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
           {/* Rejection comment */}
           {request.status === 'REJECTED' && request.reviewComment && (
             <div className="bg-red-100 text-red-700 mt-4 p-4 rounded">
-              <span className="font-bold">Rejection Reason:</span>{' '}
-              {request.reviewComment}
+              <span className="font-bold">Rejection Reason:</span> {request.reviewComment}
             </div>
           )}
 

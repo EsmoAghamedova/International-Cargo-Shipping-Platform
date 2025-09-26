@@ -1,8 +1,16 @@
 import { useState } from 'react';
 import { useRequestsStore } from '../../store/useRequestsStore';
 import { Card } from '../../components/common/CardComponent';
-import { Badge } from '../../components/common/Badge';
 import { DashboardLayout } from '../../components/DashboardLayout';
+
+const STATUS_LABELS: Record<string, string> = {
+  PENDING_REVIEW: 'Pending Review',
+  ACCEPTED: 'Accepted',
+  IN_TRANSIT: 'In Transit',
+  OUT_FOR_DELIVERY: 'Out for Delivery',
+  DELIVERED: 'Delivered',
+  REJECTED: 'Rejected',
+};
 
 export function TrackRequest() {
   const [trackingId, setTrackingId] = useState('');
@@ -22,7 +30,7 @@ export function TrackRequest() {
           <h1 className="text-2xl font-bold text-blue-600 mb-3">
             Track Your Parcel
           </h1>
-          <div className="flex gap-2 <sm:flex-col">
+          <div className="flex gap-2 flex-col sm:flex-row">
             <input
               type="text"
               placeholder="Enter Tracking ID..."
@@ -53,7 +61,23 @@ export function TrackRequest() {
                 <h2 className="text-xl font-bold text-blue-600">
                   Tracking #{request.trackingId}
                 </h2>
-                <Badge status={request.status} />
+
+                {/* Status label instead of Badge */}
+                <span
+                  className={`inline-block text-sm font-semibold px-3 py-1 rounded
+                    ${
+                      request.status === 'REJECTED'
+                        ? 'bg-red-100 text-red-600'
+                        : request.status === 'DELIVERED'
+                        ? 'bg-green-100 text-green-700'
+                        : request.status === 'IN_TRANSIT' ||
+                          request.status === 'OUT_FOR_DELIVERY'
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-gray-100 text-gray-600'
+                    }`}
+                >
+                  {STATUS_LABELS[request.status] ?? request.status}
+                </span>
 
                 <p className="text-gray-700">
                   From: {request.route.origin.city},{' '}

@@ -1,10 +1,18 @@
 import { useAuthStore } from '../../store/useAuthStore';
 import { useRequestsStore } from '../../store/useRequestsStore';
-import { Badge } from '../../components/common/Badge';
 import { Card } from '../../components/common/CardComponent';
 import { Link } from 'react-router-dom';
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { useEffect } from 'react';
+
+const STATUS_LABELS: Record<string, string> = {
+  PENDING_REVIEW: 'Pending Review',
+  ACCEPTED: 'Accepted',
+  IN_TRANSIT: 'In Transit',
+  OUT_FOR_DELIVERY: 'Out for Delivery',
+  DELIVERED: 'Delivered',
+  REJECTED: 'Rejected',
+};
 
 export function ClientDashboard() {
   const currentUser = useAuthStore((s) => s.currentUser);
@@ -71,7 +79,23 @@ export function ClientDashboard() {
                       <span className="font-mono">{req.trackingId}</span>
                     </p>
                   </div>
-                  <Badge status={req.status} />
+
+                  {/* Status label instead of badge */}
+                  <span
+                    className={`text-sm font-semibold px-2 py-1 rounded
+                      ${
+                        req.status === 'REJECTED'
+                          ? 'bg-red-100 text-red-600'
+                          : req.status === 'DELIVERED'
+                          ? 'bg-green-100 text-green-700'
+                          : req.status === 'IN_TRANSIT' ||
+                            req.status === 'OUT_FOR_DELIVERY'
+                          ? 'bg-blue-100 text-blue-700'
+                          : 'bg-gray-100 text-gray-600'
+                      }`}
+                  >
+                    {STATUS_LABELS[req.status] ?? req.status}
+                  </span>
                 </div>
                 <Link
                   to={`/client/requests/${req.id}`}

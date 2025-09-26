@@ -8,6 +8,13 @@ import { useState, useMemo } from 'react';
 import type { RequestStatus } from '../../types';
 import { InlineChat } from '../../components/Chat';
 
+// helper to format status labels
+const formatLabel = (val: string) =>
+  val
+    .toLowerCase()
+    .replace(/_/g, ' ')
+    .replace(/^\w/, (c) => c.toUpperCase());
+
 export function CompanyRequestDetail() {
   const { id } = useParams<{ id: string }>();
   const { requests, updateRequestStatus } = useRequestsStore();
@@ -62,7 +69,7 @@ export function CompanyRequestDetail() {
             {Number(request.parcel.declaredValue).toFixed(2)}
           </p>
           <div className="mt-2">
-            <Badge status={request.status} />
+            <Badge status={formatLabel(request.status)} />
           </div>
 
           {request.reviewComment && (

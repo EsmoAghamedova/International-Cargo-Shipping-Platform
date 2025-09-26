@@ -15,6 +15,13 @@ const STATUS_ORDER = [
   'REJECTED',
 ];
 
+// helper to format label text
+const formatLabel = (val: string) =>
+  val
+    .toLowerCase()
+    .replace(/_/g, ' ')
+    .replace(/^\w/, (c) => c.toUpperCase());
+
 export function CompanyRequests() {
   const currentCompany = useAuthStore((s) => s.currentUser);
   const requests = useRequestsStore((s) =>
@@ -59,7 +66,7 @@ export function CompanyRequests() {
               <option value="">All</option>
               {STATUS_ORDER.map((status) => (
                 <option key={status} value={status}>
-                  {status.replace(/_/g, ' ')}
+                  {formatLabel(status)}
                 </option>
               ))}
             </select>
@@ -89,7 +96,8 @@ export function CompanyRequests() {
                       {req.shippingType}
                     </p>
                   </div>
-                  <Badge status={req.status} />
+                  {/* Wrap badge with formatted label */}
+                  <Badge status={formatLabel(req.status)} />
                 </div>
                 <Link
                   to={`/company/request-detail/${req.id}`}

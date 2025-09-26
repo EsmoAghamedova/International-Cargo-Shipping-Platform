@@ -54,8 +54,9 @@ export function RequestDetail() {
     request.status as (typeof STATUS_FLOW)[number],
   );
 
-  // Temporary timeline with company actions (replace with backend data later)
-  const statusHistory: StatusHistoryItem[] = (request as any).statusHistory ?? [
+
+  const statusHistory: StatusHistoryItem[] =
+  (request as { statusHistory?: StatusHistoryItem[] }).statusHistory ?? [
     {
       status: 'PENDING_REVIEW',
       updatedAt: request.createdAt,

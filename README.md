@@ -148,7 +148,7 @@ The platform calculates shipping costs based on:
 ## CI/CD & Deployment
 
 This project uses **GitHub Actions** for CI/CD.  
-Workflow is defined in `.github/workflows/deploy.yml` and auto-deploys to [Netlify](https://www.netlify.com/) on pushes to `main`.
+Workflow is defined in `.github/workflows/deploy.yml` and auto-deploys to Github Page on pushes to `master`.
 
 **Deployment URL:**
 

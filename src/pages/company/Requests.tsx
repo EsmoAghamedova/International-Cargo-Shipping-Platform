@@ -27,6 +27,12 @@ export function CompanyRequests() {
   const requests = useRequestsStore((s) =>
     s.requests.filter((r) => r.companyId === currentCompany?.id),
   );
+  const isLoading = useRequestsStore((s) => s.isLoading);
+  const error = useRequestsStore((s) => s.error);
+  const total = useRequestsStore((s) => s.total);
+  const hasMore = useRequestsStore((s) => s.hasMore);
+  const loadMore = useRequestsStore((s) => s.loadMore);
+  const isLoadingMore = useRequestsStore((s) => s.isLoadingMore);
   const [sortStatus, setSortStatus] = useState<string>('');
 
   if (!currentCompany || currentCompany.role !== 'COMPANY_ADMIN') {
@@ -43,6 +49,8 @@ export function CompanyRequests() {
           STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status),
       );
 
+  const visibleCount = Math.min(requests.length, total || requests.length);
+
   return (
     <DashboardLayout role="COMPANY_ADMIN">
       <div className="space-y-8">
@@ -53,6 +61,11 @@ export function CompanyRequests() {
           <p className="text-gray-500 text-lg">
             Review and manage all parcel requests assigned to your company.
           </p>
+          {total > 0 && (
+            <p className="text-sm text-gray-500">
+              Showing {visibleCount} of {total} requests
+            </p>
+          )}
           <div className="mt-4 flex items-center gap-2">
             <label className="text-gray-700 font-medium" htmlFor="status-sort">
               Sort by status:
@@ -73,7 +86,15 @@ export function CompanyRequests() {
           </div>
         </header>
 
-        {sortedRequests.length === 0 ? (
+        {isLoading ? (
+          <Card className="p-6 bg-white border border-gray-200 text-center text-gray-500">
+            Loading requests...
+          </Card>
+        ) : error ? (
+          <Card className="p-6 bg-red-50 border border-red-200 text-red-600 text-sm">
+            {error}
+          </Card>
+        ) : sortedRequests.length === 0 ? (
           <Card className="text-center py-10 bg-white border border-gray-200">
             <p className="text-gray-500 text-lg">
               No requests assigned to your company yet.
@@ -107,6 +128,19 @@ export function CompanyRequests() {
                 </Link>
               </Card>
             ))}
+
+            {hasMore && (
+              <div className="col-span-full flex justify-center">
+                <button
+                  onClick={() => loadMore()}
+                  disabled={isLoadingMore}
+                  className="mt-2 px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600 disabled:opacity-60"
+                  aria-busy={isLoadingMore}
+                >
+                  {isLoadingMore ? 'Loading more...' : 'Load more requests'}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

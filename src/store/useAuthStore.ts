@@ -1,13 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { User, Company } from '../types';
-import { AuthService } from '../services/AuthService';
-
 type AuthEntity = User | Company;
 
 interface AuthState {
   currentUser: AuthEntity | null;
-  login: (email: string) => AuthEntity | null;
   logout: () => void;
   setCurrent: (entity: AuthEntity | null) => void;
 }
@@ -16,24 +13,7 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       currentUser: null,
-
-      login: (email) => {
-        // ვამოწმებთ localStorage-ში ჯერ
-        const usersRaw = localStorage.getItem('users');
-        const companiesRaw = localStorage.getItem('companies');
-        const users = usersRaw ? JSON.parse(usersRaw) : [];
-        const companies = companiesRaw ? JSON.parse(companiesRaw) : [];
-
-        const entity =
-          [...users, ...companies].find((e) => e.email === email) ??
-          AuthService.login(email); // fallback mock-იდან
-
-        if (entity) set({ currentUser: entity });
-        return entity;
-      },
-
       logout: () => {
-        AuthService.logout();
         set({ currentUser: null });
       },
 

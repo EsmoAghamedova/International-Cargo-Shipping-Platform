@@ -53,6 +53,7 @@ This project leverages cutting-edge technologies to deliver a seamless and effic
 ## Tech Stack
 
 - **Frontend:** [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
+- **Backend API:** Node.js (custom HTTP server)
 - **Build Tool:** [Vite](https://vitejs.dev/)
 - **Styling:** [Styled Components](https://styled-components.com/), [Windi CSS](https://windicss.org)
 - **State Management:** [Zustand](https://github.com/pmndrs/zustand), [React Query](https://tanstack.com/query/latest)
@@ -89,11 +90,26 @@ This project leverages cutting-edge technologies to deliver a seamless and effic
    pnpm install
    ```
 
-3. **Set environment variables:**  
-   Create a `.env` file in the root directory and specify your backend API URL:
+3. **Configure environment variables:**
+   Create a `.env` file in the root directory and specify your backend API URL (defaults to `http://localhost:4000` if omitted):
    ```
-   VITE_API_BASE_URL=https://api.example.com
+   VITE_API_URL=http://localhost:4000
    ```
+
+### Running locally
+
+Run the API server and the Vite dev server in separate terminals:
+
+```bash
+npm run server:dev
+npm run dev
+```
+
+Alternatively, run both with a single command:
+
+```bash
+npm run dev:fullstack
+```
 
 ### Scripts
 
@@ -101,9 +117,12 @@ The following scripts are defined in `package.json`:
 
 | Command      | Description                                      |
 | ------------ | ------------------------------------------------ |
-| `dev`        | Run development server                           |
+| `dev`        | Run frontend development server                   |
 | `host`       | Run dev server with host mode for network access |
 | `build`      | Build the app for production (`tsc -b` + Vite)   |
+| `server:dev` | Start the Node.js API (watch mode)               |
+| `server:start` | Start the API once without watch mode          |
+| `dev:fullstack` | Run API and frontend together in one shell    |
 | `lint`       | Run ESLint for code style checks                 |
 | `lint:fix`   | Run ESLint and auto-fix issues                   |
 | `preview`    | Preview the production build locally             |
@@ -116,15 +135,11 @@ The following scripts are defined in `package.json`:
 
 ## Folder Structure
 
-- **Mock Data:**  
-  Located in `src/mockData`. Each file represents an entity (e.g., `shipments.ts`, `customers.ts`).  
-  To extend, add entries to these arrays or create new files for new entities.
-
-- **Services:**  
-  In `src/services`, handles API calls (using `fetch` or `axios`).
-
-- **Store:**  
-  State management via `Zustand` in `src/store`.
+- **server/** — Lightweight Node.js API (HTTP server, router, data layer).
+- **src/lib/** — Shared utilities such as the `apiClient` wrapper.
+- **src/services/** — Frontend service layer that talks to the API.
+- **src/store/** — Global state powered by Zustand (auth, requests, etc.).
+- **src/pages/** — Route-level UI screens for clients and companies.
 
 ---
 

@@ -1,19 +1,15 @@
-import { v4 as uuid } from 'uuid';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useRequestsStore } from '../../store/useRequestsStore';
-import type { ParcelRequest, ShippingType, Company } from '../../types';
+import type { ShippingType, Company } from '../../types';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { useEffect, useState } from 'react';
-import { mockCompanies } from '../../mock/company.mock-data';
-import { PricingService } from '../../services/PricingService';
+import { CompanyService } from '../../services/CompanyService';
+import { PricingService, type PricingQuoteResult } from '../../services/PricingService';
 import { countriesByContinent } from '../../services/DistanceService';
 import { Stepper } from '../../components/common/Stepper';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-function generateTrackingId() {
-  return Math.random().toString(36).substring(2, 10).toUpperCase();
-}
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { CreateRequestPayload } from '../../services/RequestsService';
 
 // --- helper: find continent by country ---
 function findContinentByCountry(country: string): string | null {
@@ -38,10 +34,17 @@ export function CreateRequestPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const [companies, setCompanies] = useState<Company[]>([]);
-  const [pricePreview, setPricePreview] = useState<ReturnType<
-    typeof PricingService.calculatePrice
-  > | null>(null);
+  const {
+    data: companies = [],
+    isFetching: isLoadingCompanies,
+  } = useQuery({
+    queryKey: ['companies'],
+    queryFn: () => CompanyService.list(),
+  });
+
+  const [pricePreview, setPricePreview] = useState<PricingQuoteResult | null>(
+    null,
+  );
 
   const [currentStep, setCurrentStep] = useState(0);
   const [isPaid, setIsPaid] = useState(false);
@@ -62,71 +65,68 @@ export function CreateRequestPage() {
     companyId: '',
   });
 
-  // --- load companies ---
-  useEffect(() => {
-    const saved = localStorage.getItem('companies-storage');
-    const localCompanies: Company[] = saved ? JSON.parse(saved) : [];
-    setCompanies([...mockCompanies, ...localCompanies]);
-  }, []);
-
   function updateField(field: string, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
   useEffect(() => {
-    try {
-      const {
-        weight,
-        length,
-        width,
-        height,
-        shippingType,
-        companyId,
-        originCountry,
-        destinationCountry,
-      } = formData;
+    const {
+      weight,
+      length,
+      width,
+      height,
+      shippingType,
+      originCountry,
+      destinationCountry,
+    } = formData;
 
-      if (
-        !weight ||
-        !length ||
-        !width ||
-        !height ||
-        !shippingType ||
-        !companyId
-      ) {
-        setPricePreview(null);
-        return;
-      }
-
-      const result = PricingService.calculatePrice({
-        shippingType: shippingType as ShippingType,
-        weightKg: parseFloat(weight),
-        lengthCm: parseFloat(length),
-        widthCm: parseFloat(width),
-        heightCm: parseFloat(height),
-        origin: originCountry || 'EU',
-        destination: destinationCountry || 'ASIA',
-        declaredValue: 0,
-        companyId,
-      });
-
-      setPricePreview(result);
-    } catch {
+    if (
+      !weight ||
+      !length ||
+      !width ||
+      !height ||
+      !shippingType ||
+      !originCountry ||
+      !destinationCountry
+    ) {
       setPricePreview(null);
+      return;
     }
+
+    let cancelled = false;
+    const fetchQuote = async () => {
+      try {
+        const result = await PricingService.calculatePrice({
+          shippingType: shippingType as ShippingType,
+          weightKg: parseFloat(weight),
+          lengthCm: parseFloat(length),
+          widthCm: parseFloat(width),
+          heightCm: parseFloat(height),
+          origin: originCountry,
+          destination: destinationCountry,
+          declaredValue: 0,
+        });
+        if (!cancelled) {
+          setPricePreview(result);
+        }
+      } catch {
+        if (!cancelled) setPricePreview(null);
+      }
+    };
+
+    void fetchQuote();
+
+    return () => {
+      cancelled = true;
+    };
   }, [formData]);
 
   // --- React Query mutation for submitting request ---
   const createRequestMutation = useMutation({
-    mutationFn: async (newRequest: ParcelRequest) => {
-      // simulate delay if needed
-      await new Promise((res) => setTimeout(res, 500));
-      addRequest(newRequest); // update Zustand store
-      return newRequest;
-    },
-    onSuccess: () => {
+    mutationFn: (payload: CreateRequestPayload) => addRequest(payload),
+    onSuccess: (created) => {
       queryClient.invalidateQueries({ queryKey: ['requests'] });
-      navigate('/client/dashboard');
+      navigate(`/client/requests/${created.id}`);
     },
   });
 
@@ -149,10 +149,10 @@ export function CreateRequestPage() {
       destinationStreet,
     } = formData;
 
-    const newRequest: ParcelRequest = {
-      id: uuid(),
+    const payload: CreateRequestPayload = {
       userId: currentUser.id,
       companyId,
+      shippingType: shippingType as ShippingType,
       parcel: {
         weightKg: parseFloat(weight),
         lengthCm: parseFloat(length),
@@ -184,13 +184,9 @@ export function CreateRequestPage() {
           street: destinationStreet,
         },
       },
-      shippingType: shippingType as ShippingType,
-      status: 'PENDING_REVIEW',
-      createdAt: new Date().toISOString(),
-      trackingId: generateTrackingId(),
     };
 
-    createRequestMutation.mutate(newRequest);
+    createRequestMutation.mutate(payload);
   }
 
   const filteredCompanies = companies.filter((c) => {
@@ -206,6 +202,16 @@ export function CreateRequestPage() {
 
     return matchesType && matchesRegion;
   });
+
+  useEffect(() => {
+    if (!formData.companyId) return;
+    const stillValid = filteredCompanies.some(
+      (company) => company.id === formData.companyId,
+    );
+    if (!stillValid) {
+      setFormData((prev) => ({ ...prev, companyId: '' }));
+    }
+  }, [filteredCompanies, formData.companyId]);
 
   function isStepValid(step: number): boolean {
     switch (step) {
@@ -244,6 +250,16 @@ export function CreateRequestPage() {
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvc, setCardCvc] = useState('');
+
+  useEffect(() => {
+    if (currentStep !== steps.length - 1) {
+      setIsPaid(false);
+    }
+  }, [currentStep]);
+
+  useEffect(() => {
+    setIsPaid(false);
+  }, [paymentMethod]);
 
   return (
     <DashboardLayout role="USER">
@@ -405,9 +421,12 @@ export function CreateRequestPage() {
               onChange={(e) => updateField('companyId', e.target.value)}
               className="w-full border p-3 rounded-lg"
               required
+              disabled={isLoadingCompanies}
             >
-              <option value="">Select Company</option>
-              {filteredCompanies.length === 0 ? (
+              <option value="">
+                {isLoadingCompanies ? 'Loading companies...' : 'Select Company'}
+              </option>
+              {!isLoadingCompanies && filteredCompanies.length === 0 ? (
                 <option disabled>No companies available</option>
               ) : (
                 filteredCompanies.map((c) => (
@@ -417,6 +436,12 @@ export function CreateRequestPage() {
                 ))
               )}
             </select>
+            {!isLoadingCompanies && filteredCompanies.length === 0 && (
+              <p className="mt-2 text-sm text-amber-600">
+                No carriers match your route yet. Try another shipping type or
+                destination.
+              </p>
+            )}
           </div>
         )}
 
@@ -552,6 +577,12 @@ export function CreateRequestPage() {
               )}
             </div>
           </div>
+        )}
+
+        {createRequestMutation.isError && (
+          <p className="mt-4 text-sm text-red-500">
+            {(createRequestMutation.error as Error).message}
+          </p>
         )}
 
         {/* Navigation */}

@@ -1,28 +1,23 @@
-import type { ParcelRequest, RequestStatus } from '../types';
-import { useRequestsStore } from '../store/useRequestsStore';
+import { apiClient } from '../lib/apiClient';
+import type { Company } from '../types';
+
+export interface CompanyFilters {
+  shippingType?: string;
+  region?: string;
+  search?: string;
+}
 
 export class CompanyService {
-  static approveRequest(requestId: string) {
-    useRequestsStore.getState().updateRequestStatus(requestId, 'ACCEPTED');
+  static list(filters: CompanyFilters = {}) {
+    const query = new URLSearchParams();
+    if (filters.shippingType) query.set('shippingType', filters.shippingType);
+    if (filters.region) query.set('region', filters.region);
+    if (filters.search) query.set('search', filters.search);
+    const suffix = query.toString() ? `?${query.toString()}` : '';
+    return apiClient.get<Company[]>(`/api/companies${suffix}`);
   }
 
-  static rejectRequest(requestId: string, comment?: string) {
-    useRequestsStore
-      .getState()
-      .updateRequestStatus(requestId, 'REJECTED', comment);
-  }
-
-  static updateTimeline(
-    requestId: string,
-    status: RequestStatus,
-    comment?: string,
-  ) {
-    useRequestsStore.getState().updateRequestStatus(requestId, status, comment);
-  }
-
-  static getRequestsForCompany(companyId: string): ParcelRequest[] {
-    return useRequestsStore
-      .getState()
-      .requests.filter((r) => r.companyId === companyId);
+  static get(id: string) {
+    return apiClient.get<Company>(`/api/companies/${id}`);
   }
 }

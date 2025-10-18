@@ -1,7 +1,5 @@
 import { useAuthStore } from '../../store/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
-import type { User } from '../../types';
-import { v4 as uuid } from 'uuid';
 import { AuthService } from '../../services/AuthService';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { FormEvent } from 'react';
@@ -13,18 +11,11 @@ export function RegisterUserPage() {
 
   // React Query mutation for registering a user
   const registerUserMutation = useMutation({
-    mutationFn: async (user: User) => {
-      // simulate latency
-      await new Promise((res) => setTimeout(res, 500));
-      AuthService.registerUser(user); // save in mock backend
-      return user;
-    },
+    mutationFn: (payload: { fullName: string; email: string }) =>
+      AuthService.registerUser({ ...payload, addresses: [] }),
     onSuccess: (user) => {
-      // update Zustand store
       setCurrent(user);
-      // optionally invalidate users query if you have one
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      // redirect to dashboard
       navigate('/client/dashboard');
     },
   });
@@ -37,16 +28,7 @@ export function RegisterUserPage() {
       .value;
     const email = (form.elements.namedItem('email') as HTMLInputElement).value;
 
-    const newUser: User = {
-      id: uuid(),
-      fullName,
-      email,
-      addresses: [],
-      role: 'USER',
-    };
-
-    // trigger React Query mutation
-    registerUserMutation.mutate(newUser);
+    registerUserMutation.mutate({ fullName, email });
   }
 
   return (
@@ -93,6 +75,12 @@ export function RegisterUserPage() {
             >
               {registerUserMutation.isPending ? 'Registering...' : 'Register'}
             </button>
+
+            {registerUserMutation.isError && (
+              <p className="text-sm text-red-500 text-center">
+                {(registerUserMutation.error as Error).message}
+              </p>
+            )}
           </form>
 
           <div className="text-center mt-4">

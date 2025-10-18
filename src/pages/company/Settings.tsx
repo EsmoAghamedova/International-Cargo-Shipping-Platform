@@ -7,10 +7,10 @@ import type { Company, ShippingType } from '../../types';
 const REGION_OPTIONS = [
   { value: 'EU', label: 'Europe' },
   { value: 'ASIA', label: 'Asia' },
-  { value: 'NA', label: 'North America' },
-  { value: 'SA', label: 'South America' },
-  { value: 'AF', label: 'Africa' },
-  { value: 'OC', label: 'Oceania' },
+  { value: 'N_AMERICA', label: 'North America' },
+  { value: 'S_AMERICA', label: 'South America' },
+  { value: 'AFRICA', label: 'Africa' },
+  { value: 'OCEANIA', label: 'Oceania' },
 ];
 
 const TYPE_OPTIONS = [

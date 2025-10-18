@@ -1,10 +1,12 @@
 import { useParams } from 'react-router-dom';
 import { useRequestsStore } from '../../store/useRequestsStore';
-import { useCompaniesStore } from '../../store/useCompanyStore';
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { Card } from '../../components/common/CardComponent';
 import { Badge } from '../../components/common/Badge';
 import { InlineChat } from '../../components/Chat';
+import { useQuery } from '@tanstack/react-query';
+import { CompanyService } from '../../services/CompanyService';
+import { useEffect } from 'react';
 
 const STATUS_LABELS: Record<string, string> = {
   PENDING_REVIEW: 'Pending Review',
@@ -26,12 +28,45 @@ const STATUS_FLOW = [
 
 export function RequestDetail() {
   const { id } = useParams<{ id: string }>();
-  const request = useRequestsStore((s) => s.requests.find((r) => r.id === id));
-  const company = useCompaniesStore((s) =>
-    request ? s.companies.find((c) => c.id === request.companyId) : undefined,
+  const request = useRequestsStore((state) =>
+    state.requests.find((r) => r.id === id),
   );
+  const isLoading = useRequestsStore((s) => s.isLoading);
+  const error = useRequestsStore((s) => s.error);
+  const isFetchingSingle = useRequestsStore((s) => s.isFetchingSingle);
+  const fetchById = useRequestsStore((s) => s.fetchById);
+  const companyQuery = useQuery({
+    queryKey: ['companies', request?.companyId],
+    queryFn: () => CompanyService.get(request!.companyId!),
+    enabled: Boolean(request?.companyId),
+  });
+
+  useEffect(() => {
+    if (!id || request) return;
+    void fetchById(id);
+  }, [id, request, fetchById]);
 
   if (!request) {
+    if (isLoading || isFetchingSingle) {
+      return (
+        <DashboardLayout role="USER">
+          <Card>
+            <p className="text-center text-gray-500 mt-10 text-lg">
+              Loading request details...
+            </p>
+          </Card>
+        </DashboardLayout>
+      );
+    }
+    if (error) {
+      return (
+        <DashboardLayout role="USER">
+          <Card>
+            <p className="text-center text-red-500 mt-10 text-lg">{error}</p>
+          </Card>
+        </DashboardLayout>
+      );
+    }
     return (
       <DashboardLayout role="USER">
         <Card>
@@ -120,10 +155,10 @@ export function RequestDetail() {
       </div>
 
       {/* Inline chat */}
-      {request && company && (
+      {request && companyQuery.data && (
         <InlineChat
           contextId={`chat_${request.userId}_${request.companyId}`}
-          contextLabel={`Chat with ${company.name}`}
+          contextLabel={`Chat with ${companyQuery.data.name}`}
           sender="client"
         />
       )}

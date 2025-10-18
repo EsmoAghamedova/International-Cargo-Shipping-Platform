@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useRequestsStore } from '../../store/useRequestsStore';
 import { Card } from '../../components/common/CardComponent';
 import { DashboardLayout } from '../../components/DashboardLayout';
+import { useMutation } from '@tanstack/react-query';
+import { RequestsService } from '../../services/RequestsService';
 
 const STATUS_LABELS: Record<string, string> = {
   PENDING_REVIEW: 'Pending Review',
@@ -15,12 +16,17 @@ const STATUS_LABELS: Record<string, string> = {
 export function TrackRequest() {
   const [trackingId, setTrackingId] = useState('');
   const [searched, setSearched] = useState(false);
+  const trackMutation = useMutation({
+    mutationFn: async (value: string) => {
+      const results = await RequestsService.list(
+        { trackingId: value },
+        { pageSize: 1 },
+      );
+      return results.data[0] ?? null;
+    },
+  });
 
-  const request = useRequestsStore((s) =>
-    s.requests.find(
-      (r) => r.trackingId?.toUpperCase() === trackingId.toUpperCase(),
-    ),
-  );
+  const request = trackMutation.data ?? null;
 
   return (
     <DashboardLayout role="USER">
@@ -39,10 +45,14 @@ export function TrackRequest() {
               className="flex-1 px-4 py-2 rounded bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
             <button
-              onClick={() => setSearched(true)}
-              className="px-4 py-2 bg-green-500 hover:bg-green-600 rounded text-white font-semibold"
+              onClick={() => {
+                setSearched(true);
+                trackMutation.mutate(trackingId.trim());
+              }}
+              disabled={!trackingId.trim() || trackMutation.isPending}
+              className="px-4 py-2 bg-green-500 hover:bg-green-600 rounded text-white font-semibold disabled:opacity-60"
             >
-              Search
+              {trackMutation.isPending ? 'Searching...' : 'Search'}
             </button>
           </div>
         </Card>
@@ -50,7 +60,13 @@ export function TrackRequest() {
         {/* Results */}
         {searched && (
           <>
-            {!request ? (
+            {trackMutation.isPending ? (
+              <Card className="p-4 bg-white border border-gray-200">
+                <p className="text-gray-500 font-medium">
+                  Looking up tracking ID...
+                </p>
+              </Card>
+            ) : !request ? (
               <Card className="p-4 bg-white border border-gray-200">
                 <p className="text-red-500 font-medium">
                   ❌ Request not found. Please check the tracking ID.
@@ -95,6 +111,11 @@ export function TrackRequest() {
                 {request.parcel.fragile && (
                   <p className="text-red-500">⚠️ Fragile parcel</p>
                 )}
+              </Card>
+            )}
+            {trackMutation.isError && (
+              <Card className="p-4 bg-white border border-red-200 text-red-600">
+                {(trackMutation.error as Error).message}
               </Card>
             )}
           </>

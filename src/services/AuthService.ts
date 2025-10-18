@@ -1,63 +1,42 @@
-import { mockAuthEntities } from '../mock/auth.mock-data';
-import type { User, Company, AuthEntity } from '../types';
-import { useUsersStore } from '../store/useClientStore';
+import { apiClient } from '../lib/apiClient';
+import type { User, Company } from '../types';
 
-const USERS_KEY = 'users-storage';
-const COMPANIES_KEY = 'companies-storage';
+type AuthEntity = User | Company;
 
-function load<T>(key: string): T[] {
-  const saved = localStorage.getItem(key);
-  return saved ? JSON.parse(saved) : [];
-}
+type RegisterUserPayload = {
+  fullName: string;
+  email: string;
+  addresses?: User['addresses'];
+};
 
-function save<T>(key: string, data: T[]) {
-  localStorage.setItem(key, JSON.stringify(data));
-}
+type RegisterCompanyPayload = {
+  name: string;
+  email: string;
+  phone?: string;
+  hqAddress?: Company['hqAddress'];
+  regions?: Company['regions'];
+  supportedTypes?: Company['supportedTypes'];
+  basePrice?: number;
+  pricePerKg?: number;
+  fuelPct?: number;
+  insurancePct?: number;
+  logoUrl?: string;
+};
 
 export class AuthService {
-  private static currentUser: AuthEntity | null = null;
-
-  static login(email: string): AuthEntity | null {
-    // ჯერ localStorage users
-    const users = load<User>(USERS_KEY);
-    const companies = load<Company>(COMPANIES_KEY);
-
-    const entity =
-      [...users, ...companies, ...mockAuthEntities].find(
-        (e) => e.email === email,
-      ) ?? null;
-
-    if (entity) {
-      this.currentUser = entity;
-    }
-    return entity;
+  static login(email: string) {
+    return apiClient.post<AuthEntity>('/api/auth/login', { email });
   }
 
-  static registerUser(user: User): User {
-    mockAuthEntities.push(user);
-    this.currentUser = user;
-
-    // დაამატე User store-ში
-    const { addUser } = useUsersStore.getState();
-    addUser(user);
-
-    return user;
+  static registerUser(payload: RegisterUserPayload) {
+    return apiClient.post<User>('/api/auth/register/user', payload);
   }
 
-  static registerCompany(company: Company): Company {
-    const companies = load<Company>(COMPANIES_KEY);
-    companies.push(company);
-    save(COMPANIES_KEY, companies);
-
-    this.currentUser = company;
-    return company;
+  static registerCompany(payload: RegisterCompanyPayload) {
+    return apiClient.post<Company>('/api/auth/register/company', payload);
   }
 
-  static logout(): void {
-    this.currentUser = null;
-  }
-
-  static getCurrent(): AuthEntity | null {
-    return this.currentUser;
+  static logout() {
+    return Promise.resolve();
   }
 }

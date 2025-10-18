@@ -1,26 +1,23 @@
 import { Button } from '../../components/common/Button';
-import { useAuthStore } from '../../store/useAuthStore';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AuthService } from '../../services/AuthService';
+import { useAuthStore } from '../../store/useAuthStore';
 
 export function LoginPage() {
-  const loginStore = useAuthStore();
+  const { setCurrent } = useAuthStore();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   // React Query mutation for login
   const loginMutation = useMutation({
     mutationFn: async (email: string) => {
-      // simulate network latency
-      await new Promise((res) => setTimeout(res, 500));
-
-      const entity = loginStore.login(email); // Zustand login
-      if (!entity) throw new Error('Email not found 🤧');
+      const entity = await AuthService.login(email);
       return entity;
     },
     onSuccess: (entity) => {
-      // Update any queries if needed
-      queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+      setCurrent(entity);
+      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
 
       // Redirect based on role
       if (entity.role === 'USER') navigate('/client/dashboard');

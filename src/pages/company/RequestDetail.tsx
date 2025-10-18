@@ -1,12 +1,13 @@
 import { useParams } from 'react-router-dom';
 import { useRequestsStore } from '../../store/useRequestsStore';
-import { useUsersStore } from '../../store/useClientStore';
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { Card } from '../../components/common/CardComponent';
 import { Badge } from '../../components/common/Badge';
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import type { RequestStatus } from '../../types';
 import { InlineChat } from '../../components/Chat';
+import { useQuery } from '@tanstack/react-query';
+import { UserService } from '../../services/UserService';
 
 // helper to format status labels
 const formatLabel = (val: string) =>
@@ -17,21 +18,45 @@ const formatLabel = (val: string) =>
 
 export function CompanyRequestDetail() {
   const { id } = useParams<{ id: string }>();
-  const { requests, updateRequestStatus } = useRequestsStore();
-
-  const request = useMemo(
-    () => requests.find((r) => r.id === id) ?? null,
-    [requests, id],
+  const request = useRequestsStore((state) =>
+    state.requests.find((r) => r.id === id) ?? null,
   );
-
-  const user = useUsersStore((s) =>
-    request ? s.users.find((u) => u.id === request.userId) : undefined,
-  );
+  const updateRequestStatus = useRequestsStore((s) => s.updateRequestStatus);
+  const isLoading = useRequestsStore((s) => s.isLoading);
+  const error = useRequestsStore((s) => s.error);
+  const isFetchingSingle = useRequestsStore((s) => s.isFetchingSingle);
+  const fetchById = useRequestsStore((s) => s.fetchById);
+  const userQuery = useQuery({
+    queryKey: ['users', request?.userId],
+    queryFn: () => UserService.get(request!.userId),
+    enabled: Boolean(request?.userId),
+  });
 
   const [newStatus, setNewStatus] = useState<RequestStatus | ''>('');
   const [comment, setComment] = useState('');
 
+  useEffect(() => {
+    if (!id || request) return;
+    void fetchById(id);
+  }, [id, request, fetchById]);
+
   if (!request) {
+    if (isLoading || isFetchingSingle) {
+      return (
+        <DashboardLayout role="COMPANY_ADMIN">
+          <div className="text-center text-gray-500 mt-16 text-lg">
+            Loading request details...
+          </div>
+        </DashboardLayout>
+      );
+    }
+    if (error) {
+      return (
+        <DashboardLayout role="COMPANY_ADMIN">
+          <div className="text-center text-red-500 mt-16 text-lg">{error}</div>
+        </DashboardLayout>
+      );
+    }
     return (
       <DashboardLayout role="COMPANY_ADMIN">
         <div className="text-center text-red-500 mt-16 text-lg">
@@ -41,10 +66,20 @@ export function CompanyRequestDetail() {
     );
   }
 
-  function handleSave() {
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  async function handleSave() {
     if (!newStatus) return;
-    updateRequestStatus(request!.id, newStatus, comment || undefined);
-    alert('✅ Request updated!');
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      await updateRequestStatus(request.id, newStatus, comment || undefined);
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Failed to update');
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -109,17 +144,23 @@ export function CompanyRequestDetail() {
 
           <button
             onClick={handleSave}
-            className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-semibold"
+            disabled={isSaving || !newStatus}
+            className="mt-4 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-semibold disabled:opacity-60"
           >
-            💾 Save Changes
+            {isSaving ? 'Saving...' : '💾 Save Changes'}
           </button>
+          {saveError && (
+            <p className="text-sm text-red-500 mt-2">{saveError}</p>
+          )}
         </Card>
       </div>
 
       {request && (
         <InlineChat
           contextId={`chat_${request.userId}_${request.companyId}`}
-          contextLabel={`Chat with ${user ? user.fullName : 'Client'}`}
+          contextLabel={`Chat with ${
+            userQuery.data ? userQuery.data.fullName : 'Client'
+          }`}
           sender="company"
         />
       )}

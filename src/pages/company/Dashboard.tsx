@@ -3,7 +3,9 @@ import { useRequestsStore } from '../../store/useRequestsStore';
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { Card } from '../../components/common/CardComponent';
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { AnalyticsService } from '../../services/AnalyticsService';
+import type { ParcelRequest } from '../../types';
 
 const STATUS_LABELS: Record<string, string> = {
   PENDING_REVIEW: 'Pending Review',
@@ -16,16 +18,24 @@ const STATUS_LABELS: Record<string, string> = {
 
 export function CompanyDashboard() {
   const currentUser = useAuthStore((s) => s.currentUser);
-  const requests = useRequestsStore((s) =>
-    s.requests.filter(
-      (r) => r.companyId === currentUser?.id && r.status === 'PENDING_REVIEW',
-    ),
+  const requests = useRequestsStore((s) => s.requests);
+  const isLoading = useRequestsStore((s) => s.isLoading);
+  const error = useRequestsStore((s) => s.error);
+  const total = useRequestsStore((s) => s.total);
+  const hasMore = useRequestsStore((s) => s.hasMore);
+  const loadMore = useRequestsStore((s) => s.loadMore);
+  const isLoadingMore = useRequestsStore((s) => s.isLoadingMore);
+  const pendingRequests = requests.filter(
+    (request) => request.status === 'PENDING_REVIEW',
   );
-  const loadRequests = useRequestsStore((s) => s.loadRequests);
+  const summaryQuery = useQuery({
+    queryKey: ['analytics', 'company', currentUser?.id],
+    queryFn: () =>
+      AnalyticsService.getSummary<ParcelRequest>('COMPANY_ADMIN', currentUser!.id),
+    enabled: Boolean(currentUser?.role === 'COMPANY_ADMIN' && currentUser?.id),
+  });
 
-  useEffect(() => {
-    loadRequests();
-  }, [loadRequests]);
+  const visibleCount = Math.min(requests.length, total || requests.length);
 
   if (!currentUser) {
     return (
@@ -49,14 +59,61 @@ export function CompanyDashboard() {
           </p>
         </header>
 
+        {total > 0 && (
+          <p className="text-sm text-gray-500">
+            Showing {visibleCount} of {total} company requests
+          </p>
+        )}
+
+        {summaryQuery.data && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Card className="p-4 bg-white border border-gray-200 shadow-sm">
+              <p className="text-sm text-gray-500">Total Requests</p>
+              <p className="text-2xl font-semibold text-blue-600">
+                {summaryQuery.data.total}
+              </p>
+            </Card>
+            <Card className="p-4 bg-white border border-gray-200 shadow-sm">
+              <p className="text-sm text-gray-500">Pending Review</p>
+              <p className="text-2xl font-semibold text-purple-600">
+                {summaryQuery.data.pending}
+              </p>
+            </Card>
+            <Card className="p-4 bg-white border border-gray-200 shadow-sm">
+              <p className="text-sm text-gray-500">In Transit</p>
+              <p className="text-2xl font-semibold text-amber-500">
+                {summaryQuery.data.inTransit}
+              </p>
+            </Card>
+            <Card className="p-4 bg-white border border-gray-200 shadow-sm">
+              <p className="text-sm text-gray-500">Delivered</p>
+              <p className="text-2xl font-semibold text-green-600">
+                {summaryQuery.data.delivered}
+              </p>
+            </Card>
+          </div>
+        )}
+
         {/* Requests */}
-        {requests.length === 0 ? (
+        {isLoading ? (
+          <Card className="p-6 bg-white border border-gray-200 text-center text-gray-500">
+            Loading company requests...
+          </Card>
+        ) : error ? (
+          <Card className="p-6 bg-red-50 border border-red-200 text-red-600 text-sm">
+            {error}
+          </Card>
+        ) : pendingRequests.length === 0 ? (
           <Card className="text-center py-10 bg-white border border-gray-200">
-            <p className="text-gray-500 text-lg">No requests yet.</p>
+            <p className="text-gray-500 text-lg">No requests awaiting review.</p>
+            <p className="text-sm text-gray-400 mt-2">
+              Stay tuned — new shipments will land here once clients select your
+              company.
+            </p>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {requests.map((req) => (
+            {pendingRequests.map((req) => (
               <Card
                 key={req.id}
                 className="p-5 bg-white border border-gray-200 shadow flex flex-col gap-2"
@@ -98,6 +155,19 @@ export function CompanyDashboard() {
                 </Link>
               </Card>
             ))}
+
+            {hasMore && (
+              <div className="col-span-full flex justify-center">
+                <button
+                  onClick={() => loadMore()}
+                  disabled={isLoadingMore}
+                  className="mt-2 px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600 disabled:opacity-60"
+                  aria-busy={isLoadingMore}
+                >
+                  {isLoadingMore ? 'Loading more...' : 'Load more requests'}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

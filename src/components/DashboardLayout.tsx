@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useRequestsStore } from '../store/useRequestsStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 export function DashboardLayout({
   role,
@@ -13,6 +14,8 @@ export function DashboardLayout({
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const currentUser = useAuthStore((s) => s.currentUser);
+  const logout = useAuthStore((s) => s.logout);
 
   useEffect(() => {
     if (sidebarOpen) {
@@ -27,10 +30,15 @@ export function DashboardLayout({
     if (e.target === e.currentTarget) setSidebarOpen(false);
   }
 
-  const { loadRequests } = useRequestsStore();
+  const { loadRequests, clear } = useRequestsStore();
   useEffect(() => {
-    loadRequests();
-  }, []);
+    if (!currentUser) return;
+    if (role === 'USER') {
+      void loadRequests({ userId: currentUser.id });
+    } else {
+      void loadRequests({ companyId: currentUser.id });
+    }
+  }, [currentUser, loadRequests, role]);
 
   const linkClasses = (path: string) =>
     `flex items-center gap-2 px-4 py-2 rounded transition font-medium
@@ -123,9 +131,13 @@ export function DashboardLayout({
               )}
             </div>
             <Link
-              to="/login"
+              to="/"
               className="mt-auto block px-4 py-2 rounded text-red-500 hover:bg-red-50 hover:text-red-700 transition"
-              onClick={() => setSidebarOpen(false)}
+              onClick={() => {
+                logout();
+                clear();
+                setSidebarOpen(false);
+              }}
             >
               Logout
             </Link>
@@ -191,6 +203,10 @@ export function DashboardLayout({
         </div>
         <Link
           to="/"
+          onClick={() => {
+            logout();
+            clear();
+          }}
           className="mt-auto block px-4 py-2 rounded text-red-500 hover:bg-red-50 hover:text-red-700 transition"
         >
           Logout

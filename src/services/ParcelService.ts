@@ -14,18 +14,15 @@ export class ParcelService {
     shippingType: ShippingType,
     companyId: string,
   ): number {
-    const result = PricingService.calculatePrice({
+    return PricingService.calculatePrice({
       shippingType,
       weightKg: parcel.weightKg,
       lengthCm: parcel.lengthCm,
       widthCm: parcel.widthCm,
       heightCm: parcel.heightCm,
-      origin: 'EU', // 👉 შეგიძლია ფორმიდან გამოიტანო რეალური
-      destination: 'ASIA', // 👉 ან მართლა როუტიდან
+      origin: parcel.declaredValue ? 'Custom' : 'EU',
+      destination: 'Global',
       declaredValue: parcel.declaredValue ?? 0,
-      companyId,
-    });
-
-    return result.total;
+    }).then((result) => result.total);
   }
 }

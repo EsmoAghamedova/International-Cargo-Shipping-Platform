@@ -1,20 +1,19 @@
 // src/pages/company/RegisterCompanyPage.tsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../../store/useAuthStore';
-import type { Company, ShippingType } from '../../types';
+import type { ShippingType } from '../../types';
 import { AuthService } from '../../services/AuthService';
 
 // Region & Type options
 const REGION_OPTIONS = [
   { value: 'EU', label: 'Europe' },
   { value: 'ASIA', label: 'Asia' },
-  { value: 'NA', label: 'North America' },
-  { value: 'SA', label: 'South America' },
-  { value: 'AF', label: 'Africa' },
-  { value: 'OC', label: 'Oceania' },
+  { value: 'N_AMERICA', label: 'North America' },
+  { value: 'S_AMERICA', label: 'South America' },
+  { value: 'AFRICA', label: 'Africa' },
+  { value: 'OCEANIA', label: 'Oceania' },
 ];
 
 const TYPE_OPTIONS = [
@@ -33,10 +32,8 @@ export function RegisterCompanyPage() {
 
   // React Query mutation for registering company
   const registerCompanyMutation = useMutation({
-    mutationFn: async (company: Company) => {
-      await new Promise((res) => setTimeout(res, 500)); // optional latency
-      return AuthService.registerCompany(company);
-    },
+    mutationFn: (payload: Parameters<typeof AuthService.registerCompany>[0]) =>
+      AuthService.registerCompany(payload),
     onSuccess: (company) => {
       setCurrent(company); // set current logged-in company in Zustand
       queryClient.invalidateQueries({ queryKey: ['companies'] });
@@ -49,11 +46,9 @@ export function RegisterCompanyPage() {
     e.preventDefault();
     const form = e.currentTarget;
 
-    const newCompany: Company = {
-      id: uuid(),
+    const payload = {
       name: (form.elements.namedItem('name') as HTMLInputElement).value,
-      email: (form.elements.namedItem('contactEmail') as HTMLInputElement)
-        .value,
+      email: (form.elements.namedItem('contactEmail') as HTMLInputElement).value,
       phone: (form.elements.namedItem('phone') as HTMLInputElement).value,
       hqAddress: {
         country: (form.elements.namedItem('country') as HTMLInputElement).value,
@@ -62,7 +57,6 @@ export function RegisterCompanyPage() {
       },
       regions: selectedRegions,
       supportedTypes: selectedTypes as ShippingType[],
-      role: 'COMPANY_ADMIN',
       logoUrl: (form.elements.namedItem('logoUrl') as HTMLInputElement).value,
       basePrice: parseFloat(
         (form.elements.namedItem('basePrice') as HTMLInputElement).value,
@@ -78,7 +72,7 @@ export function RegisterCompanyPage() {
       ),
     };
 
-    registerCompanyMutation.mutate(newCompany);
+    registerCompanyMutation.mutate(payload);
   }
 
   // Checkbox change handlers
@@ -271,6 +265,12 @@ export function RegisterCompanyPage() {
                 ? 'Registering...'
                 : 'Register'}
             </button>
+
+            {registerCompanyMutation.isError && (
+              <p className="text-sm text-red-500 text-center">
+                {(registerCompanyMutation.error as Error).message}
+              </p>
+            )}
           </form>
 
           <div className="text-center mt-4">

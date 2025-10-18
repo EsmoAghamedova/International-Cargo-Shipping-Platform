@@ -52,15 +52,24 @@ This project leverages cutting-edge technologies to deliver a seamless and effic
 
 ## Tech Stack
 
-- **Frontend:** [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
-- **Backend API:** Node.js (custom HTTP server)
-- **Build Tool:** [Vite](https://vitejs.dev/)
+- **Frontend (`client/`):** [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), [Vite](https://vitejs.dev/)
+- **Backend API (`server/`):** Node.js (custom HTTP server)
 - **Styling:** [Styled Components](https://styled-components.com/), [Windi CSS](https://windicss.org)
 - **State Management:** [Zustand](https://github.com/pmndrs/zustand), [React Query](https://tanstack.com/query/latest)
 - **Routing:** [React Router](https://reactrouter.com/)
 - **Utilities:** [uuid](https://github.com/uuidjs/uuid)
 - **Linting & Formatting:** [ESLint](https://eslint.org/), [Prettier](https://prettier.io/)
-- **Testing:** [Vitest](https://vitest.dev/)
+- **Testing:** [Vitest](https://vitest.dev/), [Jest](https://jestjs.io/)
+
+---
+
+## Repository Structure
+
+```
+International-Cargo-Shipping-Platform/
+├── client/   # React + Vite frontend application
+└── server/   # Node.js backend API and JSON data store
+```
 
 ---
 
@@ -83,63 +92,75 @@ This project leverages cutting-edge technologies to deliver a seamless and effic
 2. **Install dependencies:**
 
    ```bash
+   cd client
    npm install
-   # or
-   yarn install
-   # or
-   pnpm install
    ```
 
-3. **Configure environment variables:**
-   Create a `.env` file in the root directory and specify your backend API URL (defaults to `http://localhost:4000` if omitted):
+3. **Install (optional) server dependencies:**
+
+   The backend currently relies only on Node.js built-ins. Running `npm install` in `server/` will still create a lockfile for reproducible scripts:
+
+   ```bash
+   cd ../server
+   npm install
+   ```
+
+4. **Configure environment variables:**
+   Return to `client/` (if you followed the previous step) and create a `.env` file that specifies your backend API URL (defaults to `http://localhost:4000` if omitted):
    ```
    VITE_API_URL=http://localhost:4000
    ```
 
 ### Running locally
 
-Run the API server and the Vite dev server in separate terminals:
+1. **Start the API server**
 
-```bash
-npm run server:dev
-npm run dev
-```
+   ```bash
+   cd server
+   npm run dev
+   ```
 
-Alternatively, run both with a single command:
+2. **Start the frontend** in another terminal:
 
-```bash
-npm run dev:fullstack
-```
+   ```bash
+   cd client
+   npm run dev
+   ```
 
 ### Scripts
 
-The following scripts are defined in `package.json`:
+**Client (`client/package.json`):**
 
 | Command      | Description                                      |
 | ------------ | ------------------------------------------------ |
 | `dev`        | Run frontend development server                   |
 | `host`       | Run dev server with host mode for network access |
 | `build`      | Build the app for production (`tsc -b` + Vite)   |
-| `server:dev` | Start the Node.js API (watch mode)               |
-| `server:start` | Start the API once without watch mode          |
-| `dev:fullstack` | Run API and frontend together in one shell    |
 | `lint`       | Run ESLint for code style checks                 |
 | `lint:fix`   | Run ESLint and auto-fix issues                   |
 | `preview`    | Preview the production build locally             |
 | `format`     | Format code using Prettier                       |
 | `type-check` | Type-check with TypeScript (no output files)     |
-| `test`       | Run Vitest unit tests                            |
-| `test:ci`    | Run Vitest tests in CI mode                      |
+| `test`       | Run Jest unit tests                              |
+| `test:ci`    | Run Jest tests in CI mode                        |
+
+**Server (`server/package.json`):**
+
+| Command | Description                      |
+| ------- | -------------------------------- |
+| `dev`   | Start the Node.js API in watch mode |
+| `start` | Start the API once without watch |
 
 ---
 
 ## Folder Structure
 
+- **client/** — React application source code, configs, and tooling.
+  - **src/lib/** — Shared utilities such as the `apiClient` wrapper.
+  - **src/services/** — Frontend service layer that talks to the API.
+  - **src/store/** — Global state powered by Zustand (auth, requests, etc.).
+  - **src/pages/** — Route-level UI screens for clients and companies.
 - **server/** — Lightweight Node.js API (HTTP server, router, data layer).
-- **src/lib/** — Shared utilities such as the `apiClient` wrapper.
-- **src/services/** — Frontend service layer that talks to the API.
-- **src/store/** — Global state powered by Zustand (auth, requests, etc.).
-- **src/pages/** — Route-level UI screens for clients and companies.
 
 ---
 

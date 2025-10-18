@@ -52,14 +52,24 @@ This project leverages cutting-edge technologies to deliver a seamless and effic
 
 ## Tech Stack
 
-- **Frontend:** [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/)
-- **Build Tool:** [Vite](https://vitejs.dev/)
+- **Frontend (`client/`):** [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), [Vite](https://vitejs.dev/)
+- **Backend API (`server/`):** Node.js (custom HTTP server)
 - **Styling:** [Styled Components](https://styled-components.com/), [Windi CSS](https://windicss.org)
 - **State Management:** [Zustand](https://github.com/pmndrs/zustand), [React Query](https://tanstack.com/query/latest)
 - **Routing:** [React Router](https://reactrouter.com/)
 - **Utilities:** [uuid](https://github.com/uuidjs/uuid)
 - **Linting & Formatting:** [ESLint](https://eslint.org/), [Prettier](https://prettier.io/)
-- **Testing:** [Vitest](https://vitest.dev/)
+- **Testing:** [Vitest](https://vitest.dev/), [Jest](https://jestjs.io/)
+
+---
+
+## Repository Structure
+
+```
+International-Cargo-Shipping-Platform/
+├── client/   # React + Vite frontend application
+└── server/   # Node.js backend API and JSON data store
+```
 
 ---
 
@@ -82,26 +92,48 @@ This project leverages cutting-edge technologies to deliver a seamless and effic
 2. **Install dependencies:**
 
    ```bash
+   cd client
    npm install
-   # or
-   yarn install
-   # or
-   pnpm install
    ```
 
-3. **Set environment variables:**  
-   Create a `.env` file in the root directory and specify your backend API URL:
+3. **Install (optional) server dependencies:**
+
+   The backend currently relies only on Node.js built-ins. Running `npm install` in `server/` will still create a lockfile for reproducible scripts:
+
+   ```bash
+   cd ../server
+   npm install
    ```
-   VITE_API_BASE_URL=https://api.example.com
+
+4. **Configure environment variables:**
+   Return to `client/` (if you followed the previous step) and create a `.env` file that specifies your backend API URL (defaults to `http://localhost:4000` if omitted):
+   ```
+   VITE_API_URL=http://localhost:4000
+   ```
+
+### Running locally
+
+1. **Start the API server**
+
+   ```bash
+   cd server
+   npm run dev
+   ```
+
+2. **Start the frontend** in another terminal:
+
+   ```bash
+   cd client
+   npm run dev
    ```
 
 ### Scripts
 
-The following scripts are defined in `package.json`:
+**Client (`client/package.json`):**
 
 | Command      | Description                                      |
 | ------------ | ------------------------------------------------ |
-| `dev`        | Run development server                           |
+| `dev`        | Run frontend development server                   |
 | `host`       | Run dev server with host mode for network access |
 | `build`      | Build the app for production (`tsc -b` + Vite)   |
 | `lint`       | Run ESLint for code style checks                 |
@@ -109,22 +141,26 @@ The following scripts are defined in `package.json`:
 | `preview`    | Preview the production build locally             |
 | `format`     | Format code using Prettier                       |
 | `type-check` | Type-check with TypeScript (no output files)     |
-| `test`       | Run Vitest unit tests                            |
-| `test:ci`    | Run Vitest tests in CI mode                      |
+| `test`       | Run Jest unit tests                              |
+| `test:ci`    | Run Jest tests in CI mode                        |
+
+**Server (`server/package.json`):**
+
+| Command | Description                      |
+| ------- | -------------------------------- |
+| `dev`   | Start the Node.js API in watch mode |
+| `start` | Start the API once without watch |
 
 ---
 
 ## Folder Structure
 
-- **Mock Data:**  
-  Located in `src/mockData`. Each file represents an entity (e.g., `shipments.ts`, `customers.ts`).  
-  To extend, add entries to these arrays or create new files for new entities.
-
-- **Services:**  
-  In `src/services`, handles API calls (using `fetch` or `axios`).
-
-- **Store:**  
-  State management via `Zustand` in `src/store`.
+- **client/** — React application source code, configs, and tooling.
+  - **src/lib/** — Shared utilities such as the `apiClient` wrapper.
+  - **src/services/** — Frontend service layer that talks to the API.
+  - **src/store/** — Global state powered by Zustand (auth, requests, etc.).
+  - **src/pages/** — Route-level UI screens for clients and companies.
+- **server/** — Lightweight Node.js API (HTTP server, router, data layer).
 
 ---
 
@@ -148,8 +184,8 @@ The platform calculates shipping costs based on:
 
 ## CI/CD & Deployment
 
-This project uses **GitHub Actions** for CI/CD.  
-Workflow is defined in `.github/workflows/deploy.yml` and auto-deploys to Github Page on pushes to `master`.
+This project uses **GitHub Actions** for CI/CD.
+The workflow defined in `.github/workflows/build-deploy.yml` builds the site on pushes to `main` or `master` and publishes the `dist/` folder to GitHub Pages using the repository-provided `GITHUB_TOKEN` (no additional secrets required).
 
 **Deployment URL:**
 

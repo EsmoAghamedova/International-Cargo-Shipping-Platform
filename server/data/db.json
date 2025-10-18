@@ -1,0 +1,273 @@
+{
+  "users": [
+    {
+      "id": "user-1",
+      "fullName": "Laura Chen",
+      "email": "laura.chen@example.com",
+      "addresses": [
+        {
+          "city": "Berlin",
+          "country": "Germany",
+          "street": "Alexanderplatz 1",
+          "postalCode": "10178"
+        }
+      ],
+      "role": "USER"
+    },
+    {
+      "id": "user-2",
+      "fullName": "Samuel Ortiz",
+      "email": "samuel.ortiz@example.com",
+      "addresses": [
+        {
+          "city": "Madrid",
+          "country": "Spain",
+          "street": "Gran Via 45",
+          "postalCode": "28013"
+        }
+      ],
+      "role": "USER"
+    },
+    {
+      "id": "user-3",
+      "fullName": "Priya Nair",
+      "email": "priya.nair@example.com",
+      "addresses": [
+        {
+          "city": "Singapore",
+          "country": "Singapore",
+          "street": "Marina Boulevard 12",
+          "postalCode": "018982"
+        }
+      ],
+      "role": "USER"
+    }
+  ],
+  "companies": [
+    {
+      "id": "comp-1",
+      "name": "Apex Logistics",
+      "email": "ops@apexlogistics.io",
+      "phone": "+49 30 555 782",
+      "hqAddress": {
+        "city": "Hamburg",
+        "country": "Germany",
+        "street": "Harbour Way 7",
+        "postalCode": "20457"
+      },
+      "regions": ["EU", "ASIA"],
+      "supportedTypes": ["SEA", "AIR", "ROAD"],
+      "role": "COMPANY_ADMIN",
+      "logoUrl": "https://cdn-icons-png.flaticon.com/512/7437/7437013.png",
+      "basePrice": 35,
+      "pricePerKg": 4.6,
+      "fuelPct": 12,
+      "insurancePct": 3
+    },
+    {
+      "id": "comp-2",
+      "name": "SkyBridge Freight",
+      "email": "hello@skybridgefreight.com",
+      "phone": "+1 917 555 2045",
+      "hqAddress": {
+        "city": "New York",
+        "country": "USA",
+        "street": "Hudson Yards 50",
+        "postalCode": "10001"
+      },
+      "regions": ["N_AMERICA", "EU", "S_AMERICA"],
+      "supportedTypes": ["AIR", "ROAD"],
+      "role": "COMPANY_ADMIN",
+      "logoUrl": "https://cdn-icons-png.flaticon.com/512/7437/7437048.png",
+      "basePrice": 42,
+      "pricePerKg": 5.2,
+      "fuelPct": 14,
+      "insurancePct": 4
+    }
+  ],
+  "requests": [
+    {
+      "id": "req-101",
+      "userId": "user-1",
+      "companyId": "comp-1",
+      "parcel": {
+        "weightKg": 12,
+        "lengthCm": 80,
+        "widthCm": 40,
+        "heightCm": 35,
+        "kind": "GOODS",
+        "declaredValue": 950,
+        "fragile": true
+      },
+      "route": {
+        "origin": {
+          "city": "Berlin",
+          "country": "Germany",
+          "street": "Alexanderplatz 1",
+          "postalCode": "10178"
+        },
+        "destination": {
+          "city": "Singapore",
+          "country": "Singapore",
+          "street": "Marina Boulevard 12",
+          "postalCode": "018982"
+        },
+        "pickupAddress": {
+          "city": "Berlin",
+          "country": "Germany",
+          "street": "Alexanderplatz 1",
+          "postalCode": "10178"
+        },
+        "deliveryAddress": {
+          "city": "Singapore",
+          "country": "Singapore",
+          "street": "Marina Boulevard 12",
+          "postalCode": "018982"
+        }
+      },
+      "shippingType": "AIR",
+      "status": "IN_TRANSIT",
+      "createdAt": "2025-01-07T09:32:00.000Z",
+      "trackingId": "APX-57ZD91",
+      "reviewComment": "Departed from Berlin hub"
+    },
+    {
+      "id": "req-102",
+      "userId": "user-2",
+      "companyId": "comp-1",
+      "parcel": {
+        "weightKg": 4,
+        "lengthCm": 40,
+        "widthCm": 25,
+        "heightCm": 25,
+        "kind": "DOCUMENTS",
+        "declaredValue": 320
+      },
+      "route": {
+        "origin": {
+          "city": "Madrid",
+          "country": "Spain"
+        },
+        "destination": {
+          "city": "Warsaw",
+          "country": "Poland"
+        },
+        "pickupAddress": {
+          "city": "Madrid",
+          "country": "Spain"
+        },
+        "deliveryAddress": {
+          "city": "Warsaw",
+          "country": "Poland"
+        }
+      },
+      "shippingType": "ROAD",
+      "status": "OUT_FOR_DELIVERY",
+      "createdAt": "2025-01-12T15:12:00.000Z",
+      "trackingId": "APX-8PL221"
+    },
+    {
+      "id": "req-103",
+      "userId": "user-3",
+      "companyId": "comp-2",
+      "parcel": {
+        "weightKg": 22,
+        "lengthCm": 100,
+        "widthCm": 60,
+        "heightCm": 55,
+        "kind": "GOODS",
+        "declaredValue": 2100
+      },
+      "route": {
+        "origin": {
+          "city": "Singapore",
+          "country": "Singapore"
+        },
+        "destination": {
+          "city": "Chicago",
+          "country": "USA"
+        },
+        "pickupAddress": {
+          "city": "Singapore",
+          "country": "Singapore"
+        },
+        "deliveryAddress": {
+          "city": "Chicago",
+          "country": "USA"
+        }
+      },
+      "shippingType": "AIR",
+      "status": "PENDING_REVIEW",
+      "createdAt": "2025-01-15T10:41:00.000Z",
+      "trackingId": "SKY-77QW10"
+    },
+    {
+      "id": "req-104",
+      "userId": "user-1",
+      "companyId": "comp-2",
+      "parcel": {
+        "weightKg": 35,
+        "lengthCm": 120,
+        "widthCm": 80,
+        "heightCm": 75,
+        "kind": "GOODS",
+        "declaredValue": 4100
+      },
+      "route": {
+        "origin": {
+          "city": "Hamburg",
+          "country": "Germany"
+        },
+        "destination": {
+          "city": "New York",
+          "country": "USA"
+        },
+        "pickupAddress": {
+          "city": "Hamburg",
+          "country": "Germany"
+        },
+        "deliveryAddress": {
+          "city": "New York",
+          "country": "USA"
+        }
+      },
+      "shippingType": "SEA",
+      "status": "DELIVERED",
+      "createdAt": "2024-12-22T06:25:00.000Z",
+      "trackingId": "SKY-1XD920",
+      "reviewComment": "Delivered to Queens distribution center"
+    }
+  ],
+  "pricingTiers": [
+    {
+      "id": "tier-essential",
+      "label": "Essential",
+      "description": "For small teams shipping up to 5 parcels per week",
+      "basePrice": 29,
+      "includedWeight": 15,
+      "fuelSurchargePct": 8,
+      "insurancePct": 2,
+      "support": "Email support"
+    },
+    {
+      "id": "tier-growth",
+      "label": "Growth",
+      "description": "Balanced plan for scaling logistics teams",
+      "basePrice": 59,
+      "includedWeight": 40,
+      "fuelSurchargePct": 6,
+      "insurancePct": 3,
+      "support": "Email & chat support"
+    },
+    {
+      "id": "tier-enterprise",
+      "label": "Enterprise",
+      "description": "High volume operations with dedicated account manager",
+      "basePrice": 129,
+      "includedWeight": 120,
+      "fuelSurchargePct": 4,
+      "insurancePct": 2,
+      "support": "Dedicated logistics strategist"
+    }
+  ]
+}

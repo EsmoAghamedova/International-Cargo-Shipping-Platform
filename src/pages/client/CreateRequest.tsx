@@ -1,6 +1,6 @@
 import { useAuthStore } from '../../store/useAuthStore';
 import { useRequestsStore } from '../../store/useRequestsStore';
-import type { ShippingType, Company } from '../../types';
+import type { ShippingType } from '../../types';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { useEffect, useState } from 'react';

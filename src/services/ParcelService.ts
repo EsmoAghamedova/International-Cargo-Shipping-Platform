@@ -12,8 +12,8 @@ export class ParcelService {
       declaredValue?: number;
     },
     shippingType: ShippingType,
-    companyId: string,
-  ): number {
+    _companyId: string,
+  ): Promise<number> {
     return PricingService.calculatePrice({
       shippingType,
       weightKg: parcel.weightKg,

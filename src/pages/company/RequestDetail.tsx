@@ -26,10 +26,16 @@ export function CompanyRequestDetail() {
   const error = useRequestsStore((s) => s.error);
   const isFetchingSingle = useRequestsStore((s) => s.isFetchingSingle);
   const fetchById = useRequestsStore((s) => s.fetchById);
+  const userId = request?.userId;
   const userQuery = useQuery({
-    queryKey: ['users', request?.userId],
-    queryFn: () => UserService.get(request!.userId),
-    enabled: Boolean(request?.userId),
+    queryKey: ['users', userId],
+    queryFn: () => {
+      if (!userId) {
+        throw new Error('Missing user id for request');
+      }
+      return UserService.get(userId);
+    },
+    enabled: Boolean(userId),
   });
 
   const [newStatus, setNewStatus] = useState<RequestStatus | ''>('');
@@ -66,6 +72,8 @@ export function CompanyRequestDetail() {
     );
   }
 
+  const safeRequest = request as NonNullable<typeof request>;
+
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
@@ -74,7 +82,7 @@ export function CompanyRequestDetail() {
     setIsSaving(true);
     setSaveError(null);
     try {
-      await updateRequestStatus(request.id, newStatus, comment || undefined);
+      await updateRequestStatus(safeRequest.id, newStatus, comment || undefined);
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : 'Failed to update');
     } finally {
@@ -87,7 +95,7 @@ export function CompanyRequestDetail() {
       <div className="space-y-6">
         <header>
           <h1 className="text-2xl font-bold text-blue-700">Request Details</h1>
-          <p className="text-gray-500">Tracking ID: {request.trackingId}</p>
+          <p className="text-gray-500">Tracking ID: {safeRequest.trackingId}</p>
         </header>
 
         {/* Shipment Info */}
@@ -96,20 +104,20 @@ export function CompanyRequestDetail() {
             Shipment Information
           </h2>
           <p className="text-gray-700">
-            {request.route.origin.city} → {request.route.destination.city}
+            {safeRequest.route.origin.city} → {safeRequest.route.destination.city}
           </p>
           <p className="text-gray-500 text-sm">
-            {request.parcel.weightKg}kg • {request.parcel.kind} •{' '}
-            {request.shippingType} • Declared Value: $
-            {Number(request.parcel.declaredValue).toFixed(2)}
+            {safeRequest.parcel.weightKg}kg • {safeRequest.parcel.kind} •{' '}
+            {safeRequest.shippingType} • Declared Value: $
+            {Number(safeRequest.parcel.declaredValue).toFixed(2)}
           </p>
           <div className="mt-2">
-            <Badge status={formatLabel(request.status)} />
+            <Badge status={formatLabel(safeRequest.status)} />
           </div>
 
-          {request.reviewComment && (
+          {safeRequest.reviewComment && (
             <p className="mt-3 text-yellow-600 italic">
-              💬 Company Comment: {request.reviewComment}
+              💬 Company Comment: {safeRequest.reviewComment}
             </p>
           )}
         </Card>
@@ -155,15 +163,13 @@ export function CompanyRequestDetail() {
         </Card>
       </div>
 
-      {request && (
-        <InlineChat
-          contextId={`chat_${request.userId}_${request.companyId}`}
-          contextLabel={`Chat with ${
-            userQuery.data ? userQuery.data.fullName : 'Client'
-          }`}
-          sender="company"
-        />
-      )}
+      <InlineChat
+        contextId={`chat_${safeRequest.userId}_${safeRequest.companyId}`}
+        contextLabel={`Chat with ${
+          userQuery.data ? userQuery.data.fullName : 'Client'
+        }`}
+        sender="company"
+      />
     </DashboardLayout>
   );
 }

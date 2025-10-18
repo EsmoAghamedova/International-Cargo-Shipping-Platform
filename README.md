@@ -163,8 +163,8 @@ The platform calculates shipping costs based on:
 
 ## CI/CD & Deployment
 
-This project uses **GitHub Actions** for CI/CD.  
-Workflow is defined in `.github/workflows/deploy.yml` and auto-deploys to Github Page on pushes to `master`.
+This project uses **GitHub Actions** for CI/CD.
+The workflow defined in `.github/workflows/build-deploy.yml` builds the site on pushes to `main` or `master` and publishes the `dist/` folder to GitHub Pages using the repository-provided `GITHUB_TOKEN` (no additional secrets required).
 
 **Deployment URL:**
 
